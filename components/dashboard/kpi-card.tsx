@@ -10,6 +10,9 @@ import {
   Target,
   ArrowUpRight,
   ArrowDownRight,
+  Zap,
+  CheckCircle2,
+  TrendingUp,
   type LucideIcon,
 } from "lucide-react";
 import { ResponsiveContainer, LineChart, Line, YAxis } from "recharts";
@@ -23,6 +26,9 @@ const ICON_MAP: Record<KpiIconKey, LucideIcon> = {
   "response-time": Clock,
   revenue: DollarSign,
   conversion: Target,
+  workflows: Zap,
+  completion: CheckCircle2,
+  roi: TrendingUp,
 };
 
 const TONE_STYLES: Record<

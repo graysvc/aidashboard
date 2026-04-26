@@ -27,7 +27,10 @@ export type KpiIconKey =
   | "appointment"
   | "response-time"
   | "revenue"
-  | "conversion";
+  | "conversion"
+  | "workflows"
+  | "completion"
+  | "roi";
 
 export type KpiTone = "primary" | "success" | "warning" | "danger" | "info";
 
@@ -141,4 +144,6 @@ export type DashboardData = {
   pipelineTrend: TimeseriesPoint[];
   leadsBySource: CategoryPoint[];
   pipelineByStage: CategoryPoint[];
+  completionRateTrend: TimeseriesPoint[];
+  teamProductionTrend: TimeseriesPoint[];
 };

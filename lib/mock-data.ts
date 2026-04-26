@@ -96,6 +96,36 @@ const leadsBySource: CategoryPoint[] = [
   { label: "Mailchimp", value: 6 },
 ];
 
+const teamProductionTrend: TimeseriesPoint[] = [
+  { label: "Feb 03", value: 1 },
+  { label: "Feb 10", value: 2 },
+  { label: "Feb 17", value: 3 },
+  { label: "Feb 24", value: 2 },
+  { label: "Mar 03", value: 3 },
+  { label: "Mar 10", value: 2 },
+  { label: "Mar 17", value: 3 },
+  { label: "Mar 24", value: 4 },
+  { label: "Mar 31", value: 3 },
+  { label: "Apr 07", value: 5 },
+  { label: "Apr 14", value: 4 },
+  { label: "Apr 21", value: 6 },
+];
+
+const completionRateTrend: TimeseriesPoint[] = [
+  { label: "Feb 03", value: 88.2 },
+  { label: "Feb 10", value: 89.1 },
+  { label: "Feb 17", value: 87.4 },
+  { label: "Feb 24", value: 90.3 },
+  { label: "Mar 03", value: 88.9 },
+  { label: "Mar 10", value: 91.2 },
+  { label: "Mar 17", value: 89.6 },
+  { label: "Mar 24", value: 86.4 },
+  { label: "Mar 31", value: 82.1 },
+  { label: "Apr 07", value: 78.5 },
+  { label: "Apr 14", value: 75.2 },
+  { label: "Apr 21", value: 71.8 },
+];
+
 const pipelineByStage: CategoryPoint[] = [
   { label: "New", value: 18, secondary: 5_400_000, color: "#94a3b8" },
   { label: "Qualified", value: 12, secondary: 3_600_000, color: "#0ea5e9" },
@@ -461,6 +491,55 @@ const insights: Insight[] = [
     createdAt: "2026-04-25T11:30:00Z",
     category: "Agent",
   },
+  {
+    id: "i_006",
+    priority: "warning",
+    title: "Coach Emma on response-time discipline",
+    description:
+      "Median response on Emma O'Brien's queue is 11 minutes — 2.7x team average. Suggest pairing her with Priya for a one-week shadow.",
+    evidence: "12 leads · 11.4 min median · -3 appointments vs benchmark",
+    primaryAction: { label: "Schedule 1:1", intent: "implement" },
+    secondaryAction: { label: "Dismiss", intent: "dismiss" },
+    state: "pending",
+    createdAt: "2026-04-24T16:20:00Z",
+    category: "Agent",
+  },
+  {
+    id: "i_007",
+    priority: "success",
+    title: "Scaled Zillow speed-to-lead to Realtor.com leads",
+    description:
+      "Rolled out the 5-min SMS workflow to Realtor.com leads on Apr 18. Early data: appointment rate up 1.6x in the first week.",
+    evidence: "11 leads · 4 appointments · est. +$320K pipeline",
+    primaryAction: { label: "View workflow", intent: "view" },
+    state: "implemented",
+    createdAt: "2026-04-18T09:45:00Z",
+    category: "Workflow",
+  },
+  {
+    id: "i_008",
+    priority: "neutral",
+    title: "Rerouted weekend leads to Daniel Park",
+    description:
+      "Saturday/Sunday leads now auto-assign to Daniel for the next 30 days. Implemented Apr 20.",
+    evidence: "8 weekend leads · 6 contacted within 5 min",
+    primaryAction: { label: "View routing", intent: "view" },
+    state: "implemented",
+    createdAt: "2026-04-20T08:10:00Z",
+    category: "Pipeline",
+  },
+  {
+    id: "i_009",
+    priority: "warning",
+    title: "Cancel underused Realtor.com Pro renewal",
+    description:
+      "Realtor.com Pro converts at 4.2% vs 18% on Zillow Premier. Renewal is $1,890/mo. Worth pausing or downgrading.",
+    primaryAction: { label: "Review contract", intent: "view" },
+    secondaryAction: { label: "Details", intent: "details" },
+    state: "ignored",
+    createdAt: "2026-04-15T14:30:00Z",
+    category: "Spend",
+  },
 ];
 
 export const dashboardData: DashboardData = {
@@ -474,4 +553,6 @@ export const dashboardData: DashboardData = {
   pipelineTrend,
   leadsBySource,
   pipelineByStage,
+  completionRateTrend,
+  teamProductionTrend,
 };
