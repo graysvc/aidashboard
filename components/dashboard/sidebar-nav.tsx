@@ -10,6 +10,7 @@ import {
   PieChart,
   Settings,
   LifeBuoy,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -25,25 +26,10 @@ const NAV_SECONDARY = [
   { href: "/help", label: "Help & support", icon: LifeBuoy, disabled: true },
 ] as const;
 
-export function SidebarNav() {
+function NavList({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
-
   return (
-    <aside className="hidden lg:flex h-screen w-60 shrink-0 flex-col bg-sidebar text-sidebar-foreground border-r border-border sticky top-0">
-      {/* Logo */}
-      <div className="flex h-16 items-center gap-2.5 px-6 border-b border-border">
-        <div className="h-8 w-8 rounded-xl bg-primary flex items-center justify-center shadow-sm">
-          <PieChart
-            className="h-4 w-4 text-primary-foreground"
-            strokeWidth={2.25}
-          />
-        </div>
-        <span className="font-semibold text-[15px] tracking-tight">
-          RE Data Copilot
-        </span>
-      </div>
-
-      {/* Primary nav */}
+    <>
       <nav className="flex-1 px-4 py-6 space-y-1">
         <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
           Workspace
@@ -55,6 +41,7 @@ export function SidebarNav() {
             <Link
               key={href}
               href={href}
+              onClick={onNavigate}
               className={cn(
                 "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                 active
@@ -76,8 +63,6 @@ export function SidebarNav() {
           );
         })}
       </nav>
-
-      {/* Secondary */}
       <div className="px-4 pb-6 space-y-1">
         {NAV_SECONDARY.map(({ href, label, icon: Icon }) => (
           <button
@@ -91,6 +76,80 @@ export function SidebarNav() {
           </button>
         ))}
       </div>
+    </>
+  );
+}
+
+function Brand() {
+  return (
+    <div className="flex h-16 items-center gap-2.5 px-5 border-b border-border">
+      <div className="h-8 w-8 rounded-xl bg-primary flex items-center justify-center shadow-sm shrink-0">
+        <PieChart
+          className="h-4 w-4 text-primary-foreground"
+          strokeWidth={2.25}
+        />
+      </div>
+      <span className="font-semibold text-[15px] tracking-tight">
+        RE Data Copilot
+      </span>
+    </div>
+  );
+}
+
+export function SidebarNav() {
+  return (
+    <aside className="hidden lg:flex h-screen w-60 shrink-0 flex-col bg-sidebar text-sidebar-foreground border-r border-border sticky top-0">
+      <Brand />
+      <NavList />
     </aside>
+  );
+}
+
+export function MobileSidebar({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  return (
+    <>
+      {open && (
+        <div
+          className="lg:hidden fixed inset-0 z-30 bg-foreground/30 backdrop-blur-sm animate-in fade-in-0"
+          onClick={() => onOpenChange(false)}
+          aria-hidden
+        />
+      )}
+      <aside
+        className={cn(
+          "lg:hidden fixed top-0 left-0 z-40 h-screen w-64 flex flex-col bg-sidebar text-sidebar-foreground border-r border-border transition-transform duration-200",
+          open ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        <div className="flex h-16 items-center justify-between gap-2.5 px-5 border-b border-border">
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-xl bg-primary flex items-center justify-center shadow-sm shrink-0">
+              <PieChart
+                className="h-4 w-4 text-primary-foreground"
+                strokeWidth={2.25}
+              />
+            </div>
+            <span className="font-semibold text-[15px] tracking-tight">
+              RE Data Copilot
+            </span>
+          </div>
+          <button
+            type="button"
+            aria-label="Close menu"
+            onClick={() => onOpenChange(false)}
+            className="h-8 w-8 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+          >
+            <X className="h-4 w-4" strokeWidth={1.75} />
+          </button>
+        </div>
+        <NavList onNavigate={() => onOpenChange(false)} />
+      </aside>
+    </>
   );
 }

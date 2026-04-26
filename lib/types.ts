@@ -10,7 +10,11 @@ export type Tool =
   | "Zillow Premier"
   | "Google Ads"
   | "Realtor.com"
-  | "Mailchimp";
+  | "Mailchimp"
+  | "Twilio"
+  | "Canva"
+  | "Slack"
+  | "Calendly";
 
 export type User = {
   id: string;
@@ -99,13 +103,23 @@ export type Lead = {
   stage: "New" | "Qualified" | "Appointment Set" | "Showing" | "Offer" | "Under Contract";
 };
 
+export type WorkflowCategory =
+  | "Follow-up"
+  | "Lead Nurture"
+  | "Listing"
+  | "Re-engagement"
+  | "Sphere";
+
 export type Workflow = {
   id: string;
   name: string;
   description: string;
-  category: "Follow-up" | "Lead Nurture" | "Listing" | "Re-engagement" | "Sphere";
+  category: WorkflowCategory;
   tools: Tool[];
   status: WorkflowStatus;
+  ownerAgentId?: string; // who set this up / owns the workflow
+  lastTriggeredAt: string; // ISO
+  triggersPerDay: number; // average over last 7 days
   metrics: {
     triggered: number;
     completed: number;

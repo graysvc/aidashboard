@@ -4,7 +4,7 @@ import { CompletionRateChart } from "@/components/dashboard/completion-rate-char
 import { WorkflowStatusMix } from "@/components/dashboard/workflow-status-mix";
 import { WorkflowCard } from "@/components/dashboard/workflow-card";
 import { PeriodSelector } from "@/components/dashboard/period-selector";
-import type { KPI } from "@/lib/types";
+import type { KPI, Workflow, WorkflowCategory } from "@/lib/types";
 
 function formatCompactCurrency(n: number) {
   if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
@@ -12,10 +12,26 @@ function formatCompactCurrency(n: number) {
   return `$${n}`;
 }
 
+const CATEGORY_ORDER: WorkflowCategory[] = [
+  "Follow-up",
+  "Lead Nurture",
+  "Listing",
+  "Re-engagement",
+  "Sphere",
+];
+
+const CATEGORY_DESC: Record<WorkflowCategory, string> = {
+  "Follow-up": "Speed-to-lead and immediate response automations.",
+  "Lead Nurture": "Long-tail education and saved-search drip.",
+  Listing: "Marketing automations triggered by new MLS activity.",
+  "Re-engagement": "Bringing dormant leads and stalled deals back to life.",
+  Sphere: "Past-client retention and referral-generating touchpoints.",
+};
+
 export default function WorkflowsPage() {
   const { workflows, period, completionRateTrend } = dashboardData;
 
-  // Aggregate KPIs from workflows
+  // Aggregate KPIs
   const totalTriggered = workflows.reduce(
     (acc, w) => acc + w.metrics.triggered,
     0
@@ -76,15 +92,20 @@ export default function WorkflowsPage() {
     },
   ];
 
-  // Sort: broken first (needs attention), then by ROI
-  const sortedWorkflows = [...workflows].sort((a, b) => {
-    if (a.status === "broken" && b.status !== "broken") return -1;
-    if (b.status === "broken" && a.status !== "broken") return 1;
-    return b.metrics.roi - a.metrics.roi;
-  });
+  // Group by category, with broken-first inside each group, then by ROI
+  const grouped = CATEGORY_ORDER.map((cat) => {
+    const items = workflows
+      .filter((w) => w.category === cat)
+      .sort((a, b) => {
+        if (a.status === "broken" && b.status !== "broken") return -1;
+        if (b.status === "broken" && a.status !== "broken") return 1;
+        return b.metrics.roi - a.metrics.roi;
+      });
+    return { category: cat, items };
+  }).filter((g) => g.items.length > 0);
 
   return (
-    <div className="px-6 py-8 lg:px-8 lg:py-10 max-w-[1440px] mx-auto space-y-8">
+    <div className="px-4 sm:px-6 py-8 lg:px-8 lg:py-10 max-w-[1440px] mx-auto space-y-8">
       {/* Header */}
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
@@ -116,27 +137,83 @@ export default function WorkflowsPage() {
         <WorkflowStatusMix workflows={workflows} />
       </section>
 
-      {/* Workflow list */}
-      <section aria-label="Workflows">
-        <div className="flex items-baseline justify-between mb-4">
-          <div>
-            <h2 className="text-lg font-semibold text-foreground">
-              All workflows
-            </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Sorted by status — issues first, then by ROI
-            </p>
-          </div>
-          <span className="text-xs font-medium text-muted-foreground font-mono tabular-nums">
-            {workflows.length} total
-          </span>
-        </div>
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-          {sortedWorkflows.map((workflow) => (
-            <WorkflowCard key={workflow.id} workflow={workflow} />
-          ))}
-        </div>
+      {/* Grouped by category */}
+      <section aria-label="Workflows by category" className="space-y-10">
+        {grouped.map(({ category, items }) => (
+          <CategorySection key={category} category={category} items={items} />
+        ))}
       </section>
+    </div>
+  );
+}
+
+function CategorySection({
+  category,
+  items,
+}: {
+  category: WorkflowCategory;
+  items: Workflow[];
+}) {
+  const triggered = items.reduce((a, w) => a + w.metrics.triggered, 0);
+  const revenue = items.reduce((a, w) => a + w.metrics.revenueAttributed, 0);
+  const active = items.filter((w) => w.metrics.triggered > 0);
+  const avgRoi =
+    active.length > 0
+      ? active.reduce((a, w) => a + w.metrics.roi, 0) / active.length
+      : 0;
+  const broken = items.filter((w) => w.status === "broken").length;
+
+  return (
+    <div>
+      {/* Section header */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between mb-4 pb-3 border-b border-border/60">
+        <div>
+          <div className="flex items-center gap-2.5">
+            <h2 className="text-lg font-semibold text-foreground">{category}</h2>
+            <span className="inline-flex items-center justify-center min-w-[20px] h-5 rounded-full bg-muted text-[10px] font-mono font-semibold tabular-nums text-muted-foreground px-1.5">
+              {items.length}
+            </span>
+            {broken > 0 && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-semibold text-rose-700">
+                <span className="h-1 w-1 rounded-full bg-rose-500" />
+                {broken} broken
+              </span>
+            )}
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            {CATEGORY_DESC[category]}
+          </p>
+        </div>
+        <div className="flex items-center gap-5 text-[11px] font-mono tabular-nums shrink-0">
+          <SectionStat label="Triggered" value={triggered.toLocaleString()} />
+          <SectionStat
+            label="Revenue"
+            value={revenue > 0 ? formatCompactCurrency(revenue) : "—"}
+          />
+          <SectionStat
+            label="Avg ROI"
+            value={avgRoi > 0 ? `${avgRoi.toFixed(1)}x` : "—"}
+          />
+        </div>
+      </div>
+
+      {/* Cards */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        {items.map((w) => (
+          <WorkflowCard key={w.id} workflow={w} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SectionStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="text-right">
+      <div className="font-bold text-foreground">{value}</div>
+      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mt-0.5">
+        {label}
+      </div>
     </div>
   );
 }

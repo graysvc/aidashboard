@@ -8,12 +8,16 @@ import {
   ArrowDownRight,
   ArrowRight,
   ArrowUpRight,
+  Clock,
   Pause,
   Play,
+  Zap,
 } from "lucide-react";
 import { ResponsiveContainer, LineChart, Line, YAxis } from "recharts";
+import { formatDistanceToNowStrict } from "date-fns";
 import type { Workflow, WorkflowStatus } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { dashboardData } from "@/lib/mock-data";
 import { WorkflowDetailSheet } from "./workflow-detail-sheet";
 
 const STATUS_CONFIG: Record<
@@ -57,27 +61,28 @@ export function WorkflowCard({ workflow }: { workflow: Workflow }) {
   const status = STATUS_CONFIG[workflow.status];
   const sparklineData = workflow.trend.map((v, i) => ({ x: i, y: v }));
   const isUp = workflow.weeklyChange >= 0;
+  const owner = workflow.ownerAgentId
+    ? dashboardData.agents.find((a) => a.id === workflow.ownerAgentId)
+    : null;
 
   return (
     <>
-      <Card className="p-5 shadow-sm border-border/70 hover:shadow-md transition-shadow flex flex-col gap-4">
-        {/* Header: status + category + change pill */}
+      <Card className="p-5 shadow-sm border-border/70 hover:shadow-md hover:border-border transition-all flex flex-col gap-4">
+        {/* Header: status + change pill */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2 min-w-0">
             <span className={cn("h-2 w-2 rounded-full shrink-0", status.dot)} />
             <span className={cn("text-[11px] font-semibold", status.text)}>
               {status.label}
             </span>
-            <span className="text-muted-foreground/40">·</span>
-            <span className="text-[11px] font-medium text-muted-foreground truncate">
-              {workflow.category}
-            </span>
           </div>
-          {workflow.status !== "broken" && (
+          {workflow.status !== "broken" && workflow.weeklyChange !== 0 && (
             <span
               className={cn(
                 "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full font-mono text-[11px] font-semibold tabular-nums shrink-0",
-                isUp ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"
+                isUp
+                  ? "bg-emerald-50 text-emerald-700"
+                  : "bg-rose-50 text-rose-700"
               )}
             >
               {isUp ? (
@@ -113,7 +118,7 @@ export function WorkflowCard({ workflow }: { workflow: Workflow }) {
           ))}
         </div>
 
-        {/* Metrics grid + sparkline */}
+        {/* Metrics + sparkline */}
         <div className="grid grid-cols-[1fr_auto] gap-4 items-end">
           <div className="grid grid-cols-4 gap-3">
             <Metric
@@ -158,13 +163,33 @@ export function WorkflowCard({ workflow }: { workflow: Workflow }) {
           </div>
         </div>
 
+        {/* Meta row */}
+        <div className="grid grid-cols-3 gap-3 rounded-lg bg-muted/40 px-3 py-2.5">
+          <MetaItem
+            icon={<Zap className="h-3 w-3" strokeWidth={2} />}
+            label="Triggers/day"
+            value={workflow.triggersPerDay.toFixed(1)}
+          />
+          <MetaItem
+            icon={<Clock className="h-3 w-3" strokeWidth={2} />}
+            label="Last run"
+            value={`${formatDistanceToNowStrict(
+              new Date(workflow.lastTriggeredAt)
+            )} ago`}
+          />
+          <MetaItem
+            icon={null}
+            label="Owner"
+            value={owner ? owner.name.split(" ")[0] : "—"}
+          />
+        </div>
+
         {/* Actions */}
-        <div className="flex items-center gap-2 pt-1 border-t border-border/60 -mx-5 -mb-5 px-5 py-3 mt-1">
+        <div className="flex items-center pt-1 border-t border-border/60 -mx-5 -mb-5 px-5 py-3 mt-auto">
           <Button
             size="sm"
             variant="ghost"
             className="h-8 px-2 text-xs text-muted-foreground hover:text-foreground"
-            onClick={(e) => e.stopPropagation()}
           >
             {workflow.status === "broken" ? (
               <>
@@ -178,10 +203,9 @@ export function WorkflowCard({ workflow }: { workflow: Workflow }) {
               </>
             )}
           </Button>
-          <div className="flex-1" />
           <Button
             size="sm"
-            className="h-8 px-3 text-xs gap-1"
+            className="h-8 px-3 text-xs gap-1 ml-auto"
             onClick={() => setOpen(true)}
           >
             View details
@@ -206,6 +230,28 @@ function Metric({ label, value }: { label: string; value: string }) {
         {label}
       </div>
       <div className="font-mono text-sm font-bold tabular-nums text-foreground mt-0.5">
+        {value}
+      </div>
+    </div>
+  );
+}
+
+function MetaItem({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="min-w-0">
+      <div className="flex items-center gap-1 text-[10px] text-muted-foreground font-medium">
+        {icon}
+        {label}
+      </div>
+      <div className="text-[11px] font-mono font-semibold tabular-nums text-foreground mt-0.5 truncate">
         {value}
       </div>
     </div>
