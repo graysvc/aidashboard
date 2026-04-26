@@ -9,10 +9,25 @@ import { signIn } from "@/lib/auth";
 
 const TASKS = [
   "Saving your workspace profile",
+  "Notifying the RE Data Copilot team",
   "Mapping your tech stack",
   "Calibrating benchmarks",
   "Personalizing your dashboard",
 ];
+
+async function submitToServer(data: OnboardingData): Promise<void> {
+  try {
+    await fetch("/api/onboarding", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(data),
+      keepalive: true,
+    });
+  } catch (err) {
+    // Don't block the user if the network request fails — they still see the dashboard.
+    console.warn("[onboarding] Submit failed, will retry from localStorage:", err);
+  }
+}
 
 export function CompleteStep({ data }: { data: OnboardingData }) {
   const router = useRouter();
@@ -21,13 +36,16 @@ export function CompleteStep({ data }: { data: OnboardingData }) {
   const firstName = data.basicInfo?.name?.split(" ")[0] ?? "there";
 
   useEffect(() => {
-    // Persist the onboarding data immediately
-    saveOnboarding({
+    const completed: OnboardingData = {
       ...data,
       completedAt: new Date().toISOString(),
-    });
+    };
+    // Persist locally
+    saveOnboarding(completed);
     // Sign the user in (mock auth)
     signIn();
+    // Send to server (Resend email) — fire and forget, doesn't block UX
+    void submitToServer(completed);
 
     // Stagger the loader text to feel like setup is happening
     const interval = setInterval(() => {
