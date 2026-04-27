@@ -11,7 +11,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "RE Data Copilot",
+  title: {
+    default: "Vyzor",
+    template: "%s · Vyzor",
+  },
   description:
     "The AI layer that turns your real estate stack into decisions.",
 };

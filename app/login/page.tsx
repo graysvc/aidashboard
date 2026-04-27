@@ -7,10 +7,10 @@ import {
   Eye,
   EyeOff,
   Loader2,
-  PieChart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { VyzorLockup } from "@/components/brand/vyzor";
 import { signIn } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
@@ -45,17 +45,7 @@ export default function LoginPage() {
 
       {/* Top brand */}
       <header className="px-6 lg:px-10 py-6">
-        <div className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-xl bg-primary flex items-center justify-center shadow-sm">
-            <PieChart
-              className="h-4 w-4 text-primary-foreground"
-              strokeWidth={2.25}
-            />
-          </div>
-          <span className="font-semibold text-[15px] tracking-tight text-foreground">
-            RE Data Copilot
-          </span>
-        </div>
+        <VyzorLockup size={32} />
       </header>
 
       {/* Centered card */}

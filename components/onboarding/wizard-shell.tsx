@@ -1,7 +1,8 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, AlertCircle, PieChart } from "lucide-react";
+import { ArrowLeft, ArrowRight, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { VyzorLockup } from "@/components/brand/vyzor";
 import { cn } from "@/lib/utils";
 
 export function WizardShell({
@@ -36,16 +37,11 @@ export function WizardShell({
       {/* Top bar with brand + progress */}
       <header className="px-4 sm:px-6 lg:px-10 py-5 border-b border-border/60 bg-card sticky top-0 z-10">
         <div className="max-w-3xl mx-auto flex items-center gap-4">
-          <div className="flex items-center gap-2.5 shrink-0">
-            <div className="h-7 w-7 rounded-lg bg-primary flex items-center justify-center shadow-sm">
-              <PieChart
-                className="h-3.5 w-3.5 text-primary-foreground"
-                strokeWidth={2.25}
-              />
-            </div>
-            <span className="font-semibold text-sm tracking-tight text-foreground hidden sm:block">
-              RE Data Copilot
-            </span>
+          <div className="shrink-0 hidden sm:block">
+            <VyzorLockup size={28} textClassName="text-sm" />
+          </div>
+          <div className="shrink-0 sm:hidden">
+            <VyzorLockup size={28} textClassName="text-sm hidden" />
           </div>
 
           <div className="flex-1 flex items-center gap-3 min-w-0">

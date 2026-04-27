@@ -9,7 +9,7 @@ import { signIn } from "@/lib/auth";
 
 const TASKS = [
   "Saving your workspace profile",
-  "Notifying the RE Data Copilot team",
+  "Notifying the Vyzor team",
   "Mapping your tech stack",
   "Calibrating benchmarks",
   "Personalizing your dashboard",

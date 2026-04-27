@@ -7,12 +7,12 @@ import {
   Workflow,
   Users,
   Sparkles,
-  PieChart,
   Settings,
   LifeBuoy,
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { VyzorLockup } from "@/components/brand/vyzor";
 
 const NAV_PRIMARY = [
   { href: "/overview", label: "Overview", icon: LayoutDashboard },
@@ -83,15 +83,7 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
 function Brand() {
   return (
     <div className="flex h-16 items-center gap-2.5 px-5 border-b border-border">
-      <div className="h-8 w-8 rounded-xl bg-primary flex items-center justify-center shadow-sm shrink-0">
-        <PieChart
-          className="h-4 w-4 text-primary-foreground"
-          strokeWidth={2.25}
-        />
-      </div>
-      <span className="font-semibold text-[15px] tracking-tight">
-        RE Data Copilot
-      </span>
+      <VyzorLockup size={32} />
     </div>
   );
 }
@@ -128,17 +120,7 @@ export function MobileSidebar({
         )}
       >
         <div className="flex h-16 items-center justify-between gap-2.5 px-5 border-b border-border">
-          <div className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-xl bg-primary flex items-center justify-center shadow-sm shrink-0">
-              <PieChart
-                className="h-4 w-4 text-primary-foreground"
-                strokeWidth={2.25}
-              />
-            </div>
-            <span className="font-semibold text-[15px] tracking-tight">
-              RE Data Copilot
-            </span>
-          </div>
+          <VyzorLockup size={32} />
           <button
             type="button"
             aria-label="Close menu"
