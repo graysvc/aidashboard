@@ -36,21 +36,21 @@ export default function LoginPage() {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Decorative gradient blob */}
       <div
-        className="absolute inset-x-0 top-0 -z-10 h-[420px] pointer-events-none"
+        className="absolute inset-x-0 top-0 -z-10 h-[520px] pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse at top, rgba(124,58,237,0.10), transparent 60%)",
+            "radial-gradient(ellipse at top, rgba(124,58,237,0.14), transparent 60%)",
         }}
       />
 
-      {/* Top brand */}
-      <header className="px-6 lg:px-10 py-6">
-        <PulsorLockup size={32} />
-      </header>
-
-      {/* Centered card */}
-      <main className="flex-1 flex items-center justify-center px-4 py-8">
+      {/* Centered brand + card */}
+      <main className="flex-1 flex flex-col items-center justify-center px-4 py-8">
         <div className="w-full max-w-[440px]">
+          {/* Big brand above the card */}
+          <div className="flex flex-col items-center gap-3 mb-8">
+            <PulsorLockup size={56} textClassName="text-2xl" />
+          </div>
+
           <div className="rounded-2xl bg-card border border-border/70 shadow-md p-8">
             {/* Title */}
             <div>
