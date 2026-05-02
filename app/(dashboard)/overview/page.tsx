@@ -26,9 +26,9 @@ export default function OverviewPage() {
             <TrendingDown className="h-4 w-4 text-red-500" />
           )}
           <span className={heroKpi.deltaDirection === "up" ? "text-sm text-emerald-600" : "text-sm text-red-500"}>
-            {heroKpi.delta}
+            {heroKpi.delta.value}%
           </span>
-          <span className="text-sm text-muted-foreground ml-1">vs last period</span>
+          <span className="text-sm text-muted-foreground ml-1">{heroKpi.delta.period}</span>
         </div>
       </section>
 
