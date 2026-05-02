@@ -23,7 +23,6 @@ type ShowFilter = InsightState | "all";
 export default function InsightsPage() {
   const { insights, period } = dashboardData;
 
-  // ----- State
   const [show, setShow] = useState<ShowFilter>("pending");
   const [snoozedIds, setSnoozedIds] = useState<Set<string>>(new Set());
   const [detail, setDetail] = useState<Insight | null>(null);
@@ -32,7 +31,6 @@ export default function InsightsPage() {
     undoId: string | null;
   } | null>(null);
 
-  // ----- Filtered, with state-overlay for snooze
   const visible = useMemo(() => {
     return insights
       .map<Insight>((i) =>
@@ -41,7 +39,6 @@ export default function InsightsPage() {
       .filter((i) => (show === "all" ? true : i.state === show));
   }, [insights, snoozedIds, show]);
 
-  // ----- Bucket into zones (only meaningful when show === "pending")
   const critical = visible.find((i) => i.type === "critical") ?? null;
   const thisWeek = visible.filter(
     (i) => i.type === "warning" && i.id !== critical?.id
@@ -50,13 +47,11 @@ export default function InsightsPage() {
     (i) =>
       (i.type === "opportunity" || i.type === "info") && i.id !== critical?.id
   );
-  // For non-pending views, we lay everything out as a flat "worth-knowing" list
   const showFlatList = show !== "pending";
   const flat = visible;
 
   const totalToActOn = visible.length;
 
-  // ----- Handlers
   function handleSnooze(id: string) {
     setSnoozedIds((prev) => {
       const next = new Set(prev);
@@ -76,7 +71,6 @@ export default function InsightsPage() {
   }
 
   function handlePrimary(insight: Insight) {
-    // Stub — primary action is the user's go-to flow.
     setToast({
       message: `Action queued: ${insight.primaryAction.label}`,
       undoId: null,
@@ -84,18 +78,18 @@ export default function InsightsPage() {
   }
 
   return (
-    <div className="px-4 sm:px-6 py-8 lg:px-8 lg:py-10 max-w-[1200px] mx-auto space-y-8">
-      {/* Header — simplified: title + count + period + show filter */}
+    <div className="px-4 py-6 lg:px-6 lg:py-8 max-w-[1200px] mx-auto space-y-6">
+      {/* Header */}
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-foreground tracking-tight">
+          <h1 className="text-2xl lg:text-3xl font-semibold text-foreground tracking-tight">
             Insights
           </h1>
-          <p className="text-sm text-muted-foreground mt-1.5">
+          <p className="text-sm text-muted-foreground/70 mt-1">
             {show === "pending" && totalToActOn > 0
               ? `${totalToActOn} ${totalToActOn === 1 ? "thing" : "things"} to act on`
               : show === "pending" && totalToActOn === 0
-                ? "Nothing pending — you're caught up."
+                ? "Nothing pending - you're caught up."
                 : `${totalToActOn} ${totalToActOn === 1 ? "insight" : "insights"} in this view`}
           </p>
         </div>
@@ -105,10 +99,10 @@ export default function InsightsPage() {
             value={show}
             onValueChange={(v) => setShow(v as ShowFilter)}
           >
-            <SelectTrigger className="h-9 w-[150px] text-xs font-medium gap-1.5">
+            <SelectTrigger className="h-8 w-[140px] text-xs font-medium gap-1.5 bg-muted/30 border-border/50">
               <span className="text-muted-foreground">Show:</span>
               <SelectValue />
-              <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.75} />
+              <ChevronDown className="h-3 w-3 text-muted-foreground/60" strokeWidth={2} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="pending">Pending</SelectItem>
@@ -126,10 +120,9 @@ export default function InsightsPage() {
         <EmptyState filter={show} />
       )}
 
-      {/* PENDING view → 3 zones */}
+      {/* PENDING view */}
       {!showFlatList && visible.length > 0 && (
         <>
-          {/* ZONE 1 — ACT NOW (only renders if there's a critical) */}
           {critical && (
             <section aria-label="Act now">
               <SectionHeader title="Act now" emphasis />
@@ -142,7 +135,6 @@ export default function InsightsPage() {
             </section>
           )}
 
-          {/* ZONE 2 — THIS WEEK */}
           {thisWeek.length > 0 && (
             <section aria-label="This week" className="space-y-3">
               <SectionHeader title="This week" count={thisWeek.length} />
@@ -160,7 +152,6 @@ export default function InsightsPage() {
             </section>
           )}
 
-          {/* ZONE 3 — WORTH KNOWING */}
           {worthKnowing.length > 0 && (
             <section aria-label="Worth knowing" className="space-y-3">
               <SectionHeader
@@ -184,7 +175,7 @@ export default function InsightsPage() {
         </>
       )}
 
-      {/* Non-pending views → flat list (snoozed/implemented/ignored/all) */}
+      {/* Non-pending views */}
       {showFlatList && visible.length > 0 && (
         <section className="space-y-2">
           {flat.map((i) => (
@@ -199,7 +190,6 @@ export default function InsightsPage() {
         </section>
       )}
 
-      {/* Detail sheet */}
       <InsightDetailSheet
         insight={detail}
         open={detail !== null}
@@ -208,7 +198,6 @@ export default function InsightsPage() {
         onSnooze={() => detail && handleSnooze(detail.id)}
       />
 
-      {/* Snooze toast */}
       <SnoozeToast
         open={toast !== null}
         message={toast?.message ?? ""}
@@ -235,16 +224,16 @@ function SectionHeader({
       <h2
         className={
           emphasis
-            ? "text-[11px] font-bold uppercase tracking-[0.12em] text-rose-700"
+            ? "text-[10px] font-semibold uppercase tracking-widest text-destructive"
             : muted
-              ? "text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground"
-              : "text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground"
+              ? "text-[10px] font-medium uppercase tracking-widest text-muted-foreground/60"
+              : "text-[10px] font-medium uppercase tracking-widest text-muted-foreground"
         }
       >
         {title}
       </h2>
       {count !== undefined && (
-        <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
+        <span className="font-mono text-[10px] tabular-nums text-muted-foreground/50">
           {count}
         </span>
       )}
@@ -277,13 +266,13 @@ function EmptyState({ filter }: { filter: ShowFilter }) {
   };
   const { title, hint } = messages[filter];
   return (
-    <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed rounded-xl bg-card">
+    <div className="flex flex-col items-center justify-center py-20 text-center border border-border/30 border-dashed rounded-xl bg-card/50">
       <Inbox
-        className="h-9 w-9 text-muted-foreground/40 mb-3"
+        className="h-8 w-8 text-muted-foreground/30 mb-3"
         strokeWidth={1.5}
       />
       <p className="text-sm font-medium text-foreground">{title}</p>
-      <p className="text-xs text-muted-foreground mt-1">{hint}</p>
+      <p className="text-xs text-muted-foreground/60 mt-1">{hint}</p>
     </div>
   );
 }

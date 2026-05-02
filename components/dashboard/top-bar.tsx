@@ -3,13 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import {
   ChevronDown,
-  ChevronRight,
   Bell,
   Search,
   LogOut,
   UserCircle,
   Settings,
   Menu,
+  Command,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -39,7 +39,6 @@ export function TopBar({
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Click-outside to close
   useEffect(() => {
     if (!menuOpen) return;
     function onClick(e: MouseEvent) {
@@ -57,88 +56,74 @@ export function TopBar({
   }
 
   return (
-    <header className="h-16 sticky top-0 z-10 border-b border-border bg-background/85 backdrop-blur-md flex items-center justify-between px-4 sm:px-6 lg:px-8">
-      {/* Left cluster: hamburger (mobile) + breadcrumbs */}
-      <div className="flex items-center gap-2 min-w-0">
+    <header className="h-14 sticky top-0 z-10 border-b border-border/50 bg-background/60 backdrop-blur-xl flex items-center justify-between px-4 lg:px-6">
+      {/* Left: hamburger + title */}
+      <div className="flex items-center gap-3 min-w-0">
         {onOpenSidebar && (
           <button
             type="button"
             aria-label="Open menu"
             onClick={onOpenSidebar}
-            className="lg:hidden h-9 w-9 inline-flex items-center justify-center rounded-lg text-muted-foreground hover:bg-muted/60 hover:text-foreground transition-colors -ml-1"
+            className="lg:hidden h-8 w-8 inline-flex items-center justify-center rounded-lg text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors"
           >
             <Menu className="h-5 w-5" strokeWidth={1.75} />
           </button>
         )}
-        <nav
-          aria-label="Breadcrumb"
-          className="flex items-center gap-1.5 text-sm min-w-0"
-        >
-          <span className="text-muted-foreground hidden sm:inline">
-            Dashboard
-          </span>
-          <ChevronRight
-            className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0 hidden sm:block"
-            strokeWidth={1.75}
-          />
-          <span className="font-semibold text-foreground truncate">
-            {currentLabel}
-          </span>
-        </nav>
+        <h1 className="text-lg font-semibold text-foreground tracking-tight">
+          {currentLabel}
+        </h1>
       </div>
 
       {/* Right cluster */}
-      <div className="flex items-center gap-1.5 sm:gap-2">
+      <div className="flex items-center gap-2">
+        {/* Search pill */}
         <button
           type="button"
-          aria-label="Search"
-          className="hidden md:inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted/60 hover:text-foreground transition-colors"
+          className="hidden md:flex items-center gap-2 h-8 px-3 rounded-lg bg-muted/50 border border-border/50 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
         >
-          <Search className="h-[18px] w-[18px]" strokeWidth={1.75} />
+          <Search className="h-3.5 w-3.5" strokeWidth={2} />
+          <span>Search...</span>
+          <kbd className="ml-4 flex items-center gap-0.5 text-[10px] font-mono bg-background/50 px-1.5 py-0.5 rounded border border-border/50">
+            <Command className="h-2.5 w-2.5" />K
+          </kbd>
         </button>
+
+        {/* Notifications */}
         <button
           type="button"
           aria-label="Notifications"
-          className="relative h-9 w-9 inline-flex items-center justify-center rounded-lg text-muted-foreground hover:bg-muted/60 hover:text-foreground transition-colors"
+          className="relative h-8 w-8 inline-flex items-center justify-center rounded-lg text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors"
         >
-          <Bell className="h-[18px] w-[18px]" strokeWidth={1.75} />
-          <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-destructive" />
+          <Bell className="h-4 w-4" strokeWidth={1.75} />
+          <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-primary ring-2 ring-background" />
         </button>
 
-        {/* User pill + dropdown */}
+        {/* User dropdown */}
         <div className="relative" ref={menuRef}>
           <button
             type="button"
             onClick={() => setMenuOpen((o) => !o)}
             className={cn(
-              "flex items-center gap-3 pl-2 pr-2 sm:pr-3 py-1.5 rounded-lg transition-colors",
-              menuOpen ? "bg-muted/60" : "hover:bg-muted/60"
+              "flex items-center gap-2 pl-1 pr-2 py-1 rounded-lg transition-colors",
+              menuOpen ? "bg-muted/60" : "hover:bg-muted/50"
             )}
           >
-            <Avatar className="h-9 w-9 ring-2 ring-emerald-100">
-              <AvatarFallback className="bg-emerald-500 text-white text-xs font-semibold">
+            <Avatar className="h-7 w-7 ring-1 ring-border">
+              <AvatarFallback className="bg-gradient-to-br from-primary/80 to-primary text-primary-foreground text-[10px] font-semibold">
                 {user.initials}
               </AvatarFallback>
             </Avatar>
-            <div className="text-left leading-tight hidden sm:block">
-              <div className="text-sm font-semibold text-foreground">
-                {user.name.split(" ")[0]} {user.name.split(" ")[1]?.[0]}.
-              </div>
-              <div className="text-xs text-muted-foreground">
-                Account settings
-              </div>
-            </div>
             <ChevronDown
               className={cn(
-                "h-4 w-4 text-muted-foreground transition-transform",
+                "h-3.5 w-3.5 text-muted-foreground transition-transform duration-200",
                 menuOpen && "rotate-180"
               )}
-              strokeWidth={1.75}
+              strokeWidth={2}
             />
           </button>
 
           {menuOpen && (
-            <div className="absolute right-0 top-full mt-2 w-64 rounded-xl bg-card border border-border shadow-lg p-1.5 z-20 animate-in fade-in-0 slide-in-from-top-1">
+            <div className="absolute right-0 top-full mt-2 w-56 rounded-xl bg-card border border-border shadow-lg p-1 z-20 animate-in fade-in-0 slide-in-from-top-2 duration-200">
               <div className="px-3 py-2.5 border-b border-border/60">
                 <div className="text-sm font-semibold text-foreground truncate">
                   {user.name}
@@ -146,8 +131,8 @@ export function TopBar({
                 <div className="text-xs text-muted-foreground truncate">
                   {user.email}
                 </div>
-                <div className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
-                  <span className="h-1 w-1 rounded-full bg-emerald-500" />
+                <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                   {user.role}
                 </div>
               </div>
@@ -159,7 +144,7 @@ export function TopBar({
                 <button
                   type="button"
                   onClick={handleSignOut}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium text-rose-600 hover:bg-rose-50 transition-colors"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"
                 >
                   <LogOut className="h-4 w-4" strokeWidth={1.75} />
                   Sign out
@@ -183,7 +168,7 @@ function MenuItem({
   return (
     <button
       type="button"
-      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-foreground hover:bg-muted/60 transition-colors"
+      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-foreground hover:bg-muted/50 transition-colors"
     >
       <Icon
         className="h-4 w-4 text-muted-foreground"

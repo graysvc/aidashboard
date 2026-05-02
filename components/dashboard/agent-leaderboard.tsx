@@ -5,7 +5,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, TrendingUp } from "lucide-react";
 import type { Agent } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -15,23 +15,23 @@ const STATUS_CONFIG: Record<
 > = {
   top: {
     label: "Top",
-    dot: "bg-emerald-500",
-    text: "text-emerald-700",
+    dot: "bg-success",
+    text: "text-success",
   },
   rising: {
     label: "Rising",
-    dot: "bg-violet-500",
-    text: "text-violet-700",
+    dot: "bg-primary",
+    text: "text-primary",
   },
   steady: {
     label: "Steady",
-    dot: "bg-slate-400",
-    text: "text-slate-600",
+    dot: "bg-muted-foreground",
+    text: "text-muted-foreground",
   },
   "needs-coaching": {
     label: "Coaching",
-    dot: "bg-amber-500",
-    text: "text-amber-700",
+    dot: "bg-warning",
+    text: "text-warning",
   },
 };
 
@@ -44,11 +44,11 @@ function formatCompactCurrency(n: number) {
 function Sparkline({ data }: { data: number[] }) {
   const max = Math.max(...data, 1);
   return (
-    <div className="flex items-end gap-0.5 h-7 w-16">
+    <div className="flex items-end gap-[2px] h-6 w-14">
       {data.map((v, i) => (
         <div
           key={i}
-          className="flex-1 rounded-sm bg-violet-200"
+          className="flex-1 rounded-sm bg-primary/40 transition-all hover:bg-primary"
           style={{ height: `${(v / max) * 100}%`, minHeight: "2px" }}
         />
       ))}
@@ -62,40 +62,45 @@ export function AgentLeaderboard({ agents }: { agents: Agent[] }) {
     .slice(0, 5);
 
   return (
-    <Card className="shadow-sm border-border/70">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <div>
-          <CardTitle className="text-base font-semibold">
-            Agent leaderboard
-          </CardTitle>
-          <p className="text-xs text-muted-foreground mt-1">
-            Top performers by volume closed YTD
-          </p>
+    <Card className="bg-card border-border/50">
+      <CardHeader className="flex flex-row items-center justify-between pb-4">
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+            <TrendingUp className="h-4 w-4 text-primary" strokeWidth={1.75} />
+          </div>
+          <div>
+            <CardTitle className="text-sm font-medium">
+              Agent leaderboard
+            </CardTitle>
+            <p className="text-[11px] text-muted-foreground/70 mt-0.5">
+              Top performers by volume
+            </p>
+          </div>
         </div>
         <button
           type="button"
-          className="text-xs font-medium text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+          className="text-xs font-medium text-muted-foreground hover:text-foreground inline-flex items-center gap-1 transition-colors"
         >
           View team
           <ArrowUpRight className="h-3 w-3" strokeWidth={2} />
         </button>
       </CardHeader>
       <CardContent className="px-2 pb-2">
-        <div className="divide-y divide-border/60">
+        <div className="space-y-1">
           {sorted.map((agent, idx) => {
             const status = STATUS_CONFIG[agent.status];
             return (
               <div
                 key={agent.id}
-                className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-muted/40 transition-colors cursor-pointer"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted/30 transition-colors cursor-pointer group"
               >
-                <span className="font-mono text-xs text-muted-foreground w-4 tabular-nums">
+                <span className="font-mono text-xs text-muted-foreground/60 w-4 tabular-nums">
                   {idx + 1}
                 </span>
-                <Avatar className="h-9 w-9">
+                <Avatar className="h-8 w-8 ring-1 ring-border">
                   <AvatarFallback
                     className={cn(
-                      "text-white text-xs font-semibold",
+                      "text-[10px] font-semibold",
                       agent.avatarColor
                     )}
                   >
@@ -103,7 +108,7 @@ export function AgentLeaderboard({ agents }: { agents: Agent[] }) {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-foreground truncate">
+                  <div className="text-sm font-medium text-foreground truncate group-hover:text-foreground">
                     {agent.name}
                   </div>
                   <div className="flex items-center gap-1.5 mt-0.5">
@@ -113,21 +118,18 @@ export function AgentLeaderboard({ agents }: { agents: Agent[] }) {
                         status.dot
                       )}
                     />
-                    <span className={cn("text-[11px] font-medium", status.text)}>
+                    <span className={cn("text-[10px] font-medium", status.text)}>
                       {status.label}
-                    </span>
-                    <span className="text-[11px] text-muted-foreground">
-                      · {agent.role}
                     </span>
                   </div>
                 </div>
                 <Sparkline data={agent.trend} />
                 <div className="text-right">
-                  <div className="font-mono text-sm font-semibold text-foreground tabular-nums">
+                  <div className="font-mono text-sm font-medium text-foreground tabular-nums">
                     {formatCompactCurrency(agent.metrics.volumeClosedYTD)}
                   </div>
-                  <div className="text-[11px] text-muted-foreground font-mono tabular-nums">
-                    {agent.metrics.dealsClosedYTD} closed
+                  <div className="text-[10px] text-muted-foreground/70 font-mono tabular-nums">
+                    {agent.metrics.dealsClosedYTD} deals
                   </div>
                 </div>
               </div>

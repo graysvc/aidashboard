@@ -35,7 +35,6 @@ const CATEGORY_DESC: Record<WorkflowCategory, string> = {
 export default function WorkflowsPage() {
   const { workflows, period, completionRateTrend } = dashboardData;
 
-  // Aggregate KPIs
   const totalTriggered = workflows.reduce(
     (acc, w) => acc + w.metrics.triggered,
     0
@@ -96,7 +95,6 @@ export default function WorkflowsPage() {
     },
   ];
 
-  // Group by category, with broken-first inside each group, then by ROI
   const grouped = CATEGORY_ORDER.map((cat) => {
     const items = workflows
       .filter((w) => w.category === cat)
@@ -109,14 +107,14 @@ export default function WorkflowsPage() {
   }).filter((g) => g.items.length > 0);
 
   return (
-    <div className="px-4 sm:px-6 py-8 lg:px-8 lg:py-10 max-w-[1440px] mx-auto space-y-8">
+    <div className="px-4 py-6 lg:px-6 lg:py-8 max-w-[1600px] mx-auto space-y-6">
       {/* Header */}
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-foreground tracking-tight">
+          <h1 className="text-2xl lg:text-3xl font-semibold text-foreground tracking-tight">
             Workflows
           </h1>
-          <p className="text-sm text-muted-foreground mt-1.5">
+          <p className="text-sm text-muted-foreground/70 mt-1">
             ROI and efficiency of every automation across your stack.
           </p>
         </div>
@@ -135,14 +133,14 @@ export default function WorkflowsPage() {
       {/* Charts row */}
       <section
         aria-label="Workflow trends"
-        className="grid grid-cols-1 xl:grid-cols-[1fr_400px] gap-6"
+        className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-4"
       >
         <CompletionRateChart data={completionRateTrend} />
         <WorkflowStatusMix workflows={workflows} />
       </section>
 
       {/* Grouped by category */}
-      <section aria-label="Workflows by category" className="space-y-10">
+      <section aria-label="Workflows by category" className="space-y-8">
         {grouped.map(({ category, items }) => (
           <CategorySection key={category} category={category} items={items} />
         ))}
@@ -162,39 +160,36 @@ function CategorySection({
   const hoursSaved = totalTimeSavedHours(items);
   const broken = items.filter((w) => w.status === "broken").length;
 
-  // Build a narrative line. If everything is broken / zero, swap copy.
   const valueParts: string[] = [];
   if (hoursSaved > 0) valueParts.push(`saved ${formatHours(hoursSaved)}`);
   if (revenue > 0) valueParts.push(`drove ${formatCompactCurrency(revenue)} pipeline`);
   const narrative =
     valueParts.length > 0
       ? valueParts.join(" · ") + " this month"
-      : "no value generated this month — needs attention.";
+      : "no value generated this month";
 
   return (
     <div>
-      {/* Section header — narrative, not technical */}
-      <div className="mb-4 pb-3 border-b border-border/60">
+      <div className="mb-4 pb-3 border-b border-border/30">
         <div className="flex items-center gap-2.5 flex-wrap">
-          <h2 className="text-lg font-semibold text-foreground">{category}</h2>
-          <span className="text-xs text-muted-foreground">·</span>
-          <span className="text-sm text-muted-foreground">
+          <h2 className="text-base font-semibold text-foreground">{category}</h2>
+          <span className="text-xs text-muted-foreground/50">·</span>
+          <span className="text-sm text-muted-foreground/70">
             {items.length} {items.length === 1 ? "workflow" : "workflows"}
           </span>
           {broken > 0 && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-semibold text-rose-700">
-              <span className="h-1 w-1 rounded-full bg-rose-500" />
+            <span className="inline-flex items-center gap-1 rounded-md bg-destructive/10 px-2 py-0.5 text-[10px] font-medium text-destructive">
+              <span className="h-1 w-1 rounded-full bg-destructive" />
               {broken} broken
             </span>
           )}
         </div>
-        <p className="text-sm text-foreground/70 mt-1.5 leading-snug">
+        <p className="text-sm text-muted-foreground/60 mt-1">
           {CATEGORY_DESC[category]}{" "}
-          <span className="font-medium text-foreground">{narrative}</span>
+          <span className="text-muted-foreground">{narrative}</span>
         </p>
       </div>
 
-      {/* Cards */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
         {items.map((w) => (
           <WorkflowCard key={w.id} workflow={w} />

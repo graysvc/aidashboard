@@ -8,6 +8,7 @@ import {
   Tooltip,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Activity } from "lucide-react";
 import type { Workflow, WorkflowStatus } from "@/lib/types";
 
 type StatusItem = { label: string; value: number; color: string; status: WorkflowStatus };
@@ -22,18 +23,18 @@ const STATUS_META: Record<
   { label: string; color: string }
 > = {
   performing: { label: "Performing", color: "#10b981" },
-  healthy: { label: "Healthy", color: "#0ea5e9" },
+  healthy: { label: "Healthy", color: "#06b6d4" },
   underperforming: { label: "Underperforming", color: "#f59e0b" },
-  broken: { label: "Broken", color: "#dc2626" },
+  broken: { label: "Broken", color: "#ef4444" },
 };
 
 function ChartTooltip({ active, payload }: ChartTooltipProps) {
   if (!active || !payload?.length || !payload[0].payload) return null;
   const item = payload[0].payload;
   return (
-    <div className="rounded-lg border border-border bg-card shadow-md px-3 py-2">
-      <div className="text-xs font-semibold text-foreground">{item.label}</div>
-      <div className="mt-0.5 font-mono text-sm font-bold tabular-nums text-foreground">
+    <div className="rounded-lg border border-border bg-card shadow-lg px-3 py-2">
+      <div className="text-xs font-medium text-foreground">{item.label}</div>
+      <div className="mt-1 font-mono text-sm font-semibold tabular-nums text-foreground">
         {item.value} {item.value === 1 ? "workflow" : "workflows"}
       </div>
     </div>
@@ -61,28 +62,35 @@ export function WorkflowStatusMix({ workflows }: { workflows: Workflow[] }) {
   const total = workflows.length;
 
   return (
-    <Card className="shadow-sm border-border/70 h-full">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-base font-semibold">
-          Workflow health
-        </CardTitle>
-        <p className="text-xs text-muted-foreground mt-1">
-          Status mix across {total} {total === 1 ? "workflow" : "workflows"}
-        </p>
+    <Card className="bg-card border-border/50 h-full">
+      <CardHeader className="pb-4">
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-8 rounded-lg bg-warning/10 flex items-center justify-center">
+            <Activity className="h-4 w-4 text-warning" strokeWidth={1.75} />
+          </div>
+          <div>
+            <CardTitle className="text-sm font-medium">
+              Workflow health
+            </CardTitle>
+            <p className="text-[11px] text-muted-foreground/70 mt-0.5">
+              {total} total workflows
+            </p>
+          </div>
+        </div>
       </CardHeader>
-      <CardContent className="pt-2 pb-4">
-        <div className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-4 items-center">
-          <div className="relative h-[180px] w-full">
+      <CardContent className="pt-0 pb-4">
+        <div className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-6 items-center">
+          <div className="relative h-[160px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={data}
                   dataKey="value"
                   nameKey="label"
-                  innerRadius={56}
-                  outerRadius={84}
-                  paddingAngle={2}
-                  stroke="#fff"
+                  innerRadius={48}
+                  outerRadius={72}
+                  paddingAngle={3}
+                  stroke="#0a0a0a"
                   strokeWidth={2}
                   isAnimationActive={false}
                 >
@@ -94,10 +102,10 @@ export function WorkflowStatusMix({ workflows }: { workflows: Workflow[] }) {
               </PieChart>
             </ResponsiveContainer>
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span className="font-mono text-2xl font-bold tabular-nums text-foreground leading-none">
+              <span className="font-mono text-xl font-semibold tabular-nums text-foreground leading-none">
                 {total}
               </span>
-              <span className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1.5">
+              <span className="text-[9px] uppercase tracking-wider text-muted-foreground/60 mt-1">
                 Total
               </span>
             </div>
@@ -106,18 +114,18 @@ export function WorkflowStatusMix({ workflows }: { workflows: Workflow[] }) {
             {data.map((d) => (
               <li
                 key={d.label}
-                className="flex items-center justify-between gap-3 text-xs"
+                className="flex items-center justify-between gap-3 text-xs group cursor-default"
               >
                 <span className="flex items-center gap-2 min-w-0">
                   <span
                     className="h-2 w-2 rounded-full shrink-0"
                     style={{ backgroundColor: d.color }}
                   />
-                  <span className="text-foreground font-medium truncate">
+                  <span className="text-muted-foreground group-hover:text-foreground transition-colors truncate">
                     {d.label}
                   </span>
                 </span>
-                <span className="font-mono tabular-nums text-muted-foreground shrink-0">
+                <span className="font-mono tabular-nums text-foreground shrink-0">
                   {d.value}
                 </span>
               </li>

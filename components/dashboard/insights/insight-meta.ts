@@ -6,6 +6,7 @@ import type { InsightType } from "@/lib/types";
 export const TYPE_META: Record<
   InsightType,
   {
+    type: "act-now" | "this-week" | "worth-knowing";
     label: string;
     icon: LucideIcon;
     /** Darker shade — used on filled chips and titles */
@@ -21,39 +22,43 @@ export const TYPE_META: Record<
   }
 > = {
   critical: {
+    type: "act-now",
     label: "Critical",
     icon: AlertOctagon,
-    color: "#dc2626",
-    labelClass: "text-rose-700",
-    chipClass: "bg-rose-50 text-rose-700 border-rose-200",
-    dotClass: "bg-rose-500",
-    borderClass: "border-l-rose-500",
+    color: "#ef4444",
+    labelClass: "text-destructive",
+    chipClass: "bg-destructive/10 text-destructive",
+    dotClass: "bg-destructive",
+    borderClass: "border-l-destructive",
   },
   warning: {
+    type: "this-week",
     label: "Warning",
     icon: TriangleAlert,
-    color: "#d97706",
-    labelClass: "text-amber-700",
-    chipClass: "bg-amber-50 text-amber-700 border-amber-200",
-    dotClass: "bg-amber-500",
-    borderClass: "border-l-amber-500",
+    color: "#f59e0b",
+    labelClass: "text-warning",
+    chipClass: "bg-warning/10 text-warning",
+    dotClass: "bg-warning",
+    borderClass: "border-l-warning",
   },
   opportunity: {
+    type: "worth-knowing",
     label: "Opportunity",
     icon: Sparkles,
-    color: "#059669",
-    labelClass: "text-emerald-700",
-    chipClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    dotClass: "bg-emerald-500",
-    borderClass: "border-l-emerald-500",
+    color: "#10b981",
+    labelClass: "text-success",
+    chipClass: "bg-success/10 text-success",
+    dotClass: "bg-success",
+    borderClass: "border-l-success",
   },
   info: {
+    type: "worth-knowing",
     label: "FYI",
     icon: Info,
-    color: "#0284c7",
-    labelClass: "text-sky-700",
-    chipClass: "bg-sky-50 text-sky-700 border-sky-200",
-    dotClass: "bg-sky-500",
-    borderClass: "border-l-sky-500",
+    color: "#06b6d4",
+    labelClass: "text-primary",
+    chipClass: "bg-primary/10 text-primary",
+    dotClass: "bg-primary",
+    borderClass: "border-l-primary",
   },
 };

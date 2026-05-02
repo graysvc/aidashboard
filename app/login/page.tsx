@@ -25,7 +25,6 @@ export default function LoginPage() {
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSubmitting(true);
-    // Simulate latency for the demo flow
     setTimeout(() => {
       signIn();
       router.push("/overview");
@@ -34,35 +33,35 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Decorative gradient blob */}
+      {/* Decorative gradient */}
       <div
-        className="absolute inset-x-0 top-0 -z-10 h-[520px] pointer-events-none"
+        className="absolute inset-x-0 top-0 -z-10 h-[600px] pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse at top, rgba(124,58,237,0.14), transparent 60%)",
+            "radial-gradient(ellipse at top, rgba(6,182,212,0.08), transparent 60%)",
         }}
       />
 
       {/* Centered brand + card */}
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-8">
-        <div className="w-full max-w-[440px]">
-          {/* Big brand above the card */}
+        <div className="w-full max-w-[400px]">
+          {/* Brand */}
           <div className="flex flex-col items-center gap-3 mb-8">
-            <PulsorLockup size={56} textClassName="text-2xl" />
+            <PulsorLockup size={48} textClassName="text-xl" />
           </div>
 
-          <div className="rounded-2xl bg-card border border-border/70 shadow-md p-8">
+          <div className="rounded-xl bg-card border border-border/50 p-6 sm:p-8">
             {/* Title */}
             <div>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-subtle px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-accent-foreground">
-                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+              <span className="inline-flex items-center gap-1.5 rounded-md bg-primary/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-primary">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
                 Demo session
               </span>
-              <h1 className="mt-3 text-2xl font-bold tracking-tight text-foreground">
+              <h1 className="mt-4 text-xl font-semibold tracking-tight text-foreground">
                 Welcome back
               </h1>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Sign in to your team&apos;s command center.
+              <p className="mt-1 text-sm text-muted-foreground/70">
+                Sign in to your command center.
               </p>
             </div>
 
@@ -71,7 +70,7 @@ export default function LoginPage() {
               <div className="space-y-1.5">
                 <label
                   htmlFor="email"
-                  className="text-xs font-semibold text-foreground"
+                  className="text-xs font-medium text-muted-foreground"
                 >
                   Email
                 </label>
@@ -83,7 +82,7 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@team.com"
                   required
-                  className="h-10"
+                  className="h-10 bg-muted/30 border-border/50 focus:border-primary focus:ring-primary/20"
                 />
               </div>
 
@@ -91,13 +90,13 @@ export default function LoginPage() {
                 <div className="flex items-center justify-between">
                   <label
                     htmlFor="password"
-                    className="text-xs font-semibold text-foreground"
+                    className="text-xs font-medium text-muted-foreground"
                   >
                     Password
                   </label>
                   <button
                     type="button"
-                    className="text-xs font-medium text-primary hover:underline"
+                    className="text-xs font-medium text-primary hover:text-primary/80 transition-colors"
                   >
                     Forgot password?
                   </button>
@@ -109,9 +108,9 @@ export default function LoginPage() {
                     autoComplete="current-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
+                    placeholder="Enter password"
                     required
-                    className="h-10 pr-10"
+                    className="h-10 pr-10 bg-muted/30 border-border/50 focus:border-primary focus:ring-primary/20"
                   />
                   <button
                     type="button"
@@ -119,7 +118,7 @@ export default function LoginPage() {
                       showPassword ? "Hide password" : "Show password"
                     }
                     onClick={() => setShowPassword((s) => !s)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 rounded-md inline-flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 rounded-lg inline-flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4" strokeWidth={1.75} />
@@ -135,16 +134,16 @@ export default function LoginPage() {
                   type="checkbox"
                   checked={remember}
                   onChange={(e) => setRemember(e.target.checked)}
-                  className="h-4 w-4 rounded border-border text-primary focus:ring-primary"
+                  className="h-4 w-4 rounded border-border bg-muted/30 text-primary focus:ring-primary/20"
                 />
-                <span className="text-sm text-foreground">Remember me</span>
+                <span className="text-sm text-muted-foreground">Remember me</span>
               </label>
 
               <Button
                 type="submit"
                 disabled={submitting}
                 className={cn(
-                  "w-full h-10 gap-1.5 font-semibold",
+                  "w-full h-10 gap-1.5 font-medium bg-primary text-primary-foreground hover:bg-primary/90",
                   submitting && "opacity-90"
                 )}
               >
@@ -154,7 +153,7 @@ export default function LoginPage() {
                       className="h-4 w-4 animate-spin"
                       strokeWidth={2}
                     />
-                    Signing in…
+                    Signing in...
                   </>
                 ) : (
                   <>
@@ -167,19 +166,19 @@ export default function LoginPage() {
 
             {/* Divider */}
             <div className="my-6 flex items-center gap-3">
-              <div className="h-px flex-1 bg-border" />
-              <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
+              <div className="h-px flex-1 bg-border/50" />
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground/60 font-medium">
                 or continue with
               </span>
-              <div className="h-px flex-1 bg-border" />
+              <div className="h-px flex-1 bg-border/50" />
             </div>
 
-            {/* SSO buttons (visual only) */}
+            {/* SSO buttons */}
             <div className="grid grid-cols-2 gap-2">
               <Button
                 type="button"
                 variant="outline"
-                className="h-10 gap-2 font-medium"
+                className="h-10 gap-2 font-medium bg-muted/30 border-border/50 hover:bg-muted/50 hover:border-border"
               >
                 <GoogleIcon className="h-4 w-4" />
                 Google
@@ -187,7 +186,7 @@ export default function LoginPage() {
               <Button
                 type="button"
                 variant="outline"
-                className="h-10 gap-2 font-medium"
+                className="h-10 gap-2 font-medium bg-muted/30 border-border/50 hover:bg-muted/50 hover:border-border"
               >
                 <MicrosoftIcon className="h-4 w-4" />
                 Microsoft
@@ -196,17 +195,17 @@ export default function LoginPage() {
           </div>
 
           {/* Footer */}
-          <p className="mt-5 text-center text-xs text-muted-foreground">
+          <p className="mt-5 text-center text-xs text-muted-foreground/70">
             New here?{" "}
             <a
               href="/setup"
-              className="font-medium text-foreground hover:text-primary"
+              className="font-medium text-foreground hover:text-primary transition-colors"
             >
-              Set up your workspace →
+              Set up your workspace
             </a>
           </p>
-          <p className="mt-2 text-center text-[10px] text-muted-foreground/70 font-mono">
-            This is a demo workspace. No real authentication.
+          <p className="mt-2 text-center text-[10px] text-muted-foreground/50 font-mono">
+            Demo workspace - no real authentication
           </p>
         </div>
       </main>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar } from "lucide-react";
+import { Calendar, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function PeriodSelector({ label }: { label: string }) {
@@ -8,10 +8,11 @@ export function PeriodSelector({ label }: { label: string }) {
     <Button
       variant="outline"
       size="sm"
-      className="h-9 gap-2 font-mono text-xs tabular-nums"
+      className="h-8 gap-2 font-mono text-xs tabular-nums bg-muted/30 border-border/50 hover:bg-muted/50 hover:border-border"
     >
-      <Calendar className="h-3.5 w-3.5" strokeWidth={1.75} />
+      <Calendar className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.75} />
       {label}
+      <ChevronDown className="h-3 w-3 text-muted-foreground/60" strokeWidth={2} />
     </Button>
   );
 }

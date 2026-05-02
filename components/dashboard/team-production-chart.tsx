@@ -10,6 +10,7 @@ import {
   Tooltip,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { TimeseriesPoint } from "@/lib/types";
 
@@ -23,11 +24,11 @@ function ChartTooltip({ active, payload, label }: ChartTooltipProps) {
   if (!active || !payload?.length) return null;
   const value = payload[0].value ?? 0;
   return (
-    <div className="rounded-lg border border-border bg-card shadow-md px-3 py-2">
-      <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
+    <div className="rounded-lg border border-border bg-card shadow-lg px-3 py-2">
+      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
         Week of {label}
       </div>
-      <div className="mt-1 font-mono text-sm font-bold tabular-nums text-foreground">
+      <div className="mt-1 font-mono text-sm font-semibold tabular-nums text-foreground">
         {value} {value === 1 ? "deal" : "deals"} closed
       </div>
     </div>
@@ -42,36 +43,39 @@ export function TeamProductionChart({ data }: { data: TimeseriesPoint[] }) {
   const isUp = change >= 0;
 
   return (
-    <Card className="shadow-sm border-border/70">
-      <CardHeader className="pb-2">
-        <div className="flex items-start justify-between gap-3">
+    <Card className="bg-card border-border/50">
+      <CardHeader className="pb-0">
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+            <TrendingUp className="h-4 w-4 text-primary" strokeWidth={1.75} />
+          </div>
           <div>
-            <CardTitle className="text-base font-semibold">
+            <CardTitle className="text-sm font-medium">
               Team production
             </CardTitle>
-            <p className="text-xs text-muted-foreground mt-1">
-              Weekly closed deals across the team · 12 weeks
+            <p className="text-[11px] text-muted-foreground/70 mt-0.5">
+              Weekly closed deals
             </p>
           </div>
         </div>
-        <div className="mt-3 flex items-baseline gap-3">
-          <span className="font-mono text-2xl font-bold tabular-nums text-foreground leading-none">
+        <div className="mt-4 flex items-baseline gap-3">
+          <span className="font-mono text-2xl font-semibold tabular-nums text-foreground leading-none tracking-tight">
             {total}
           </span>
-          <span className="text-xs text-muted-foreground">deals YTD</span>
+          <span className="text-xs text-muted-foreground/70">deals YTD</span>
           <span
             className={cn(
-              "ml-auto font-mono text-xs font-semibold tabular-nums",
-              isUp ? "text-emerald-700" : "text-rose-700"
+              "ml-auto inline-flex items-center font-mono text-xs font-medium tabular-nums px-1.5 py-0.5 rounded-md",
+              isUp ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"
             )}
           >
             {isUp ? "+" : ""}
-            {change.toFixed(0)}% wk-over-wk
+            {change.toFixed(0)}% wk/wk
           </span>
         </div>
       </CardHeader>
-      <CardContent className="pt-2 pb-4 pr-2">
-        <div className="h-[220px] w-full">
+      <CardContent className="pt-6 pb-4 pr-2">
+        <div className="h-[200px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               data={data}
@@ -79,45 +83,45 @@ export function TeamProductionChart({ data }: { data: TimeseriesPoint[] }) {
             >
               <defs>
                 <linearGradient id="teamProductionFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#7c3aed" stopOpacity={0.22} />
-                  <stop offset="100%" stopColor="#7c3aed" stopOpacity={0} />
+                  <stop offset="0%" stopColor="#06b6d4" stopOpacity={0.25} />
+                  <stop offset="100%" stopColor="#06b6d4" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid
-                stroke="#E5E7EB"
-                strokeDasharray="3 3"
+                stroke="#262626"
+                strokeDasharray="0"
                 vertical={false}
               />
               <XAxis
                 dataKey="label"
                 axisLine={false}
                 tickLine={false}
-                stroke="#9CA3AF"
+                stroke="#525252"
                 fontSize={11}
-                tickMargin={10}
+                tickMargin={12}
               />
               <YAxis
                 axisLine={false}
                 tickLine={false}
-                stroke="#9CA3AF"
+                stroke="#525252"
                 fontSize={11}
                 width={28}
                 allowDecimals={false}
               />
               <Tooltip
                 content={<ChartTooltip />}
-                cursor={{ stroke: "#7c3aed", strokeDasharray: "3 3" }}
+                cursor={{ stroke: "#06b6d4", strokeOpacity: 0.3, strokeDasharray: "4 4" }}
               />
               <Area
                 type="monotone"
                 dataKey="value"
-                stroke="#7c3aed"
-                strokeWidth={2.25}
+                stroke="#06b6d4"
+                strokeWidth={2}
                 fill="url(#teamProductionFill)"
                 activeDot={{
-                  r: 4,
-                  fill: "#7c3aed",
-                  stroke: "#fff",
+                  r: 5,
+                  fill: "#06b6d4",
+                  stroke: "#0a0a0a",
                   strokeWidth: 2,
                 }}
               />

@@ -15,7 +15,7 @@ import {
   TrendingUp,
   type LucideIcon,
 } from "lucide-react";
-import { ResponsiveContainer, LineChart, Line, YAxis } from "recharts";
+import { ResponsiveContainer, AreaChart, Area, YAxis } from "recharts";
 import type { KPI, KpiIconKey, KpiTone } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -33,32 +33,37 @@ const ICON_MAP: Record<KpiIconKey, LucideIcon> = {
 
 const TONE_STYLES: Record<
   KpiTone,
-  { iconBg: string; iconColor: string; sparkline: string }
+  { iconBg: string; iconColor: string; sparkline: string; sparklineFill: string }
 > = {
   primary: {
-    iconBg: "bg-violet-100",
-    iconColor: "text-violet-600",
-    sparkline: "#7c3aed",
+    iconBg: "bg-primary/10",
+    iconColor: "text-primary",
+    sparkline: "#06b6d4",
+    sparklineFill: "rgba(6, 182, 212, 0.1)",
   },
   success: {
-    iconBg: "bg-emerald-100",
-    iconColor: "text-emerald-600",
+    iconBg: "bg-success/10",
+    iconColor: "text-success",
     sparkline: "#10b981",
+    sparklineFill: "rgba(16, 185, 129, 0.1)",
   },
   warning: {
-    iconBg: "bg-amber-100",
-    iconColor: "text-amber-600",
+    iconBg: "bg-warning/10",
+    iconColor: "text-warning",
     sparkline: "#f59e0b",
+    sparklineFill: "rgba(245, 158, 11, 0.1)",
   },
   danger: {
-    iconBg: "bg-rose-100",
-    iconColor: "text-rose-600",
-    sparkline: "#f43f5e",
+    iconBg: "bg-destructive/10",
+    iconColor: "text-destructive",
+    sparkline: "#ef4444",
+    sparklineFill: "rgba(239, 68, 68, 0.1)",
   },
   info: {
-    iconBg: "bg-sky-100",
-    iconColor: "text-sky-600",
-    sparkline: "#0ea5e9",
+    iconBg: "bg-primary/10",
+    iconColor: "text-primary",
+    sparkline: "#8b5cf6",
+    sparklineFill: "rgba(139, 92, 246, 0.1)",
   },
 };
 
@@ -78,31 +83,34 @@ export function KpiCard({ kpi }: { kpi: KPI }) {
     kpi.trend?.map((v, i) => ({ x: i, y: v })) ?? [];
 
   return (
-    <Card className="p-5 shadow-sm border-border/70 hover:shadow-md transition-shadow">
-      <div className="flex items-start gap-4">
+    <Card className="group relative p-5 bg-card border-border/50 hover:border-border transition-all duration-300 overflow-hidden">
+      {/* Subtle gradient overlay on hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      
+      <div className="relative flex items-start gap-4">
         <span
           className={cn(
-            "h-12 w-12 rounded-2xl shrink-0 flex items-center justify-center",
+            "h-10 w-10 rounded-xl shrink-0 flex items-center justify-center transition-transform group-hover:scale-105",
             styles.iconBg
           )}
         >
-          <Icon className={cn("h-5 w-5", styles.iconColor)} strokeWidth={2} />
+          <Icon className={cn("h-5 w-5", styles.iconColor)} strokeWidth={1.75} />
         </span>
         <div className="min-w-0 flex-1">
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
             {kpi.label}
           </div>
-          <div className="mt-1.5 flex items-baseline gap-2 flex-wrap">
-            <span className="font-mono text-[26px] font-bold text-foreground tabular-nums leading-none">
+          <div className="mt-2 flex items-baseline gap-2 flex-wrap">
+            <span className="font-mono text-2xl font-semibold text-foreground tabular-nums leading-none tracking-tight">
               {kpi.value}
             </span>
             {kpi.delta && (
               <span
                 className={cn(
-                  "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full font-mono text-[11px] font-semibold tabular-nums",
+                  "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md font-mono text-[11px] font-medium tabular-nums",
                   deltaTone === "positive" &&
-                    "bg-emerald-50 text-emerald-700",
-                  deltaTone === "negative" && "bg-rose-50 text-rose-700"
+                    "bg-success/10 text-success",
+                  deltaTone === "negative" && "bg-destructive/10 text-destructive"
                 )}
               >
                 {isUp ? (
@@ -115,10 +123,10 @@ export function KpiCard({ kpi }: { kpi: KPI }) {
             )}
           </div>
           {(kpi.hint || kpi.delta?.period) && (
-            <div className="text-xs text-muted-foreground mt-1">
+            <div className="text-[11px] text-muted-foreground/70 mt-1.5">
               {kpi.hint && <span>{kpi.hint}</span>}
               {kpi.hint && kpi.delta?.period && (
-                <span className="text-muted-foreground/50"> · </span>
+                <span className="text-muted-foreground/40"> · </span>
               )}
               {kpi.delta?.period}
             </div>
@@ -127,19 +135,26 @@ export function KpiCard({ kpi }: { kpi: KPI }) {
       </div>
 
       {sparklineData.length > 0 && (
-        <div className="mt-4 -mx-1 h-10">
+        <div className="relative mt-4 -mx-2 h-12">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={sparklineData}>
+            <AreaChart data={sparklineData}>
+              <defs>
+                <linearGradient id={`kpi-${kpi.id}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={styles.sparkline} stopOpacity={0.2} />
+                  <stop offset="100%" stopColor={styles.sparkline} stopOpacity={0} />
+                </linearGradient>
+              </defs>
               <YAxis hide domain={["dataMin", "dataMax"]} />
-              <Line
+              <Area
                 type="monotone"
                 dataKey="y"
                 stroke={styles.sparkline}
-                strokeWidth={1.75}
+                strokeWidth={1.5}
+                fill={`url(#kpi-${kpi.id})`}
                 dot={false}
                 isAnimationActive={false}
               />
-            </LineChart>
+            </AreaChart>
           </ResponsiveContainer>
         </div>
       )}

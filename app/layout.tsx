@@ -25,10 +25,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn(inter.variable, GeistMono.variable)}
+      className={cn(inter.variable, GeistMono.variable, "bg-background")}
       suppressHydrationWarning
     >
-      <body className="font-sans antialiased bg-background text-foreground">
+      <body className="font-sans antialiased bg-background text-foreground min-h-screen">
         {children}
       </body>
     </html>

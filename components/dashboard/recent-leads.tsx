@@ -5,63 +5,71 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Users } from "lucide-react";
 import type { Lead, LeadStatus } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNowStrict } from "date-fns";
 
 const STATUS_CONFIG: Record<
   LeadStatus,
-  { label: string; dot: string; text: string }
+  { label: string; dot: string; text: string; bg: string }
 > = {
   hot: {
     label: "Hot",
-    dot: "bg-rose-500",
-    text: "text-rose-700",
+    dot: "bg-destructive",
+    text: "text-destructive",
+    bg: "bg-destructive/10",
   },
   warm: {
     label: "Warm",
-    dot: "bg-amber-500",
-    text: "text-amber-700",
+    dot: "bg-warning",
+    text: "text-warning",
+    bg: "bg-warning/10",
   },
   cold: {
     label: "Cold",
-    dot: "bg-slate-400",
-    text: "text-slate-600",
+    dot: "bg-muted-foreground",
+    text: "text-muted-foreground",
+    bg: "bg-muted/50",
   },
 };
 
 export function RecentLeads({ leads }: { leads: Lead[] }) {
   return (
-    <Card className="shadow-sm border-border/70">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <div>
-          <CardTitle className="text-base font-semibold">
-            Recent leads
-          </CardTitle>
-          <p className="text-xs text-muted-foreground mt-1">
-            Latest activity across the team
-          </p>
+    <Card className="bg-card border-border/50">
+      <CardHeader className="flex flex-row items-center justify-between pb-4">
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-8 rounded-lg bg-success/10 flex items-center justify-center">
+            <Users className="h-4 w-4 text-success" strokeWidth={1.75} />
+          </div>
+          <div>
+            <CardTitle className="text-sm font-medium">
+              Recent leads
+            </CardTitle>
+            <p className="text-[11px] text-muted-foreground/70 mt-0.5">
+              Latest activity
+            </p>
+          </div>
         </div>
         <button
           type="button"
-          className="text-xs font-medium text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+          className="text-xs font-medium text-muted-foreground hover:text-foreground inline-flex items-center gap-1 transition-colors"
         >
           View all
           <ArrowUpRight className="h-3 w-3" strokeWidth={2} />
         </button>
       </CardHeader>
       <CardContent className="px-2 pb-2">
-        <div className="divide-y divide-border/60">
+        <div className="space-y-1">
           {leads.slice(0, 6).map((lead) => {
             const status = STATUS_CONFIG[lead.status];
             return (
               <div
                 key={lead.id}
-                className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-muted/40 transition-colors cursor-pointer"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted/30 transition-colors cursor-pointer group"
               >
-                <Avatar className="h-9 w-9">
-                  <AvatarFallback className="bg-violet-100 text-violet-700 text-xs font-semibold">
+                <Avatar className="h-8 w-8 ring-1 ring-border">
+                  <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-semibold">
                     {lead.initials}
                   </AvatarFallback>
                 </Avatar>
@@ -72,15 +80,15 @@ export function RecentLeads({ leads }: { leads: Lead[] }) {
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <span
                       className={cn(
-                        "h-1.5 w-1.5 rounded-full shrink-0",
-                        status.dot
+                        "inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-medium",
+                        status.bg, status.text
                       )}
-                    />
-                    <span className={cn("text-[11px] font-medium", status.text)}>
+                    >
+                      <span className={cn("h-1 w-1 rounded-full", status.dot)} />
                       {status.label}
                     </span>
-                    <span className="text-[11px] text-muted-foreground truncate">
-                      · {lead.property}
+                    <span className="text-[10px] text-muted-foreground/60 truncate">
+                      {lead.property}
                     </span>
                   </div>
                 </div>
@@ -88,7 +96,7 @@ export function RecentLeads({ leads }: { leads: Lead[] }) {
                   <span className="text-[11px] font-medium text-foreground">
                     {lead.stage}
                   </span>
-                  <span className="text-[11px] text-muted-foreground font-mono tabular-nums">
+                  <span className="text-[10px] text-muted-foreground/60 font-mono tabular-nums">
                     {formatDistanceToNowStrict(new Date(lead.lastContactAt))} ago
                   </span>
                 </div>

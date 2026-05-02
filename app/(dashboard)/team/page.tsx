@@ -63,14 +63,13 @@ export default function TeamPage() {
       id: "team-conversion",
       label: "Avg Conversion",
       value: `${avgConversion.toFixed(1)}%`,
-      hint: "lead → appointment",
+      hint: "lead to appointment",
       iconKey: "conversion",
       tone: "danger",
       delta: { value: 1.4, period: "vs last month" },
     },
   ];
 
-  // Sort: top first, then volume desc, but coaching cases pinned high
   const sortedAgents = [...agents].sort((a, b) => {
     if (a.status === "needs-coaching" && b.status !== "needs-coaching")
       return -1;
@@ -80,14 +79,14 @@ export default function TeamPage() {
   });
 
   return (
-    <div className="px-6 py-8 lg:px-8 lg:py-10 max-w-[1440px] mx-auto space-y-8">
+    <div className="px-4 py-6 lg:px-6 lg:py-8 max-w-[1600px] mx-auto space-y-6">
       {/* Header */}
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-foreground tracking-tight">
+          <h1 className="text-2xl lg:text-3xl font-semibold text-foreground tracking-tight">
             Team performance
           </h1>
-          <p className="text-sm text-muted-foreground mt-1.5">
+          <p className="text-sm text-muted-foreground/70 mt-1">
             Per-agent metrics, coaching opportunities, and pipeline health.
           </p>
         </div>
@@ -106,7 +105,7 @@ export default function TeamPage() {
       {/* Charts row */}
       <section
         aria-label="Team trends"
-        className="grid grid-cols-1 xl:grid-cols-2 gap-6"
+        className="grid grid-cols-1 xl:grid-cols-2 gap-4"
       >
         <TeamProductionChart data={teamProductionTrend} />
         <AgentComparisonChart agents={agents} />
@@ -114,14 +113,14 @@ export default function TeamPage() {
 
       {/* Agent grid */}
       <section aria-label="Agents">
-        <div className="flex items-baseline justify-between mb-4">
+        <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-lg font-semibold text-foreground">All agents</h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Coaching cases first, then by volume closed YTD
+            <h2 className="text-base font-semibold text-foreground">All agents</h2>
+            <p className="text-xs text-muted-foreground/70 mt-0.5">
+              Coaching cases first, then by volume
             </p>
           </div>
-          <span className="text-xs font-medium text-muted-foreground font-mono tabular-nums">
+          <span className="text-xs font-medium text-muted-foreground/60 font-mono tabular-nums">
             {agents.length} agents
           </span>
         </div>

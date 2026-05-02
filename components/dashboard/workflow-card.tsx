@@ -28,30 +28,30 @@ const STATUS_CONFIG: Record<
 > = {
   performing: {
     label: "Performing",
-    dot: "bg-emerald-500",
-    text: "text-emerald-700",
+    dot: "bg-success",
+    text: "text-success",
   },
   healthy: {
     label: "Healthy",
-    dot: "bg-sky-500",
-    text: "text-sky-700",
+    dot: "bg-primary",
+    text: "text-primary",
   },
   underperforming: {
     label: "Underperforming",
-    dot: "bg-amber-500",
-    text: "text-amber-700",
+    dot: "bg-warning",
+    text: "text-warning",
   },
   broken: {
     label: "Broken",
-    dot: "bg-rose-500",
-    text: "text-rose-700",
+    dot: "bg-destructive",
+    text: "text-destructive",
   },
 };
 
 function formatCompactCurrency(n: number): string {
   if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
   if (n >= 1_000) return `$${(n / 1_000).toFixed(0)}K`;
-  return n > 0 ? `$${n}` : "—";
+  return n > 0 ? `$${n}` : "-";
 }
 
 export function WorkflowCard({ workflow }: { workflow: Workflow }) {
@@ -63,22 +63,22 @@ export function WorkflowCard({ workflow }: { workflow: Workflow }) {
 
   return (
     <>
-      <Card className="p-5 shadow-sm border-border/70 hover:shadow-md hover:border-border transition-all flex flex-col gap-4">
+      <Card className="p-5 bg-card border-border/50 hover:border-border transition-all flex flex-col gap-4">
         {/* Header: status + delta pill */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2 min-w-0">
             <span className={cn("h-2 w-2 rounded-full shrink-0", status.dot)} />
-            <span className={cn("text-[11px] font-semibold", status.text)}>
+            <span className={cn("text-[11px] font-medium", status.text)}>
               {status.label}
             </span>
           </div>
           {workflow.status !== "broken" && workflow.weeklyChange !== 0 && (
             <span
               className={cn(
-                "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full font-mono text-[11px] font-semibold tabular-nums shrink-0",
+                "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md font-mono text-[11px] font-medium tabular-nums shrink-0",
                 isUp
-                  ? "bg-emerald-50 text-emerald-700"
-                  : "bg-rose-50 text-rose-700"
+                  ? "bg-success/10 text-success"
+                  : "bg-destructive/10 text-destructive"
               )}
             >
               {isUp ? (
@@ -93,27 +93,27 @@ export function WorkflowCard({ workflow }: { workflow: Workflow }) {
 
         {/* Title + 1-line description */}
         <div>
-          <h3 className="text-[15px] font-semibold leading-tight text-foreground">
+          <h3 className="text-sm font-semibold leading-tight text-foreground">
             {workflow.name}
           </h3>
-          <p className="text-xs italic text-muted-foreground mt-1 line-clamp-1">
+          <p className="text-xs text-muted-foreground/70 mt-1 line-clamp-1">
             {workflow.description}
           </p>
         </div>
 
-        {/* Flow chip — the integration story */}
-        <div className="flex items-center gap-2 rounded-lg border border-border/50 bg-muted/30 px-3 py-2 overflow-x-auto">
+        {/* Flow chip */}
+        <div className="flex items-center gap-2 rounded-lg border border-border/30 bg-muted/20 px-3 py-2 overflow-x-auto">
           {workflow.tools.map((tool, idx) => (
             <Fragment key={tool}>
               <div className="flex items-center gap-1.5 shrink-0">
-                <BrandIcon name={tool} size={22} />
-                <span className="text-[12px] font-medium text-foreground whitespace-nowrap">
+                <BrandIcon name={tool} size={20} />
+                <span className="text-[11px] font-medium text-muted-foreground whitespace-nowrap">
                   {tool}
                 </span>
               </div>
               {idx < workflow.tools.length - 1 && (
                 <ArrowRight
-                  className="h-3 w-3 text-muted-foreground/60 shrink-0"
+                  className="h-3 w-3 text-muted-foreground/40 shrink-0"
                   strokeWidth={2}
                 />
               )}
@@ -121,33 +121,33 @@ export function WorkflowCard({ workflow }: { workflow: Workflow }) {
           ))}
         </div>
 
-        {/* Hero metrics: time saved + money */}
+        {/* Hero metrics */}
         <div className="grid grid-cols-2 gap-3">
           <HeroMetric
-            icon={<Clock className="h-4.5 w-4.5" strokeWidth={1.75} />}
-            iconClass="bg-emerald-100 text-emerald-600"
+            icon={<Clock className="h-4 w-4" strokeWidth={1.75} />}
+            iconClass="bg-success/10 text-success"
             value={formatHours(hours)}
             label="saved this month"
           />
           <HeroMetric
-            icon={<DollarSign className="h-4.5 w-4.5" strokeWidth={1.75} />}
-            iconClass="bg-violet-100 text-violet-600"
+            icon={<DollarSign className="h-4 w-4" strokeWidth={1.75} />}
+            iconClass="bg-primary/10 text-primary"
             value={formatCompactCurrency(workflow.metrics.revenueAttributed)}
             label="pipeline driven"
           />
         </div>
 
         {/* Narrative line */}
-        <p className="text-xs text-muted-foreground leading-snug">
+        <p className="text-xs text-muted-foreground/70 leading-snug">
           {narrative}
         </p>
 
         {/* Footer */}
-        <div className="flex items-center pt-1 border-t border-border/60 -mx-5 -mb-5 px-5 py-3 mt-auto">
+        <div className="flex items-center pt-3 border-t border-border/30 mt-auto">
           <Button
             size="sm"
             variant="ghost"
-            className="h-8 px-2 text-xs text-muted-foreground hover:text-foreground"
+            className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
           >
             {workflow.status === "broken" ? (
               <>
@@ -163,10 +163,10 @@ export function WorkflowCard({ workflow }: { workflow: Workflow }) {
           </Button>
           <Button
             size="sm"
-            className="h-8 px-3 text-xs gap-1 ml-auto"
+            className="h-7 px-3 text-xs gap-1 ml-auto bg-primary/10 text-primary hover:bg-primary/20 border-0"
             onClick={() => setOpen(true)}
           >
-            Open details
+            Details
             <ArrowRight className="h-3 w-3" strokeWidth={2} />
           </Button>
         </div>
@@ -193,20 +193,20 @@ function HeroMetric({
   label: string;
 }) {
   return (
-    <div className="rounded-lg border border-border/40 bg-card p-3 flex items-center gap-3">
+    <div className="rounded-lg border border-border/30 bg-muted/20 p-3 flex items-center gap-3">
       <span
         className={cn(
-          "h-10 w-10 rounded-xl flex items-center justify-center shrink-0",
+          "h-9 w-9 rounded-lg flex items-center justify-center shrink-0",
           iconClass
         )}
       >
         {icon}
       </span>
       <div className="min-w-0">
-        <div className="font-mono text-lg font-bold tabular-nums text-foreground leading-none">
+        <div className="font-mono text-base font-semibold tabular-nums text-foreground leading-none">
           {value}
         </div>
-        <div className="text-[11px] text-muted-foreground mt-1 leading-tight">
+        <div className="text-[10px] text-muted-foreground/60 mt-1 leading-tight">
           {label}
         </div>
       </div>
