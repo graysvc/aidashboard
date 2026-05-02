@@ -1,84 +1,91 @@
 import { dashboardData } from "@/lib/mock-data";
-import { ArrowUpRight, TrendingUp, TrendingDown, AlertCircle, Clock, CheckCircle } from "lucide-react";
+import { TrendingUp, TrendingDown, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export default function OverviewPage() {
-  const { kpis, insights } = dashboardData;
-  
-  const heroKpi = kpis[0];
-  const pendingInsights = insights.filter((i) => i.state === "pending").slice(0, 3);
-  const secondaryKpis = kpis.slice(1, 4);
+  const { kpis, insights, leads } = dashboardData;
+  const pendingInsights = insights.filter((i) => i.state === "pending").slice(0, 2);
+  const hotLeads = leads.filter((l) => l.status === "hot").slice(0, 3);
 
   return (
-    <div className="p-6 max-w-3xl mx-auto space-y-8">
-      {/* Hero metric */}
-      <section className="text-center py-8">
-        <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">
-          {heroKpi.label}
-        </p>
-        <p className="text-5xl font-semibold text-foreground tracking-tight">
-          {heroKpi.value}
-        </p>
-        <div className="flex items-center justify-center gap-1 mt-2">
-          {heroKpi.deltaDirection === "up" ? (
-            <TrendingUp className="h-4 w-4 text-emerald-600" />
-          ) : (
-            <TrendingDown className="h-4 w-4 text-red-500" />
-          )}
-          <span className={heroKpi.deltaDirection === "up" ? "text-sm text-emerald-600" : "text-sm text-red-500"}>
-            {heroKpi.delta.value}%
-          </span>
-          <span className="text-sm text-muted-foreground ml-1">{heroKpi.delta.period}</span>
-        </div>
+    <div className="p-6 space-y-8 max-w-5xl">
+      {/* KPIs */}
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {kpis.map((kpi) => (
+          <div key={kpi.id} className="p-4 rounded-lg border border-border bg-background">
+            <p className="text-xs text-muted-foreground mb-1">{kpi.label}</p>
+            <p className="text-2xl font-semibold">{kpi.value}</p>
+            <div className="flex items-center gap-1 mt-1">
+              {kpi.delta.value >= 0 ? (
+                <TrendingUp className="h-3 w-3 text-emerald-600" />
+              ) : (
+                <TrendingDown className="h-3 w-3 text-red-500" />
+              )}
+              <span className={kpi.delta.value >= 0 ? "text-xs text-emerald-600" : "text-xs text-red-500"}>
+                {Math.abs(kpi.delta.value)}%
+              </span>
+            </div>
+          </div>
+        ))}
       </section>
 
-      {/* Action cards */}
-      {pendingInsights.length > 0 && (
-        <section className="space-y-2">
-          <p className="text-xs text-muted-foreground uppercase tracking-wide">
-            Needs attention
-          </p>
-          <div className="space-y-2">
-            {pendingInsights.map((insight) => (
-              <Link
-                key={insight.id}
-                href="/insights"
-                className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors group"
-              >
+      {/* Hot Leads */}
+      {hotLeads.length > 0 && (
+        <section>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-medium">Hot Leads</h2>
+            <Link href="/team" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1">
+              View all <ArrowRight className="h-3 w-3" />
+            </Link>
+          </div>
+          <div className="border border-border rounded-lg divide-y divide-border">
+            {hotLeads.map((lead) => (
+              <div key={lead.id} className="p-3 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className={
-                    insight.severity === "critical" 
-                      ? "h-8 w-8 rounded-full bg-red-50 flex items-center justify-center" 
-                      : insight.severity === "warning"
-                      ? "h-8 w-8 rounded-full bg-amber-50 flex items-center justify-center"
-                      : "h-8 w-8 rounded-full bg-blue-50 flex items-center justify-center"
-                  }>
-                    {insight.severity === "critical" ? (
-                      <AlertCircle className="h-4 w-4 text-red-600" />
-                    ) : insight.severity === "warning" ? (
-                      <Clock className="h-4 w-4 text-amber-600" />
-                    ) : (
-                      <CheckCircle className="h-4 w-4 text-blue-600" />
-                    )}
+                  <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
+                    {lead.initials}
                   </div>
-                  <span className="text-sm text-foreground">{insight.title}</span>
+                  <div>
+                    <p className="text-sm font-medium">{lead.name}</p>
+                    <p className="text-xs text-muted-foreground">{lead.property}</p>
+                  </div>
                 </div>
-                <ArrowUpRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-              </Link>
+                <div className="text-right">
+                  <p className="text-xs text-muted-foreground">{lead.stage}</p>
+                  <p className="text-xs text-muted-foreground">{lead.assignedAgentName}</p>
+                </div>
+              </div>
             ))}
           </div>
         </section>
       )}
 
-      {/* Mini KPIs */}
-      <section className="grid grid-cols-3 gap-4 pt-4 border-t border-border">
-        {secondaryKpis.map((kpi) => (
-          <div key={kpi.id} className="text-center">
-            <p className="text-xs text-muted-foreground mb-1">{kpi.label}</p>
-            <p className="text-xl font-medium text-foreground">{kpi.value}</p>
+      {/* Insights */}
+      {pendingInsights.length > 0 && (
+        <section>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-medium">Needs Attention</h2>
+            <Link href="/insights" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1">
+              View all <ArrowRight className="h-3 w-3" />
+            </Link>
           </div>
-        ))}
-      </section>
+          <div className="space-y-2">
+            {pendingInsights.map((insight) => (
+              <div
+                key={insight.id}
+                className={`p-3 rounded-lg border ${
+                  insight.severity === "critical" 
+                    ? "border-red-200 bg-red-50" 
+                    : "border-amber-200 bg-amber-50"
+                }`}
+              >
+                <p className="text-sm font-medium">{insight.title}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{insight.impact}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
