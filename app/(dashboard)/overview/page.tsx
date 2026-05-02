@@ -1,97 +1,83 @@
 import { dashboardData } from "@/lib/mock-data";
-import { KpiCard } from "@/components/dashboard/kpi-card";
-import { InsightCard } from "@/components/dashboard/insight-card";
-import { AgentLeaderboard } from "@/components/dashboard/agent-leaderboard";
-import { RecentLeads } from "@/components/dashboard/recent-leads";
-import { PeriodSelector } from "@/components/dashboard/period-selector";
-import { PipelineTrendChart } from "@/components/dashboard/pipeline-trend-chart";
-import { LeadsBySourceChart } from "@/components/dashboard/leads-by-source-chart";
-import { PipelineStageChart } from "@/components/dashboard/pipeline-stage-chart";
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight, TrendingUp, TrendingDown, AlertCircle, Clock, CheckCircle } from "lucide-react";
+import Link from "next/link";
 
 export default function OverviewPage() {
-  const {
-    user,
-    period,
-    kpis,
-    insights,
-    agents,
-    leads,
-    pipelineTrend,
-    leadsBySource,
-    pipelineByStage,
-  } = dashboardData;
-  const firstName = user.name.split(" ")[0];
-  const topInsights = insights.filter((i) => i.state === "pending").slice(0, 3);
+  const { kpis, insights } = dashboardData;
+  
+  const heroKpi = kpis[0];
+  const pendingInsights = insights.filter((i) => i.state === "pending").slice(0, 3);
+  const secondaryKpis = kpis.slice(1, 4);
 
   return (
-    <div className="px-4 py-6 lg:px-6 lg:py-8 max-w-[1600px] mx-auto space-y-6">
-      {/* Page header */}
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl lg:text-3xl font-semibold text-foreground tracking-tight">
-            Welcome back, {firstName}
-          </h1>
-          <p className="text-sm text-muted-foreground/70 mt-1">
-            Here&apos;s what&apos;s happening with {user.teamName} today.
+    <div className="p-6 max-w-3xl mx-auto space-y-8">
+      {/* Hero metric */}
+      <section className="text-center py-8">
+        <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">
+          {heroKpi.label}
+        </p>
+        <p className="text-5xl font-semibold text-foreground tracking-tight">
+          {heroKpi.value}
+        </p>
+        <div className="flex items-center justify-center gap-1 mt-2">
+          {heroKpi.deltaDirection === "up" ? (
+            <TrendingUp className="h-4 w-4 text-emerald-600" />
+          ) : (
+            <TrendingDown className="h-4 w-4 text-red-500" />
+          )}
+          <span className={heroKpi.deltaDirection === "up" ? "text-sm text-emerald-600" : "text-sm text-red-500"}>
+            {heroKpi.delta}
+          </span>
+          <span className="text-sm text-muted-foreground ml-1">vs last period</span>
+        </div>
+      </section>
+
+      {/* Action cards */}
+      {pendingInsights.length > 0 && (
+        <section className="space-y-2">
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">
+            Needs attention
           </p>
-        </div>
-        <PeriodSelector label={period.label} />
-      </header>
-
-      {/* KPI band */}
-      <section aria-label="Key metrics">
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          {kpis.map((kpi) => (
-            <KpiCard key={kpi.id} kpi={kpi} />
-          ))}
-        </div>
-      </section>
-
-      {/* Big chart: pipeline trend */}
-      <section aria-label="Pipeline trend">
-        <PipelineTrendChart data={pipelineTrend} />
-      </section>
-
-      {/* Two-column charts: source mix + stage mix */}
-      <section
-        aria-label="Pipeline breakdown"
-        className="grid grid-cols-1 xl:grid-cols-2 gap-4"
-      >
-        <LeadsBySourceChart data={leadsBySource} />
-        <PipelineStageChart data={pipelineByStage} />
-      </section>
-
-      {/* Insights */}
-      <section aria-label="Insights" className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-base font-semibold text-foreground">
-              Needs attention
-            </h2>
-            <p className="text-xs text-muted-foreground/70 mt-0.5">
-              {topInsights.length} active recommendations
-            </p>
+          <div className="space-y-2">
+            {pendingInsights.map((insight) => (
+              <Link
+                key={insight.id}
+                href="/insights"
+                className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className={
+                    insight.severity === "critical" 
+                      ? "h-8 w-8 rounded-full bg-red-50 flex items-center justify-center" 
+                      : insight.severity === "warning"
+                      ? "h-8 w-8 rounded-full bg-amber-50 flex items-center justify-center"
+                      : "h-8 w-8 rounded-full bg-blue-50 flex items-center justify-center"
+                  }>
+                    {insight.severity === "critical" ? (
+                      <AlertCircle className="h-4 w-4 text-red-600" />
+                    ) : insight.severity === "warning" ? (
+                      <Clock className="h-4 w-4 text-amber-600" />
+                    ) : (
+                      <CheckCircle className="h-4 w-4 text-blue-600" />
+                    )}
+                  </div>
+                  <span className="text-sm text-foreground">{insight.title}</span>
+                </div>
+                <ArrowUpRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+              </Link>
+            ))}
           </div>
-          <a
-            href="/insights"
-            className="text-xs font-medium text-muted-foreground hover:text-foreground inline-flex items-center gap-1 transition-colors"
-          >
-            View all
-            <ArrowRight className="h-3 w-3" strokeWidth={2} />
-          </a>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {topInsights.map((insight) => (
-            <InsightCard key={insight.id} insight={insight} />
-          ))}
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* Two-column: leaderboard + recent leads */}
-      <section className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-        <AgentLeaderboard agents={agents} />
-        <RecentLeads leads={leads} />
+      {/* Mini KPIs */}
+      <section className="grid grid-cols-3 gap-4 pt-4 border-t border-border">
+        {secondaryKpis.map((kpi) => (
+          <div key={kpi.id} className="text-center">
+            <p className="text-xs text-muted-foreground mb-1">{kpi.label}</p>
+            <p className="text-xl font-medium text-foreground">{kpi.value}</p>
+          </div>
+        ))}
       </section>
     </div>
   );

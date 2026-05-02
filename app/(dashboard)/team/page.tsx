@@ -1,133 +1,101 @@
 import { dashboardData } from "@/lib/mock-data";
-import { KpiCard } from "@/components/dashboard/kpi-card";
-import { TeamProductionChart } from "@/components/dashboard/team-production-chart";
-import { AgentComparisonChart } from "@/components/dashboard/agent-comparison-chart";
-import { AgentCard } from "@/components/dashboard/agent-card";
-import { PeriodSelector } from "@/components/dashboard/period-selector";
-import type { KPI } from "@/lib/types";
+import { AlertCircle } from "lucide-react";
 
-function formatCompactCurrency(n: number) {
+function formatCurrency(n: number) {
   if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
   if (n >= 1_000) return `$${(n / 1_000).toFixed(0)}K`;
   return `$${n}`;
 }
 
 export default function TeamPage() {
-  const { agents, period, teamProductionTrend } = dashboardData;
+  const { agents } = dashboardData;
 
-  const teamVolume = agents.reduce(
-    (acc, a) => acc + a.metrics.volumeClosedYTD,
-    0
+  const teamVolume = agents.reduce((a, ag) => a + ag.metrics.volumeClosedYTD, 0);
+  const needsCoaching = agents.filter((a) => a.status === "needs-coaching");
+  const sorted = [...agents].sort(
+    (a, b) => b.metrics.volumeClosedYTD - a.metrics.volumeClosedYTD
   );
-  const teamDeals = agents.reduce(
-    (acc, a) => acc + a.metrics.dealsClosedYTD,
-    0
-  );
-  const teamPipeline = agents.reduce(
-    (acc, a) => acc + a.metrics.pipelineValue,
-    0
-  );
-  const avgConversion =
-    agents.reduce((acc, a) => acc + a.metrics.conversionRate, 0) /
-    Math.max(agents.length, 1);
-
-  const kpis: KPI[] = [
-    {
-      id: "team-volume",
-      label: "Team Volume YTD",
-      value: formatCompactCurrency(teamVolume),
-      hint: `${agents.length} agents`,
-      iconKey: "revenue",
-      tone: "primary",
-      delta: { value: 18.4, period: "vs last quarter" },
-    },
-    {
-      id: "team-deals",
-      label: "Deals Closed YTD",
-      value: teamDeals.toString(),
-      hint: "across the team",
-      iconKey: "deals",
-      tone: "success",
-      delta: { value: 12.0, period: "vs last quarter" },
-    },
-    {
-      id: "team-pipeline",
-      label: "Active Pipeline",
-      value: formatCompactCurrency(teamPipeline),
-      hint: `${agents.reduce((a, ag) => a + ag.metrics.activeDeals, 0)} deals`,
-      iconKey: "appointment",
-      tone: "warning",
-      delta: { value: 6.7, period: "vs last week" },
-    },
-    {
-      id: "team-conversion",
-      label: "Avg Conversion",
-      value: `${avgConversion.toFixed(1)}%`,
-      hint: "lead to appointment",
-      iconKey: "conversion",
-      tone: "danger",
-      delta: { value: 1.4, period: "vs last month" },
-    },
-  ];
-
-  const sortedAgents = [...agents].sort((a, b) => {
-    if (a.status === "needs-coaching" && b.status !== "needs-coaching")
-      return -1;
-    if (b.status === "needs-coaching" && a.status !== "needs-coaching")
-      return 1;
-    return b.metrics.volumeClosedYTD - a.metrics.volumeClosedYTD;
-  });
 
   return (
-    <div className="px-4 py-6 lg:px-6 lg:py-8 max-w-[1600px] mx-auto space-y-6">
-      {/* Header */}
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl lg:text-3xl font-semibold text-foreground tracking-tight">
-            Team performance
-          </h1>
-          <p className="text-sm text-muted-foreground/70 mt-1">
-            Per-agent metrics, coaching opportunities, and pipeline health.
+    <div className="p-6 max-w-3xl mx-auto space-y-8">
+      {/* Hero stat */}
+      <section className="text-center py-8">
+        <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">
+          Team volume YTD
+        </p>
+        <p className="text-5xl font-semibold text-foreground tracking-tight">
+          {formatCurrency(teamVolume)}
+        </p>
+        <p className="text-sm text-muted-foreground mt-2">
+          {agents.length} agents
+        </p>
+      </section>
+
+      {/* Needs attention */}
+      {needsCoaching.length > 0 && (
+        <section className="space-y-2">
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">
+            Needs coaching
+          </p>
+          <div className="space-y-2">
+            {needsCoaching.map((agent) => (
+              <div
+                key={agent.id}
+                className="flex items-center gap-3 p-4 border border-amber-200 bg-amber-50 rounded-lg"
+              >
+                <AlertCircle className="h-4 w-4 text-amber-600 shrink-0" />
+                <span className="text-sm text-foreground flex-1">{agent.name}</span>
+                <span className="text-xs text-muted-foreground">
+                  {agent.metrics.conversionRate.toFixed(0)}% conversion
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* All agents */}
+      <section className="space-y-2">
+        <p className="text-xs text-muted-foreground uppercase tracking-wide">
+          All agents
+        </p>
+        <div className="space-y-2">
+          {sorted.map((agent, i) => (
+            <div
+              key={agent.id}
+              className="flex items-center gap-3 p-4 border border-border rounded-lg"
+            >
+              <span className="text-xs text-muted-foreground w-5">{i + 1}</span>
+              <span className="text-sm text-foreground flex-1">{agent.name}</span>
+              <span className="text-sm font-medium text-foreground tabular-nums">
+                {formatCurrency(agent.metrics.volumeClosedYTD)}
+              </span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Summary */}
+      <section className="grid grid-cols-3 gap-4 pt-4 border-t border-border">
+        <div className="text-center">
+          <p className="text-xs text-muted-foreground mb-1">Deals closed</p>
+          <p className="text-xl font-medium text-foreground">
+            {agents.reduce((a, ag) => a + ag.metrics.dealsClosedYTD, 0)}
           </p>
         </div>
-        <PeriodSelector label={period.label} />
-      </header>
-
-      {/* KPI band */}
-      <section aria-label="Team metrics">
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          {kpis.map((kpi) => (
-            <KpiCard key={kpi.id} kpi={kpi} />
-          ))}
+        <div className="text-center">
+          <p className="text-xs text-muted-foreground mb-1">Pipeline</p>
+          <p className="text-xl font-medium text-foreground">
+            {formatCurrency(agents.reduce((a, ag) => a + ag.metrics.pipelineValue, 0))}
+          </p>
         </div>
-      </section>
-
-      {/* Charts row */}
-      <section
-        aria-label="Team trends"
-        className="grid grid-cols-1 xl:grid-cols-2 gap-4"
-      >
-        <TeamProductionChart data={teamProductionTrend} />
-        <AgentComparisonChart agents={agents} />
-      </section>
-
-      {/* Agent grid */}
-      <section aria-label="Agents">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-base font-semibold text-foreground">All agents</h2>
-            <p className="text-xs text-muted-foreground/70 mt-0.5">
-              Coaching cases first, then by volume
-            </p>
-          </div>
-          <span className="text-xs font-medium text-muted-foreground/60 font-mono tabular-nums">
-            {agents.length} agents
-          </span>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {sortedAgents.map((agent) => (
-            <AgentCard key={agent.id} agent={agent} />
-          ))}
+        <div className="text-center">
+          <p className="text-xs text-muted-foreground mb-1">Avg conversion</p>
+          <p className="text-xl font-medium text-foreground">
+            {(
+              agents.reduce((a, ag) => a + ag.metrics.conversionRate, 0) / agents.length
+            ).toFixed(0)}%
+          </p>
         </div>
       </section>
     </div>

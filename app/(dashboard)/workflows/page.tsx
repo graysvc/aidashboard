@@ -1,200 +1,119 @@
 import { dashboardData } from "@/lib/mock-data";
-import { KpiCard } from "@/components/dashboard/kpi-card";
-import { CompletionRateChart } from "@/components/dashboard/completion-rate-chart";
-import { WorkflowStatusMix } from "@/components/dashboard/workflow-status-mix";
-import { WorkflowCard } from "@/components/dashboard/workflow-card";
-import { PeriodSelector } from "@/components/dashboard/period-selector";
-import {
-  formatHours,
-  totalTimeSavedHours,
-} from "@/lib/workflows/manual-time";
-import type { KPI, Workflow, WorkflowCategory } from "@/lib/types";
-
-function formatCompactCurrency(n: number) {
-  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
-  if (n >= 1_000) return `$${(n / 1_000).toFixed(0)}K`;
-  return `$${n}`;
-}
-
-const CATEGORY_ORDER: WorkflowCategory[] = [
-  "Follow-up",
-  "Lead Nurture",
-  "Listing",
-  "Re-engagement",
-  "Sphere",
-];
-
-const CATEGORY_DESC: Record<WorkflowCategory, string> = {
-  "Follow-up": "Speed-to-lead and immediate response automations.",
-  "Lead Nurture": "Long-tail education and saved-search drip.",
-  Listing: "Marketing automations triggered by new MLS activity.",
-  "Re-engagement": "Bringing dormant leads and stalled deals back to life.",
-  Sphere: "Past-client retention and referral-generating touchpoints.",
-};
+import { PlayCircle, PauseCircle, AlertTriangle } from "lucide-react";
 
 export default function WorkflowsPage() {
-  const { workflows, period, completionRateTrend } = dashboardData;
+  const { workflows } = dashboardData;
 
-  const totalTriggered = workflows.reduce(
-    (acc, w) => acc + w.metrics.triggered,
-    0
-  );
-  const totalCompleted = workflows.reduce(
-    (acc, w) => acc + w.metrics.completed,
-    0
-  );
-  const avgCompletion =
-    totalTriggered > 0 ? (totalCompleted / totalTriggered) * 100 : 0;
-  const totalRevenue = workflows.reduce(
-    (acc, w) => acc + w.metrics.revenueAttributed,
-    0
-  );
-  const activeWorkflows = workflows.filter((w) => w.metrics.triggered > 0);
-  const avgRoi =
-    activeWorkflows.length > 0
-      ? activeWorkflows.reduce((acc, w) => acc + w.metrics.roi, 0) /
-        activeWorkflows.length
-      : 0;
-
-  const kpis: KPI[] = [
-    {
-      id: "wf-triggered",
-      label: "Total Triggered",
-      value: totalTriggered.toLocaleString(),
-      hint: `${workflows.length} workflows`,
-      iconKey: "workflows",
-      tone: "primary",
-      delta: { value: 6.2, period: "vs last week" },
-    },
-    {
-      id: "wf-completion",
-      label: "Avg Completion",
-      value: `${avgCompletion.toFixed(1)}%`,
-      hint: `${totalCompleted} of ${totalTriggered}`,
-      iconKey: "completion",
-      tone: "success",
-      delta: { value: -8.4, period: "vs last week" },
-    },
-    {
-      id: "wf-revenue",
-      label: "Attributed Revenue",
-      value: formatCompactCurrency(totalRevenue),
-      hint: "30-day rolling",
-      iconKey: "revenue",
-      tone: "warning",
-      delta: { value: 12.1, period: "vs last month" },
-    },
-    {
-      id: "wf-roi",
-      label: "Avg ROI",
-      value: `${avgRoi.toFixed(1)}x`,
-      hint: `${activeWorkflows.length} active workflows`,
-      iconKey: "roi",
-      tone: "danger",
-      delta: { value: 3.8, period: "vs last month" },
-    },
-  ];
-
-  const grouped = CATEGORY_ORDER.map((cat) => {
-    const items = workflows
-      .filter((w) => w.category === cat)
-      .sort((a, b) => {
-        if (a.status === "broken" && b.status !== "broken") return -1;
-        if (b.status === "broken" && a.status !== "broken") return 1;
-        return b.metrics.roi - a.metrics.roi;
-      });
-    return { category: cat, items };
-  }).filter((g) => g.items.length > 0);
+  const active = workflows.filter((w) => w.status === "active");
+  const paused = workflows.filter((w) => w.status === "paused");
+  const broken = workflows.filter((w) => w.status === "broken");
 
   return (
-    <div className="px-4 py-6 lg:px-6 lg:py-8 max-w-[1600px] mx-auto space-y-6">
-      {/* Header */}
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl lg:text-3xl font-semibold text-foreground tracking-tight">
-            Workflows
-          </h1>
-          <p className="text-sm text-muted-foreground/70 mt-1">
-            ROI and efficiency of every automation across your stack.
+    <div className="p-6 max-w-3xl mx-auto space-y-8">
+      {/* Hero stat */}
+      <section className="text-center py-8">
+        <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">
+          Active workflows
+        </p>
+        <p className="text-5xl font-semibold text-foreground tracking-tight">
+          {active.length}
+        </p>
+        <p className="text-sm text-muted-foreground mt-2">
+          of {workflows.length} total
+        </p>
+      </section>
+
+      {/* Broken - needs attention */}
+      {broken.length > 0 && (
+        <section className="space-y-2">
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">
+            Needs attention
+          </p>
+          <div className="space-y-2">
+            {broken.map((w) => (
+              <div
+                key={w.id}
+                className="flex items-center gap-3 p-4 border border-red-200 bg-red-50 rounded-lg"
+              >
+                <AlertTriangle className="h-4 w-4 text-red-600 shrink-0" />
+                <span className="text-sm text-foreground">{w.name}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Active */}
+      {active.length > 0 && (
+        <section className="space-y-2">
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">
+            Running
+          </p>
+          <div className="space-y-2">
+            {active.map((w) => (
+              <div
+                key={w.id}
+                className="flex items-center gap-3 p-4 border border-border rounded-lg"
+              >
+                <PlayCircle className="h-4 w-4 text-emerald-600 shrink-0" />
+                <span className="text-sm text-foreground flex-1">{w.name}</span>
+                <span className="text-xs text-muted-foreground tabular-nums">
+                  {w.metrics.triggered} runs
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Paused */}
+      {paused.length > 0 && (
+        <section className="space-y-2">
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">
+            Paused
+          </p>
+          <div className="space-y-2">
+            {paused.map((w) => (
+              <div
+                key={w.id}
+                className="flex items-center gap-3 p-4 border border-border rounded-lg opacity-60"
+              >
+                <PauseCircle className="h-4 w-4 text-muted-foreground shrink-0" />
+                <span className="text-sm text-foreground">{w.name}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Summary footer */}
+      <section className="grid grid-cols-3 gap-4 pt-4 border-t border-border">
+        <div className="text-center">
+          <p className="text-xs text-muted-foreground mb-1">Total runs</p>
+          <p className="text-xl font-medium text-foreground">
+            {workflows.reduce((a, w) => a + w.metrics.triggered, 0)}
           </p>
         </div>
-        <PeriodSelector label={period.label} />
-      </header>
-
-      {/* KPI band */}
-      <section aria-label="Workflow metrics">
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          {kpis.map((kpi) => (
-            <KpiCard key={kpi.id} kpi={kpi} />
-          ))}
+        <div className="text-center">
+          <p className="text-xs text-muted-foreground mb-1">Completion</p>
+          <p className="text-xl font-medium text-foreground">
+            {Math.round(
+              (workflows.reduce((a, w) => a + w.metrics.completed, 0) /
+                Math.max(workflows.reduce((a, w) => a + w.metrics.triggered, 0), 1)) *
+                100
+            )}%
+          </p>
+        </div>
+        <div className="text-center">
+          <p className="text-xs text-muted-foreground mb-1">Avg ROI</p>
+          <p className="text-xl font-medium text-foreground">
+            {(
+              workflows.filter((w) => w.metrics.triggered > 0).reduce((a, w) => a + w.metrics.roi, 0) /
+              Math.max(workflows.filter((w) => w.metrics.triggered > 0).length, 1)
+            ).toFixed(1)}x
+          </p>
         </div>
       </section>
-
-      {/* Charts row */}
-      <section
-        aria-label="Workflow trends"
-        className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-4"
-      >
-        <CompletionRateChart data={completionRateTrend} />
-        <WorkflowStatusMix workflows={workflows} />
-      </section>
-
-      {/* Grouped by category */}
-      <section aria-label="Workflows by category" className="space-y-8">
-        {grouped.map(({ category, items }) => (
-          <CategorySection key={category} category={category} items={items} />
-        ))}
-      </section>
-    </div>
-  );
-}
-
-function CategorySection({
-  category,
-  items,
-}: {
-  category: WorkflowCategory;
-  items: Workflow[];
-}) {
-  const revenue = items.reduce((a, w) => a + w.metrics.revenueAttributed, 0);
-  const hoursSaved = totalTimeSavedHours(items);
-  const broken = items.filter((w) => w.status === "broken").length;
-
-  const valueParts: string[] = [];
-  if (hoursSaved > 0) valueParts.push(`saved ${formatHours(hoursSaved)}`);
-  if (revenue > 0) valueParts.push(`drove ${formatCompactCurrency(revenue)} pipeline`);
-  const narrative =
-    valueParts.length > 0
-      ? valueParts.join(" · ") + " this month"
-      : "no value generated this month";
-
-  return (
-    <div>
-      <div className="mb-4 pb-3 border-b border-border/30">
-        <div className="flex items-center gap-2.5 flex-wrap">
-          <h2 className="text-base font-semibold text-foreground">{category}</h2>
-          <span className="text-xs text-muted-foreground/50">·</span>
-          <span className="text-sm text-muted-foreground/70">
-            {items.length} {items.length === 1 ? "workflow" : "workflows"}
-          </span>
-          {broken > 0 && (
-            <span className="inline-flex items-center gap-1 rounded-md bg-destructive/10 px-2 py-0.5 text-[10px] font-medium text-destructive">
-              <span className="h-1 w-1 rounded-full bg-destructive" />
-              {broken} broken
-            </span>
-          )}
-        </div>
-        <p className="text-sm text-muted-foreground/60 mt-1">
-          {CATEGORY_DESC[category]}{" "}
-          <span className="text-muted-foreground">{narrative}</span>
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-        {items.map((w) => (
-          <WorkflowCard key={w.id} workflow={w} />
-        ))}
-      </div>
     </div>
   );
 }
