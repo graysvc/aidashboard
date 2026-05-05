@@ -214,7 +214,7 @@ export default function MarketingPage() {
               Insights acted on
             </h2>
             <p className="text-xs text-muted-foreground mt-1">
-              Adjustments you've made — and what they moved.
+              Adjustments you&apos;ve made — and what they moved.
             </p>
           </div>
           <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
