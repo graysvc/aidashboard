@@ -1,241 +1,423 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, AlertTriangle } from "lucide-react";
 import { dashboardData } from "@/lib/mock-data";
-import type { Insight } from "@/lib/types";
-import { ActNowCard } from "@/components/dashboard/insights/act-now-card";
-import { InsightDetailSheet } from "@/components/dashboard/insights/insight-detail-sheet";
-import { SnoozeToast } from "@/components/dashboard/insights/snooze-toast";
-import { InsightUniformCard } from "@/components/dashboard/insight-uniform-card";
-import { TeamScorecardsTable } from "@/components/dashboard/team-scorecards-table";
-import { WinCard } from "@/components/dashboard/win-card";
-import { KpiChip } from "@/components/dashboard/kpi-chip";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { PeriodSelector } from "@/components/dashboard/period-selector";
+import { StatusTile } from "@/components/dashboard/status-tile";
+import {
+  ActionCard,
+  type ActionCardData,
+} from "@/components/dashboard/action-card";
+import { cn } from "@/lib/utils";
 
-const TOP_INSIGHTS_LIMIT = 4;
-
-export default function OverviewPage() {
-  const { user, period, kpis, insights, agents } = dashboardData;
+export default function HomePage() {
+  const { user, period, agents } = dashboardData;
   const firstName = user.name.split(" ")[0];
 
-  // ───── Local snooze state ─────
-  const [snoozedIds, setSnoozedIds] = useState<Set<string>>(new Set());
-  const [detail, setDetail] = useState<Insight | null>(null);
-  const [toast, setToast] = useState<{
-    message: string;
-    undoId: string | null;
-  } | null>(null);
-
-  // Apply snooze overlay
-  const visiblePending = useMemo(
-    () =>
-      insights
-        .filter((i) => i.state === "pending")
-        .filter((i) => !snoozedIds.has(i.id)),
-    [insights, snoozedIds]
+  // ───── Section 1 — Team status TODAY (3 numbers) ─────
+  const totalPipeline = agents.reduce(
+    (a, x) => a + x.metrics.pipelineValue,
+    0
   );
+  const leadsAtRisk = 7; // mock: leads sin contacto >48h
+  const closedThisMonth = 3;
+  const closedTarget = 5;
 
-  // ───── Section buckets ─────
-  const critical = visiblePending.find((i) => i.type === "critical") ?? null;
-  const wins = visiblePending
-    .filter((i) => i.type === "opportunity")
-    .slice(0, 2);
+  // ───── Section 2 — Pulsor insights (curated; top 5 visible, rest in /insights) ─────
+  const HOME_INSIGHTS_LIMIT = 5;
+  const allInsights: ActionCardData[] = [
+    {
+      id: "act-1",
+      tag: "URGENT",
+      summary: "$850K lead — no response 3 days · María Fernández",
+    },
+    {
+      id: "act-2",
+      tag: "PERFORMANCE",
+      summary: "Pedro García — 5 leads, 0 contacted this week",
+    },
+    {
+      id: "act-3",
+      tag: "WIN",
+      summary: "Ana Torres closed a $1.2M deal · Pacific Heights",
+    },
+    {
+      id: "act-4",
+      tag: "HOT LEAD",
+      summary: "$4M project sale — 3 IDX visits, no agent assigned",
+    },
+    {
+      id: "act-5",
+      tag: "DEADLINE",
+      summary: `Month-end in 4 days — ${closedThisMonth}/${closedTarget} closed · $1.8M in escrow`,
+    },
+    {
+      id: "act-6",
+      tag: "WARNING",
+      summary: "Inversor Bolivia — no follow-up after showing 6d ago",
+    },
+    {
+      id: "act-7",
+      tag: "INSIGHT",
+      summary: "Bolivia leads close 2.5× faster than average",
+    },
+    {
+      id: "act-8",
+      tag: "OPPORTUNITY",
+      summary: "Coral Way penthouse — premium buyer profile, 88% close score",
+    },
+    {
+      id: "act-9",
+      tag: "PATTERN",
+      summary: "Win rate drops 40% when 'Showing' exceeds 14 days",
+    },
+    {
+      id: "act-10",
+      tag: "RECOMMENDATION",
+      summary: "Reassign 3 stalled deals from Pedro to Sarah",
+    },
+    {
+      id: "act-11",
+      tag: "WIN",
+      summary: "Carlos identified Bolivia pattern — 3× conversion",
+    },
+    {
+      id: "act-12",
+      tag: "WARNING",
+      summary: "Tech founder — inspection findings unanswered 4d",
+    },
+  ];
+  const todayActions = allInsights.slice(0, HOME_INSIGHTS_LIMIT);
+  const remainingInsights = allInsights.length - todayActions.length;
 
-  // Top 4 non-critical insights, sorted by createdAt desc (newest first).
-  // Filtering by category lives on /insights, not here.
-  const byCategoryAll = visiblePending
-    .filter((i) => i.type !== "critical")
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
-  const topInsights = byCategoryAll.slice(0, TOP_INSIGHTS_LIMIT);
-  const remainingInsights = byCategoryAll.length - topInsights.length;
+  // ───── Section 2.5 — This week goal (deals committed to close) ─────
+  const weekGoal: ActionCardData[] = [
+    {
+      id: "wg-1",
+      tag: "HOT LEAD",
+      amount: "$4.2M",
+      summary: "Carlos Mendez · Visit Friday · Sarah M.",
+      sortKey: 4_200_000,
+    },
+    {
+      id: "wg-2",
+      tag: "HOT LEAD",
+      amount: "$2.8M",
+      summary: "Familia Rodríguez · Negotiation · James C.",
+      sortKey: 2_800_000,
+    },
+    {
+      id: "wg-3",
+      tag: "WARNING",
+      amount: "$1.5M",
+      summary: "Inversor Bolivia · Decision Wed · Priya S.",
+      sortKey: 1_500_000,
+    },
+    {
+      id: "wg-4",
+      tag: "HOT LEAD",
+      amount: "$980K",
+      summary: "Project Brickell · Tour scheduled · Marcus",
+      sortKey: 980_000,
+    },
+    {
+      id: "wg-5",
+      tag: "HOT LEAD",
+      amount: "$650K",
+      summary: "Pareja NY · First contact · Emma O.",
+      sortKey: 650_000,
+    },
+    {
+      id: "wg-6",
+      tag: "WARNING",
+      amount: "$560K",
+      summary: "Tech founder · Inspection pending · Aisha P.",
+      sortKey: 560_000,
+    },
+    {
+      id: "wg-7",
+      tag: "HOT LEAD",
+      amount: "$420K",
+      summary: "Garcia family · Offer submitted · Tyler B.",
+      sortKey: 420_000,
+    },
+    {
+      id: "wg-8",
+      tag: "HOT LEAD",
+      amount: "$380K",
+      summary: "Olsen LLC · Closing docs sent · Madison L.",
+      sortKey: 380_000,
+    },
+  ];
+  weekGoal.sort((a, b) => (b.sortKey ?? 0) - (a.sortKey ?? 0));
 
-  // ───── Handlers ─────
-  function handleSnooze(id: string) {
-    setSnoozedIds((prev) => new Set(prev).add(id));
-    setToast({ message: "Snoozed for 7 days", undoId: id });
-  }
-  function handleUndoSnooze(id: string) {
-    setSnoozedIds((prev) => {
-      const next = new Set(prev);
-      next.delete(id);
-      return next;
-    });
-    setToast(null);
-  }
-  function handlePrimary(insight: Insight) {
-    setToast({
-      message: `Action queued: ${insight.primaryAction.label}`,
-      undoId: null,
-    });
-  }
+  // ───── Section 3 — Team quick view (5-dot health, 1 line each) ─────
+  const teamRows = agents.slice(0, 6).map((a) => {
+    const dots = Math.max(1, Math.min(5, Math.round(a.aiAdoptionScore / 20)));
+    return {
+      id: a.id,
+      name: a.name,
+      initials: a.initials,
+      avatarUrl: a.avatarUrl,
+      avatarColor: a.avatarColor,
+      dots,
+      pipeline: a.metrics.pipelineValue,
+      note: deriveNote(a),
+    };
+  });
 
   return (
-    <div className="px-4 sm:px-6 py-8 lg:px-8 lg:py-10 max-w-[1200px] mx-auto space-y-8">
-      {/* ═══ 1. Welcome header ═══ */}
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <TooltipProvider delay={150}>
+    <div className="px-4 sm:px-6 py-6 lg:px-8 lg:py-8 max-w-[1200px] mx-auto space-y-6">
+      {/* Header */}
+      <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-foreground tracking-tight">
-            Welcome back, {firstName}.
+          <h1 className="text-2xl lg:text-3xl font-medium text-foreground tracking-tight">
+            Good morning, {firstName}.
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            What Pulsor surfaced this week
+            What needs your attention today.
           </p>
         </div>
         <PeriodSelector label={period.label} />
       </header>
 
-      {/* ═══ 3. CRITICAL section ═══ */}
-      {critical && (
-        <section aria-label="Needs your attention">
-          <SectionHeader title="Needs your attention" tone="critical" />
-          <ActNowCard
-            insight={critical}
-            onPrimary={() => handlePrimary(critical)}
-            onOpenDetail={() => setDetail(critical)}
+      {/* ═══ 1 · TEAM STATUS — 3 numbers ═══ */}
+      <section aria-label="Team status today" className="space-y-2">
+        <div>
+          <h2 className="text-lg font-medium text-foreground tracking-tight">
+            Team status
+          </h2>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            How your business is doing today at a glance.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <StatusTile
+            label="Active pipeline"
+            value={formatCompactCurrency(totalPipeline)}
+            deltaText="Total in negotiation · +12% vs last month"
+            tone="neutral"
+            tooltip="Sum of estimated value of all active deals across your team (from first contact through close). Excludes closed and lost deals."
           />
-        </section>
-      )}
-
-      {/* ═══ 4. TOP INSIGHTS (top 4, no filters — filter by category lives on /insights) ═══ */}
-      {topInsights.length > 0 && (
-        <section aria-label="Top insights" className="space-y-3">
-          <SectionHeader title="Top insights this week" />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
-            {topInsights.map((insight) => (
-              <InsightUniformCard
-                key={insight.id}
-                insight={insight}
-                onPrimary={() => handlePrimary(insight)}
-                onOpenDetail={() => setDetail(insight)}
-              />
-            ))}
-          </div>
-
-          {remainingInsights > 0 && (
-            <a
-              href="/insights"
-              className="inline-flex items-center justify-center w-full gap-1.5 rounded-lg border border-border/70 bg-card hover:bg-muted/50 hover:border-foreground/30 px-4 py-2.5 text-sm font-medium text-foreground transition-colors"
-            >
-              +{remainingInsights} more in Insights
-              <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
-            </a>
-          )}
-        </section>
-      )}
-
-      {/* ═══ 5. TEAM SCORECARDS (database-style table for scale) ═══ */}
-      <section aria-label="Team adoption & performance" className="space-y-4">
-        <SectionHeader
-          title="Team adoption & performance"
-          count={agents.length}
-          link={{ label: "Open Team", href: "/team" }}
-        />
-        <TeamScorecardsTable agents={agents} />
+          <StatusTile
+            label="Leads at risk"
+            value={`${leadsAtRisk}`}
+            deltaText="No contact > 48h"
+            tone="critical"
+            href="/sales?filter=at-risk"
+            tooltip="Active leads that haven't been followed up by their assigned agent in over 48 hours. Close probability drops 50% after 72 hours of silence."
+          />
+          <StatusTile
+            label="Closes this month"
+            value={`${closedThisMonth} / ${closedTarget}`}
+            deltaText={`${Math.round((closedThisMonth / closedTarget) * 100)}% of target`}
+            tone={closedThisMonth >= closedTarget ? "success" : "warning"}
+            tooltip="Deals closed this month versus the team's monthly target. Updates in real time when a deal moves to 'closed'."
+          />
+        </div>
       </section>
 
-      {/* ═══ 6. WINS ═══ */}
-      {wins.length > 0 && (
-        <section aria-label="Wins this week" className="space-y-3">
-          <SectionHeader title="Wins this week" tone="muted" count={wins.length} />
-          <div className="space-y-2">
-            {wins.map((insight) => (
-              <WinCard
-                key={insight.id}
-                insight={insight}
-                onPrimary={() => handlePrimary(insight)}
-                onOpenDetail={() => setDetail(insight)}
-              />
-            ))}
+      {/* ═══ 2 · PULSOR INSIGHTS ═══ */}
+      <section aria-label="Pulsor insights" className="space-y-2">
+        <div className="flex items-baseline justify-between gap-2">
+          <div>
+            <h2 className="text-lg font-medium text-foreground tracking-tight">
+              Pulsor insights
+            </h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              What Pulsor surfaced for you to act on today.
+            </p>
           </div>
-        </section>
-      )}
-
-      {/* ═══ 7. QUICK METRICS ═══ */}
-      <section aria-label="Quick metrics" className="pt-2">
-        <div className="flex items-baseline justify-between mb-3">
-          <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-            Quick metrics
-          </h2>
+          <span className="font-mono text-xs tabular-nums text-muted-foreground shrink-0">
+            {allInsights.length} pending
+          </span>
+        </div>
+        <ul className="rounded-xl border border-border bg-card divide-y divide-border/60 overflow-hidden">
+          {todayActions.map((a) => (
+            <ActionCard key={a.id} data={a} />
+          ))}
+        </ul>
+        {remainingInsights > 0 && (
           <a
-            href="/sales"
-            className="text-xs font-medium text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+            href="/insights"
+            className="inline-flex items-center justify-center w-full gap-1.5 rounded-lg border border-border/70 bg-card hover:bg-muted/50 hover:border-foreground/30 px-4 py-2.5 text-xs font-medium text-foreground transition-colors"
           >
-            Open Sales
+            +{remainingInsights} more in Insights
+            <ArrowRight className="h-3 w-3" strokeWidth={2} />
+          </a>
+        )}
+      </section>
+
+      {/* ═══ 2.5 · THIS WEEK GOAL ═══ */}
+      <section aria-label="This week goal" className="space-y-2">
+        <div className="flex items-baseline justify-between gap-2">
+          <div>
+            <h2 className="text-lg font-medium text-foreground tracking-tight">
+              This week goal
+            </h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Deals you committed to close this week.
+            </p>
+          </div>
+          <span className="font-mono text-xs tabular-nums text-muted-foreground shrink-0">
+            {weekGoal.length} to close
+          </span>
+        </div>
+        <ul className="rounded-xl border border-border bg-card divide-y divide-border/60 overflow-hidden">
+          {weekGoal.map((a) => (
+            <ActionCard key={a.id} data={a} />
+          ))}
+        </ul>
+      </section>
+
+      {/* ═══ 3 · TEAM QUICK VIEW ═══ */}
+      <section aria-label="Team this week" className="space-y-2">
+        <div className="flex items-baseline justify-between gap-2">
+          <div>
+            <h2 className="text-lg font-medium text-foreground tracking-tight">
+              My team this week
+            </h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Quick agent status — click any name for the full breakdown.
+            </p>
+          </div>
+          <a
+            href="/team"
+            className="text-xs font-medium text-muted-foreground hover:text-foreground inline-flex items-center gap-1 shrink-0"
+          >
+            View full detail
             <ArrowRight className="h-3 w-3" strokeWidth={2} />
           </a>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {kpis.map((kpi) => (
-            <KpiChip key={kpi.id} kpi={kpi} />
+        <ul className="rounded-xl border border-border bg-card divide-y divide-border/60 overflow-hidden">
+          {teamRows.map((r) => (
+            <li key={r.id} className="flex items-center gap-3 px-4 py-2.5">
+              <Avatar className="h-7 w-7 shrink-0">
+                {r.avatarUrl && <AvatarImage src={r.avatarUrl} alt={r.name} />}
+                <AvatarFallback
+                  className={cn(
+                    "text-white text-[10px] font-semibold",
+                    r.avatarColor
+                  )}
+                >
+                  {r.initials}
+                </AvatarFallback>
+              </Avatar>
+              <span className="text-sm font-medium text-foreground w-32 shrink-0 truncate">
+                {r.name}
+              </span>
+              <HealthDots count={r.dots} />
+              <span className="font-mono text-xs tabular-nums text-foreground w-24 shrink-0">
+                {formatCompactCurrency(r.pipeline)}
+              </span>
+              <Tooltip>
+                <TooltipTrigger className="text-xs text-muted-foreground truncate flex-1 cursor-help text-left">
+                  {r.note.text}
+                  {r.note.warning && (
+                    <AlertTriangle
+                      className="inline-block h-3 w-3 ml-1 text-warning"
+                      strokeWidth={2}
+                    />
+                  )}
+                </TooltipTrigger>
+                <TooltipContent className="max-w-[280px] text-left leading-relaxed">
+                  {r.note.tooltip}
+                </TooltipContent>
+              </Tooltip>
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
-
-      {/* Detail sheet */}
-      <InsightDetailSheet
-        insight={detail}
-        open={detail !== null}
-        onOpenChange={(o) => !o && setDetail(null)}
-        onPrimary={() => detail && handlePrimary(detail)}
-        onSnooze={() => detail && handleSnooze(detail.id)}
-      />
-
-      {/* Snooze toast */}
-      <SnoozeToast
-        open={toast !== null}
-        message={toast?.message ?? ""}
-        onUndo={() => toast?.undoId && handleUndoSnooze(toast.undoId)}
-        onDismiss={() => setToast(null)}
-      />
     </div>
+    </TooltipProvider>
   );
 }
 
-function SectionHeader({
-  title,
-  count,
-  tone,
-  link,
-}: {
-  title: string;
-  count?: number;
-  tone?: "critical" | "muted";
-  link?: { label: string; href: string };
-}) {
+// ───── Helpers / building blocks ─────
+
+function formatCompactCurrency(n: number) {
+  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `$${(n / 1_000).toFixed(0)}K`;
+  return `$${n}`;
+}
+
+// ────────── Health dots
+
+function HealthDots({ count }: { count: number }) {
   return (
-    <div className="flex items-baseline justify-between mb-1">
-      <div className="flex items-baseline gap-2.5">
-        <h2
-          className={
-            tone === "critical"
-              ? "text-[11px] font-bold uppercase tracking-[0.12em] text-rose-700"
-              : tone === "muted"
-                ? "text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground"
-                : "text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground"
-          }
-        >
-          {title}
-        </h2>
-        {count !== undefined && (
-          <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
-            {count}
-          </span>
-        )}
-      </div>
-      {link && (
-        <a
-          href={link.href}
-          className="text-xs font-medium text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
-        >
-          {link.label}
-          <ArrowRight className="h-3 w-3" strokeWidth={2} />
-        </a>
-      )}
-    </div>
+    <Tooltip>
+      <TooltipTrigger
+        className="flex items-center gap-0.5 shrink-0 cursor-help"
+        aria-label={`Health ${count} of 5`}
+      >
+        {Array.from({ length: 5 }).map((_, i) => (
+          <span
+            key={i}
+            className={cn(
+              "h-1.5 w-1.5 rounded-full",
+              i < count ? "bg-foreground" : "bg-muted"
+            )}
+          />
+        ))}
+      </TooltipTrigger>
+      <TooltipContent className="max-w-[280px] text-left leading-relaxed">
+        Activity & results indicator for this week. Combines: leads contacted,
+        appointments set, deals advanced, and closes. 5 = excellent, 1 = at risk.
+      </TooltipContent>
+    </Tooltip>
   );
+}
+
+// ────────── Per-agent narrative note (deterministic from metrics)
+
+function deriveNote(a: typeof dashboardData.agents[number]): {
+  text: string;
+  warning: boolean;
+  tooltip: string;
+} {
+  if (a.metrics.activeDeals === 0) {
+    return {
+      text: "No active deals",
+      warning: true,
+      tooltip:
+        "Agent has no leads or deals currently active. May need re-engagement or coaching.",
+    };
+  }
+  if (a.aiAdoptionScore < 50) {
+    return {
+      text: "Underperforming",
+      warning: true,
+      tooltip:
+        "Performance dropped significantly vs the agent's last 2–4 weeks or vs the team average.",
+    };
+  }
+  if (a.metrics.activeDeals >= 8) {
+    return {
+      text: `Closing ${a.metrics.activeDeals} deals`,
+      warning: false,
+      tooltip:
+        "Deals in 'closing' or 'under contract' stages expected to close this month.",
+    };
+  }
+  if (a.metrics.activeDeals >= 4) {
+    return {
+      text: `${a.metrics.activeDeals} deals in progress`,
+      warning: false,
+      tooltip:
+        "Active deals advancing through the pipeline at a healthy pace.",
+    };
+  }
+  return {
+    text: `${a.metrics.activeDeals} deal in escrow`,
+    warning: false,
+    tooltip: "Single deal currently in escrow — closure expected soon.",
+  };
 }

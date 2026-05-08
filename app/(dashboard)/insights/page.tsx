@@ -9,12 +9,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { dashboardData } from "@/lib/mock-data";
-import type { Insight, InsightCategory, InsightState } from "@/lib/types";
+import type {
+  Insight,
+  InsightCategory,
+  InsightState,
+  InsightType,
+} from "@/lib/types";
 import { PeriodSelector } from "@/components/dashboard/period-selector";
-import { ActNowCard } from "@/components/dashboard/insights/act-now-card";
-import { ThisWeekItem } from "@/components/dashboard/insights/this-week-item";
-import { WorthKnowingItem } from "@/components/dashboard/insights/worth-knowing-item";
+import {
+  ActionCard,
+  type ActionCardData,
+  type ActionTag,
+} from "@/components/dashboard/action-card";
 import { InsightDetailSheet } from "@/components/dashboard/insights/insight-detail-sheet";
 import { SnoozeToast } from "@/components/dashboard/insights/snooze-toast";
 import { CATEGORY_META } from "@/components/dashboard/insights/insight-meta";
@@ -32,6 +40,22 @@ const CATEGORY_FILTERS: CategoryFilter[] = [
   "Tech Stack",
 ];
 
+// Map insight type → ActionCard tag (urgency conveyed by tag color).
+const TYPE_TO_TAG: Record<InsightType, ActionTag> = {
+  critical: "URGENT",
+  warning: "WARNING",
+  opportunity: "OPPORTUNITY",
+  info: "INSIGHT",
+};
+
+// Sort weight so critical floats to the top.
+const TYPE_WEIGHT: Record<InsightType, number> = {
+  critical: 0,
+  warning: 1,
+  opportunity: 2,
+  info: 3,
+};
+
 export default function InsightsPage() {
   const { insights, period } = dashboardData;
 
@@ -45,7 +69,7 @@ export default function InsightsPage() {
     undoId: string | null;
   } | null>(null);
 
-  // ----- Filtered, with state-overlay for snooze
+  // ----- Apply snooze overlay + state filter + category filter
   const visible = useMemo(() => {
     return insights
       .map<Insight>((i) =>
@@ -54,10 +78,17 @@ export default function InsightsPage() {
       .filter((i) => (show === "all" ? true : i.state === show))
       .filter((i) =>
         activeCategory === "all" ? true : i.category === activeCategory
-      );
+      )
+      .sort((a, b) => {
+        const w = TYPE_WEIGHT[a.type] - TYPE_WEIGHT[b.type];
+        if (w !== 0) return w;
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      });
   }, [insights, snoozedIds, show, activeCategory]);
 
-  // ----- Per-category counts (using current state filter, before category filter)
+  // ----- Per-category counts (using current state filter, pre-category)
   const categoryCounts = useMemo(() => {
     const stateFiltered = insights
       .map<Insight>((i) =>
@@ -75,21 +106,6 @@ export default function InsightsPage() {
     for (const i of stateFiltered) counts[i.category] += 1;
     return counts;
   }, [insights, snoozedIds, show]);
-
-  // ----- Bucket into zones (only meaningful when show === "pending")
-  const critical = visible.find((i) => i.type === "critical") ?? null;
-  const thisWeek = visible.filter(
-    (i) => i.type === "warning" && i.id !== critical?.id
-  );
-  const worthKnowing = visible.filter(
-    (i) =>
-      (i.type === "opportunity" || i.type === "info") && i.id !== critical?.id
-  );
-  // For non-pending views, we lay everything out as a flat "worth-knowing" list
-  const showFlatList = show !== "pending";
-  const flat = visible;
-
-  const totalToActOn = visible.length;
 
   // ----- Handlers
   function handleSnooze(id: string) {
@@ -111,212 +127,139 @@ export default function InsightsPage() {
   }
 
   function handlePrimary(insight: Insight) {
-    // Stub — primary action is the user's go-to flow.
     setToast({
       message: `Action queued: ${insight.primaryAction.label}`,
       undoId: null,
     });
   }
 
-  return (
-    <div className="px-4 sm:px-6 py-8 lg:px-8 lg:py-10 max-w-[1200px] mx-auto space-y-8">
-      {/* Header — simplified: title + count + period + show filter */}
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-foreground tracking-tight">
-            Insights
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1.5">
-            {show === "pending" && totalToActOn > 0
-              ? `${totalToActOn} ${totalToActOn === 1 ? "thing" : "things"} to act on`
-              : show === "pending" && totalToActOn === 0
-                ? "Nothing pending — you're caught up."
-                : `${totalToActOn} ${totalToActOn === 1 ? "insight" : "insights"} in this view`}
-          </p>
-        </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <PeriodSelector label={period.label} />
-          <Select
-            value={show}
-            onValueChange={(v) => setShow(v as ShowFilter)}
-          >
-            <SelectTrigger className="h-9 w-[150px] text-xs font-medium gap-1.5">
-              <span className="text-muted-foreground">Show:</span>
-              <SelectValue />
-              <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.75} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="snoozed">Snoozed</SelectItem>
-              <SelectItem value="implemented">Implemented</SelectItem>
-              <SelectItem value="ignored">Ignored</SelectItem>
-              <SelectItem value="all">All</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </header>
+  // Build ActionCard rows from visible insights.
+  const cards: ActionCardData[] = visible.map((i) => ({
+    id: i.id,
+    tag: TYPE_TO_TAG[i.type],
+    summary: `${CATEGORY_META[i.category].label} · ${i.title}`,
+    onClick: () => setDetail(i),
+  }));
 
-      {/* Category filter row */}
-      <div className="flex flex-wrap gap-1.5">
-        {CATEGORY_FILTERS.map((cat) => {
-          const active = activeCategory === cat;
-          const count = categoryCounts[cat];
-          const label = cat === "all" ? "All" : CATEGORY_META[cat].label;
-          const disabled = cat !== "all" && count === 0;
-          return (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => setActiveCategory(cat)}
-              disabled={disabled}
-              className={cn(
-                "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-medium transition-colors border",
-                active
-                  ? "bg-primary text-primary-foreground border-primary"
-                  : "bg-card text-foreground border-border hover:border-foreground/30",
-                disabled && "opacity-40 cursor-not-allowed"
-              )}
-            >
-              {label}
-              <span
+  return (
+    <TooltipProvider delay={150}>
+      <div className="px-4 sm:px-6 py-6 lg:px-8 lg:py-8 max-w-[1200px] mx-auto space-y-6">
+        {/* Header */}
+        <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h1 className="text-2xl lg:text-3xl font-medium text-foreground tracking-tight">
+              Insights
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              {show === "pending" && visible.length > 0
+                ? `${visible.length} ${visible.length === 1 ? "thing" : "things"} to act on.`
+                : show === "pending" && visible.length === 0
+                  ? "Nothing pending — you're caught up."
+                  : `${visible.length} ${visible.length === 1 ? "insight" : "insights"} in this view.`}
+            </p>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <PeriodSelector label={period.label} />
+            <Select value={show} onValueChange={(v) => setShow(v as ShowFilter)}>
+              <SelectTrigger className="h-9 w-[150px] text-xs font-medium gap-1.5">
+                <span className="text-muted-foreground">Show:</span>
+                <SelectValue />
+                <ChevronDown
+                  className="h-3.5 w-3.5 text-muted-foreground"
+                  strokeWidth={1.75}
+                />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="snoozed">Snoozed</SelectItem>
+                <SelectItem value="implemented">Implemented</SelectItem>
+                <SelectItem value="ignored">Ignored</SelectItem>
+                <SelectItem value="all">All</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </header>
+
+        {/* Category filter chips */}
+        <div className="flex flex-wrap gap-1.5">
+          {CATEGORY_FILTERS.map((cat) => {
+            const active = activeCategory === cat;
+            const count = categoryCounts[cat];
+            const label = cat === "all" ? "All" : CATEGORY_META[cat].label;
+            const disabled = cat !== "all" && count === 0;
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setActiveCategory(cat)}
+                disabled={disabled}
                 className={cn(
-                  "font-mono tabular-nums text-[10px]",
+                  "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-medium transition-colors border",
                   active
-                    ? "text-primary-foreground/80"
-                    : "text-muted-foreground"
+                    ? "bg-foreground text-background border-foreground"
+                    : "bg-card text-foreground border-border hover:border-foreground/30",
+                  disabled && "opacity-40 cursor-not-allowed"
                 )}
               >
-                {count}
+                {label}
+                <span
+                  className={cn(
+                    "font-mono tabular-nums text-[10px]",
+                    active ? "text-background/70" : "text-muted-foreground"
+                  )}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* List */}
+        {visible.length === 0 ? (
+          <EmptyState filter={show} />
+        ) : (
+          <section aria-label="Insights" className="space-y-2">
+            <div className="flex items-baseline justify-between gap-2">
+              <div>
+                <h2 className="text-lg font-medium text-foreground tracking-tight">
+                  Pulsor insights
+                </h2>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  What Pulsor learned about your business this week.
+                </p>
+              </div>
+              <span className="font-mono text-xs tabular-nums text-muted-foreground shrink-0">
+                {visible.length}{" "}
+                {show === "pending" ? "pending" : show === "all" ? "total" : show}
               </span>
-            </button>
-          );
-        })}
+            </div>
+            <ul className="rounded-xl border border-border bg-card divide-y divide-border/60 overflow-hidden">
+              {cards.map((c) => (
+                <ActionCard key={c.id} data={c} />
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* Detail sheet (preserved — full insight + actions) */}
+        <InsightDetailSheet
+          insight={detail}
+          open={detail !== null}
+          onOpenChange={(o) => !o && setDetail(null)}
+          onPrimary={() => detail && handlePrimary(detail)}
+          onSnooze={() => detail && handleSnooze(detail.id)}
+        />
+
+        {/* Snooze toast */}
+        <SnoozeToast
+          open={toast !== null}
+          message={toast?.message ?? ""}
+          onUndo={() => toast?.undoId && handleUndoSnooze(toast.undoId)}
+          onDismiss={() => setToast(null)}
+        />
       </div>
-
-      {/* Empty state */}
-      {visible.length === 0 && (
-        <EmptyState filter={show} />
-      )}
-
-      {/* PENDING view → 3 zones */}
-      {!showFlatList && visible.length > 0 && (
-        <>
-          {/* ZONE 1 — ACT NOW (only renders if there's a critical) */}
-          {critical && (
-            <section aria-label="Act now">
-              <SectionHeader title="Act now" emphasis />
-              <ActNowCard
-                insight={critical}
-                onPrimary={() => handlePrimary(critical)}
-                onOpenDetail={() => setDetail(critical)}
-              />
-            </section>
-          )}
-
-          {/* ZONE 2 — THIS WEEK */}
-          {thisWeek.length > 0 && (
-            <section aria-label="This week" className="space-y-3">
-              <SectionHeader title="This week" count={thisWeek.length} />
-              <div className="space-y-3">
-                {thisWeek.map((i) => (
-                  <ThisWeekItem
-                    key={i.id}
-                    insight={i}
-                    onPrimary={() => handlePrimary(i)}
-                    onOpenDetail={() => setDetail(i)}
-                  />
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* ZONE 3 — WORTH KNOWING */}
-          {worthKnowing.length > 0 && (
-            <section aria-label="Worth knowing" className="space-y-3">
-              <SectionHeader
-                title="Worth knowing"
-                count={worthKnowing.length}
-                muted
-              />
-              <div className="space-y-2">
-                {worthKnowing.map((i) => (
-                  <WorthKnowingItem
-                    key={i.id}
-                    insight={i}
-                    onPrimary={() => handlePrimary(i)}
-                    onOpenDetail={() => setDetail(i)}
-                  />
-                ))}
-              </div>
-            </section>
-          )}
-        </>
-      )}
-
-      {/* Non-pending views → flat list (snoozed/implemented/ignored/all) */}
-      {showFlatList && visible.length > 0 && (
-        <section className="space-y-2">
-          {flat.map((i) => (
-            <WorthKnowingItem
-              key={i.id}
-              insight={i}
-              onPrimary={() => handlePrimary(i)}
-              onOpenDetail={() => setDetail(i)}
-            />
-          ))}
-        </section>
-      )}
-
-      {/* Detail sheet */}
-      <InsightDetailSheet
-        insight={detail}
-        open={detail !== null}
-        onOpenChange={(o) => !o && setDetail(null)}
-        onPrimary={() => detail && handlePrimary(detail)}
-        onSnooze={() => detail && handleSnooze(detail.id)}
-      />
-
-      {/* Snooze toast */}
-      <SnoozeToast
-        open={toast !== null}
-        message={toast?.message ?? ""}
-        onUndo={() => toast?.undoId && handleUndoSnooze(toast.undoId)}
-        onDismiss={() => setToast(null)}
-      />
-    </div>
-  );
-}
-
-function SectionHeader({
-  title,
-  count,
-  emphasis,
-  muted,
-}: {
-  title: string;
-  count?: number;
-  emphasis?: boolean;
-  muted?: boolean;
-}) {
-  return (
-    <div className="flex items-baseline gap-2.5 mb-3">
-      <h2
-        className={
-          emphasis
-            ? "text-[11px] font-bold uppercase tracking-[0.12em] text-rose-700"
-            : muted
-              ? "text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground"
-              : "text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground"
-        }
-      >
-        {title}
-      </h2>
-      {count !== undefined && (
-        <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
-          {count}
-        </span>
-      )}
-    </div>
+    </TooltipProvider>
   );
 }
 
@@ -345,7 +288,7 @@ function EmptyState({ filter }: { filter: ShowFilter }) {
   };
   const { title, hint } = messages[filter];
   return (
-    <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed rounded-xl bg-card">
+    <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed border-border rounded-xl bg-card">
       <Inbox
         className="h-9 w-9 text-muted-foreground/40 mb-3"
         strokeWidth={1.5}

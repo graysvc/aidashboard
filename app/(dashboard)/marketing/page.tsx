@@ -1,349 +1,328 @@
 "use client";
 
-import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Cell,
-  Tooltip,
-} from "recharts";
-import {
-  Megaphone,
-  CheckCircle2,
-  TrendingUp,
-  TrendingDown,
-  Pause,
-  Sparkles,
-  ArrowUpRight,
-  ArrowDownRight,
-} from "lucide-react";
-import { PeriodSelector } from "@/components/dashboard/period-selector";
+import { ArrowRight, AlertTriangle } from "lucide-react";
 import { dashboardData } from "@/lib/mock-data";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { PeriodSelector } from "@/components/dashboard/period-selector";
+import { StatusTile } from "@/components/dashboard/status-tile";
+import {
+  ActionCard,
+  type ActionCardData,
+} from "@/components/dashboard/action-card";
 import { cn } from "@/lib/utils";
 
 export default function MarketingPage() {
   const { period } = dashboardData;
 
-  // ---- Simulated marketing numbers
-  const totalSpend = 48_320;
-  const totalLeads = 612;
-  const cpl = totalSpend / totalLeads;
-  const paidClosed = 14;
-  const paidConvRate = (paidClosed / totalLeads) * 100;
+  // ───── Section 2 — Channel breakdown ─────
+  const channels = [
+    { name: "Meta Ads", count: 142, cpl: 14, outlier: false },
+    { name: "LaHouse AI", count: 68, cpl: 22, outlier: false },
+    { name: "Organic Web", count: 23, cpl: 0, outlier: false },
+    { name: "YouTube Channel", count: 9, cpl: 0, outlier: false },
+    { name: "Google Ads", count: 5, cpl: 89, outlier: true },
+  ];
+  const totalLeads = channels.reduce((a, c) => a + c.count, 0);
+  const maxCount = Math.max(...channels.map((c) => c.count));
 
-  const kpis = [
+  // ───── Section 3 — Pulsor insights ─────
+  const insights: ActionCardData[] = [
     {
-      label: "Total Ad Spend",
-      value: `$${(totalSpend / 1000).toFixed(1)}K`,
-      delta: 8.2,
+      id: "ins-1",
+      tag: "INSIGHT",
+      summary: "Bolivia leads convert 3× better than average",
     },
     {
-      label: "Cost per Lead",
-      value: `$${cpl.toFixed(0)}`,
-      delta: -4.6,
-      inverted: true,
+      id: "ins-2",
+      tag: "PATTERN",
+      summary: "Meta CPL dropped 23% this week — capitalize",
     },
     {
-      label: "Paid Lead Volume",
-      value: totalLeads.toLocaleString(),
-      delta: 12.1,
+      id: "ins-3",
+      tag: "WARNING",
+      summary: "Google Ads CPL is 6× higher than Meta",
     },
     {
-      label: "Paid → Closed",
-      value: `${paidConvRate.toFixed(1)}%`,
-      delta: 0.3,
+      id: "ins-4",
+      tag: "OPPORTUNITY",
+      summary: "YouTube generates premium leads — $2.4M avg",
+    },
+    {
+      id: "ins-5",
+      tag: "RECOMMENDATION",
+      summary: "LaHouse converts 2× better with internationals",
     },
   ];
 
-  const channelSpend = [
-    { label: "Google Ads", value: 18_400 },
-    { label: "Meta", value: 14_200 },
-    { label: "Zillow", value: 9_800 },
-    { label: "Realtor", value: 5_920 },
-  ];
-
-  const channelRoi = [
-    { label: "Google Ads", value: 4.2 },
-    { label: "Meta", value: 3.1 },
-    { label: "Zillow", value: 2.4 },
-    { label: "Realtor", value: 1.6 },
-  ];
-
-  const pastAdjustments: Adjustment[] = [
+  // ───── Section 4 — Active campaigns ─────
+  const campaigns: Campaign[] = [
     {
-      id: "adj-1",
-      date: "Apr 28",
-      title: "Paused Realtor.com campaign — CPL above threshold",
-      detail: "CPL hit $106 (target $80). Reallocated $2.4K to Google Ads.",
-      kind: "paused",
-      impact: "+18 leads recovered",
+      id: "c-1",
+      name: "International Brickell Q2",
+      channel: "Meta Ads",
+      spend: "$1,200/mo",
+      leads: 47,
+      status: "active",
     },
     {
-      id: "adj-2",
-      date: "Apr 22",
-      title: "Increased Google Ads daily budget by 20%",
-      detail: "ROI sustained at 4.2× for 14 consecutive days.",
-      kind: "scaled",
-      impact: "+$3.1K spend / +52 leads",
+      id: "c-2",
+      name: "First-time Buyers Miami",
+      channel: "Meta Ads",
+      spend: "$800/mo",
+      leads: 38,
+      status: "active",
     },
     {
-      id: "adj-3",
-      date: "Apr 15",
-      title: "Launched Meta retargeting for past site visitors",
-      detail: "Audience: 8.2K cookied visitors over last 30 days.",
-      kind: "launched",
-      impact: "$24 CPL (vs $71 cold)",
+      id: "c-3",
+      name: "Bolivia & Argentina Reach",
+      channel: "Meta Ads",
+      spend: "$600/mo",
+      leads: 23,
+      status: "active",
     },
     {
-      id: "adj-4",
-      date: "Apr 9",
-      title: "Cut underperforming Meta creative set",
-      detail: "Set B (carousel) had 0.8% CTR vs 2.1% for Set A.",
-      kind: "optimized",
-      impact: "-$1.8K wasted spend",
+      id: "c-4",
+      name: "Coral Gables Sellers",
+      channel: "Google Ads",
+      spend: "$400/mo",
+      leads: 5,
+      status: "underperforming",
     },
     {
-      id: "adj-5",
-      date: "Apr 2",
-      title: "Switched Zillow to Premier Agent ZIP bundle",
-      detail: "Consolidated 6 zips into top-3 by closed-deal density.",
-      kind: "optimized",
-      impact: "CPL $87 → $62",
+      id: "c-5",
+      name: "YouTube Sponsorship",
+      channel: "YouTube",
+      spend: "$0",
+      leads: 9,
+      status: "active",
     },
     {
-      id: "adj-6",
-      date: "Mar 26",
-      title: "Resumed Google Ads brand campaign",
-      detail: "Branded queries up 34% after press mention.",
-      kind: "resumed",
-      impact: "+22 high-intent leads",
+      id: "c-6",
+      name: "LinkedIn B2B Outreach",
+      channel: "LinkedIn",
+      spend: "$80/mo",
+      leads: 2,
+      status: "low-roi",
     },
   ];
 
   return (
-    <div className="px-4 sm:px-6 py-8 lg:px-8 lg:py-10 max-w-[1440px] mx-auto space-y-8">
-      {/* Header */}
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-foreground tracking-tight">
-            Marketing
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1.5">
-            Channel performance, paid spend, and acquisition cost.
-          </p>
-        </div>
-        <PeriodSelector label={period.label} />
-      </header>
-
-      {/* Original layout — now populated with simulated data */}
-      <section className="rounded-xl border border-border/70 bg-card p-12 flex flex-col items-center text-center">
-        <span className="h-12 w-12 rounded-2xl bg-violet-100 flex items-center justify-center mb-4">
-          <Megaphone className="h-6 w-6 text-violet-600" strokeWidth={1.75} />
-        </span>
-        <h2 className="text-lg font-semibold text-foreground">
-          Paid acquisition this month
-        </h2>
-        <p className="text-sm text-muted-foreground mt-2 max-w-md leading-relaxed">
-          Channel ROI, CAC by source, paid-vs-organic mix, and ad-spend trends —
-          across Google Ads, Meta, Zillow, and Realtor.com.
-        </p>
-
-        {/* KPI tiles — same shape as placeholder, filled */}
-        <div className="mt-8 w-full max-w-2xl grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {kpis.map((k) => {
-            const isUp = k.delta >= 0;
-            const isImprovement = k.inverted ? !isUp : isUp;
-            return (
-              <div
-                key={k.label}
-                className="rounded-lg border border-border/60 bg-card px-4 py-3 text-left"
-              >
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/80">
-                  {k.label}
-                </div>
-                <div className="flex items-baseline justify-between gap-2 mt-1">
-                  <div className="font-mono text-base font-bold tabular-nums text-foreground">
-                    {k.value}
-                  </div>
-                  <span
-                    className={cn(
-                      "inline-flex items-center gap-0.5 font-mono text-[10px] font-semibold tabular-nums",
-                      isImprovement ? "text-emerald-700" : "text-rose-700"
-                    )}
-                  >
-                    {isUp ? (
-                      <ArrowUpRight className="h-3 w-3" strokeWidth={2.5} />
-                    ) : (
-                      <ArrowDownRight className="h-3 w-3" strokeWidth={2.5} />
-                    )}
-                    {Math.abs(k.delta).toFixed(1)}%
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Two charts — same shape as placeholder, filled */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-2xl">
-          <MiniChart
-            title="Spend by channel"
-            data={channelSpend}
-            format={(v) => `$${(v / 1000).toFixed(1)}K`}
-            colors={["#7c3aed", "#8b5cf6", "#a78bfa", "#c4b5fd"]}
-          />
-          <MiniChart
-            title="ROI by channel"
-            data={channelRoi}
-            format={(v) => `${v.toFixed(1)}×`}
-            colors={["#10b981", "#34d399", "#6ee7b7", "#a7f3d0"]}
-          />
-        </div>
-      </section>
-
-      {/* Past adjustments / acted-on insights */}
-      <section
-        aria-label="Past adjustments"
-        className="rounded-xl border border-border/70 bg-card p-6 sm:p-8"
-      >
-        <div className="flex items-start justify-between gap-2 mb-5">
+    <TooltipProvider delay={150}>
+      <div className="px-4 sm:px-6 py-6 lg:px-8 lg:py-8 max-w-[1200px] mx-auto space-y-6">
+        {/* Header */}
+        <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 className="text-base font-semibold text-foreground">
-              Insights acted on
-            </h2>
-            <p className="text-xs text-muted-foreground mt-1">
-              Adjustments you&apos;ve made — and what they moved.
+            <h1 className="text-2xl lg:text-3xl font-medium text-foreground tracking-tight">
+              Marketing
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Where your leads come from and what&apos;s working.
             </p>
           </div>
-          <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
-            {pastAdjustments.length} this quarter
-          </span>
-        </div>
-        <ul className="divide-y divide-border/60">
-          {pastAdjustments.map((a) => (
-            <AdjustmentRow key={a.id} adjustment={a} />
-          ))}
-        </ul>
-      </section>
-    </div>
+          <PeriodSelector label={period.label} />
+        </header>
+
+        {/* ═══ 1 · CHANNEL PERFORMANCE — KPIs ═══ */}
+        <section aria-label="Channel performance" className="space-y-2">
+          <div>
+            <h2 className="text-lg font-medium text-foreground tracking-tight">
+              Channel performance
+            </h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              How your acquisition channels are performing this month.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <StatusTile
+              label="Total leads this month"
+              value="247"
+              deltaText="+23% vs last month"
+              tone="neutral"
+              tooltip="All leads captured across all channels in the current month. Includes paid, organic, and referral sources."
+            />
+            <StatusTile
+              label="Best channel"
+              value="Meta Ads"
+              deltaText="142 leads · 58% of total"
+              tone="success"
+              tooltip="Channel generating the most qualified leads this month. Quality is measured by conversion to first contact, not just volume."
+            />
+            <StatusTile
+              label="Cost per lead"
+              value="$18.50"
+              deltaText="−12% vs last month"
+              tone="success"
+              tooltip="Total ad spend divided by leads generated this month. Lower is better. Industry average for real estate is $35–50."
+            />
+          </div>
+        </section>
+
+        {/* ═══ 2 · CHANNEL BREAKDOWN — horizontal bars ═══ */}
+        <section aria-label="Channel breakdown" className="space-y-2">
+          <div>
+            <h2 className="text-lg font-medium text-foreground tracking-tight">
+              Channel breakdown
+            </h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Where your leads are coming from in the last 30 days.
+            </p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-5">
+            <ul className="space-y-4">
+              {channels.map((c) => {
+                const pct = Math.round((c.count / totalLeads) * 100);
+                const barWidth = (c.count / maxCount) * 100;
+                return (
+                  <li key={c.name}>
+                    <a
+                      href="#"
+                      className="grid grid-cols-[140px_1fr_auto_auto_auto] items-center gap-4 -mx-2 px-2 py-1 rounded-md hover:bg-muted/40 transition-colors"
+                    >
+                      <span className="text-sm text-foreground truncate">
+                        {c.name}
+                      </span>
+                      <div className="h-2 rounded-sm bg-muted overflow-hidden">
+                        <div
+                          className="h-full bg-foreground/85"
+                          style={{ width: `${barWidth}%` }}
+                        />
+                      </div>
+                      <span className="font-mono text-sm tabular-nums text-foreground w-10 text-right">
+                        {c.count}
+                      </span>
+                      <span className="font-mono text-xs tabular-nums text-muted-foreground w-10 text-right">
+                        {pct}%
+                      </span>
+                      <span
+                        className={cn(
+                          "font-mono text-xs tabular-nums w-24 text-right inline-flex items-center justify-end gap-1",
+                          c.outlier ? "text-warning" : "text-muted-foreground"
+                        )}
+                      >
+                        {c.cpl === 0 ? "$0/lead" : `$${c.cpl}/lead`}
+                        {c.outlier && (
+                          <AlertTriangle
+                            className="h-3 w-3"
+                            strokeWidth={2}
+                          />
+                        )}
+                      </span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </section>
+
+        {/* ═══ 3 · PULSOR INSIGHTS ═══ */}
+        <section aria-label="Pulsor insights" className="space-y-2">
+          <div className="flex items-baseline justify-between gap-2">
+            <div>
+              <h2 className="text-lg font-medium text-foreground tracking-tight">
+                Pulsor insights
+              </h2>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                What Pulsor learned from your marketing this week.
+              </p>
+            </div>
+            <span className="font-mono text-xs tabular-nums text-muted-foreground shrink-0">
+              {insights.length} insights
+            </span>
+          </div>
+          <ul className="rounded-xl border border-border bg-card divide-y divide-border/60 overflow-hidden">
+            {insights.map((i) => (
+              <ActionCard key={i.id} data={i} />
+            ))}
+          </ul>
+        </section>
+
+        {/* ═══ 4 · ACTIVE CAMPAIGNS ═══ */}
+        <section aria-label="Active campaigns" className="space-y-2">
+          <div className="flex items-baseline justify-between gap-2">
+            <div>
+              <h2 className="text-lg font-medium text-foreground tracking-tight">
+                Active campaigns
+              </h2>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Quick view of campaigns running right now.
+              </p>
+            </div>
+            <a
+              href="#"
+              className="text-xs font-medium text-muted-foreground hover:text-foreground inline-flex items-center gap-1 shrink-0"
+            >
+              View all campaigns
+              <ArrowRight className="h-3 w-3" strokeWidth={2} />
+            </a>
+          </div>
+          <ul className="rounded-xl border border-border bg-card divide-y divide-border/60 overflow-hidden">
+            {campaigns.map((c) => (
+              <CampaignRow key={c.id} campaign={c} />
+            ))}
+          </ul>
+        </section>
+      </div>
+    </TooltipProvider>
   );
 }
 
-// ---------- Mini chart (fits inside 120px placeholder zone) ----------
+// ────────── Campaign row
 
-function MiniChart({
-  title,
-  data,
-  format,
-  colors,
-}: {
-  title: string;
-  data: { label: string; value: number }[];
-  format: (v: number) => string;
-  colors: string[];
-}) {
-  return (
-    <div className="rounded-lg border border-border/60 bg-card p-4 min-h-[120px] text-left">
-      <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/80">
-        {title}
-      </div>
-      <div className="h-[110px] mt-2 -ml-2">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
-            <XAxis
-              dataKey="label"
-              axisLine={false}
-              tickLine={false}
-              stroke="#9CA3AF"
-              fontSize={9}
-              tickMargin={4}
-              interval={0}
-            />
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              stroke="#9CA3AF"
-              fontSize={9}
-              width={36}
-              tickFormatter={format}
-            />
-            <Tooltip
-              contentStyle={{
-                borderRadius: 8,
-                border: "1px solid #e5e7eb",
-                fontSize: 11,
-              }}
-              formatter={(v) => [format(Number(v)), title] as [string, string]}
-              cursor={{ fill: "rgba(124, 58, 237, 0.06)" }}
-            />
-            <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={28}>
-              {data.map((_, i) => (
-                <Cell key={i} fill={colors[i % colors.length]} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-  );
-}
-
-// ---------- Adjustments list ----------
-
-type Adjustment = {
+type Campaign = {
   id: string;
-  date: string;
-  title: string;
-  detail: string;
-  kind: "paused" | "scaled" | "launched" | "optimized" | "resumed";
-  impact: string;
+  name: string;
+  channel: string;
+  spend: string;
+  leads: number;
+  status: "active" | "underperforming" | "low-roi" | "paused";
 };
 
-const KIND_META: Record<
-  Adjustment["kind"],
-  { label: string; icon: typeof CheckCircle2; iconBg: string; iconColor: string }
+const STATUS_META: Record<
+  Campaign["status"],
+  { label: string; dot: string; text: string }
 > = {
-  paused: { label: "Paused", icon: Pause, iconBg: "bg-amber-100", iconColor: "text-amber-600" },
-  scaled: { label: "Scaled", icon: TrendingUp, iconBg: "bg-emerald-100", iconColor: "text-emerald-600" },
-  launched: { label: "Launched", icon: Sparkles, iconBg: "bg-violet-100", iconColor: "text-violet-600" },
-  optimized: { label: "Optimized", icon: CheckCircle2, iconBg: "bg-sky-100", iconColor: "text-sky-600" },
-  resumed: { label: "Resumed", icon: TrendingDown, iconBg: "bg-rose-100", iconColor: "text-rose-600" },
+  active: { label: "Active", dot: "bg-success", text: "text-success" },
+  underperforming: {
+    label: "Underperforming",
+    dot: "bg-warning",
+    text: "text-warning",
+  },
+  "low-roi": { label: "Low ROI", dot: "bg-warning", text: "text-warning" },
+  paused: {
+    label: "Paused",
+    dot: "bg-muted-foreground",
+    text: "text-muted-foreground",
+  },
 };
 
-function AdjustmentRow({ adjustment: a }: { adjustment: Adjustment }) {
-  const meta = KIND_META[a.kind];
-  const Icon = meta.icon;
+function CampaignRow({ campaign }: { campaign: Campaign }) {
+  const meta = STATUS_META[campaign.status];
   return (
-    <li className="flex items-start gap-3 py-3">
-      <span
-        className={cn(
-          "h-8 w-8 rounded-xl shrink-0 flex items-center justify-center mt-0.5",
-          meta.iconBg
-        )}
+    <li>
+      <a
+        href="#"
+        className="grid grid-cols-[1fr_120px_90px_90px_140px] items-center gap-3 px-4 py-2.5 hover:bg-muted/40 transition-colors"
       >
-        <Icon className={cn("h-4 w-4", meta.iconColor)} strokeWidth={2} />
-      </span>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-baseline gap-2 flex-wrap">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <span className="text-sm text-foreground truncate">
+          {campaign.name}
+        </span>
+        <span className="text-xs text-muted-foreground truncate">
+          {campaign.channel}
+        </span>
+        <span className="font-mono text-xs tabular-nums text-foreground text-right">
+          {campaign.spend}
+        </span>
+        <span className="font-mono text-xs tabular-nums text-muted-foreground text-right">
+          {campaign.leads} leads
+        </span>
+        <span className="inline-flex items-center gap-1.5 justify-end">
+          <span className={cn("h-1.5 w-1.5 rounded-full", meta.dot)} />
+          <span className={cn("text-xs font-medium", meta.text)}>
             {meta.label}
           </span>
-          <span className="text-[11px] font-mono tabular-nums text-muted-foreground/70">
-            {a.date}
-          </span>
-        </div>
-        <p className="text-sm font-medium text-foreground mt-0.5 leading-snug">
-          {a.title}
-        </p>
-        <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-          {a.detail}
-        </p>
-      </div>
-      <span className="font-mono text-[11px] tabular-nums text-emerald-700 bg-emerald-50 px-2 py-1 rounded-md shrink-0 mt-0.5">
-        {a.impact}
-      </span>
+        </span>
+      </a>
     </li>
   );
 }
