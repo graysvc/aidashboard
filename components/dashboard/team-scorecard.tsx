@@ -67,7 +67,7 @@ export function TeamScorecard({ agent }: { agent: Agent }) {
           <div className="text-[13px] font-semibold text-foreground truncate leading-tight">
             {agent.name}
           </div>
-          <div className="text-[11px] text-muted-foreground truncate">
+          <div className="text-xs text-muted-foreground truncate">
             {agent.role}
           </div>
         </div>

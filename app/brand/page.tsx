@@ -29,7 +29,7 @@ export default function BrandPage() {
 
         {/* Concept callout */}
         <section className="rounded-xl border border-border bg-card p-6">
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
             Concept
           </div>
           <p className="text-sm leading-relaxed text-foreground/90">
@@ -176,7 +176,7 @@ function Swatch({
       <div className="px-3 py-2 bg-card">
         <div className="text-sm font-semibold text-foreground">{name}</div>
         <div
-          className={`text-[11px] font-mono mt-0.5 ${
+          className={`text-xs font-mono mt-0.5 ${
             textDark ? "text-muted-foreground" : "text-muted-foreground"
           }`}
         >

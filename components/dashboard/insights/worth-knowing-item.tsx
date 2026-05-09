@@ -21,7 +21,7 @@ export function WorthKnowingItem({
     <article className="flex items-center gap-4 px-4 py-3 rounded-lg border border-border/40 bg-card hover:border-border/80 transition-colors">
       <span
         className={cn(
-          "inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[10px] font-bold uppercase tracking-wider shrink-0",
+          "inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[11px] font-bold uppercase tracking-wider shrink-0",
           meta.chipClass
         )}
       >
@@ -42,7 +42,7 @@ export function WorthKnowingItem({
         </span>
       </button>
 
-      <div className="hidden md:block font-mono text-[11px] text-muted-foreground tabular-nums shrink-0">
+      <div className="hidden md:block font-mono text-xs text-muted-foreground tabular-nums shrink-0">
         {insight.category}
       </div>
 

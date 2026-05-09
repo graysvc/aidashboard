@@ -14,7 +14,7 @@ export function WelcomeStep({ onNext }: { onNext: () => void }) {
           />
         </div>
         <div className="absolute -bottom-1.5 -right-1.5 h-6 w-6 rounded-xl bg-emerald-500 border-4 border-background flex items-center justify-center">
-          <span className="text-white text-[10px] font-bold">👋</span>
+          <span className="text-white text-[11px] font-bold">👋</span>
         </div>
       </div>
 
@@ -36,7 +36,7 @@ export function WelcomeStep({ onNext }: { onNext: () => void }) {
         <ArrowRight className="h-4 w-4" strokeWidth={2} />
       </Button>
 
-      <p className="mt-6 text-[11px] text-muted-foreground/70 max-w-md">
+      <p className="mt-6 text-xs text-muted-foreground/70 max-w-md">
         Your answers stay on this device until you finish. No account needed
         for the demo.
       </p>

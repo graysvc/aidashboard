@@ -3,10 +3,9 @@
 import { useState } from "react";
 import { dashboardData } from "@/lib/mock-data";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { PeriodSelector } from "@/components/dashboard/period-selector";
-import { PipelineTrendChart } from "@/components/dashboard/pipeline-trend-chart";
-import { LeadsBySourceChart } from "@/components/dashboard/leads-by-source-chart";
-import { PipelineStageChart } from "@/components/dashboard/pipeline-stage-chart";
+import { PeriodSelector, usePeriod } from "@/components/dashboard/period-selector";
+import { EmptyState } from "@/components/dashboard/empty-state";
+import { SectionTitle } from "@/components/dashboard/section-title";
 import {
   ActionCard,
   type ActionCardData,
@@ -20,9 +19,10 @@ import { cn } from "@/lib/utils";
 type DealTab = "at-risk" | "closing-week" | "hot" | "all-active";
 
 export default function SalesPage() {
-  const { period, agents, pipelineTrend, leadsBySource, pipelineByStage } =
-    dashboardData;
+  const { agents } = dashboardData;
   const [activeTab, setActiveTab] = useState<DealTab>("at-risk");
+  const period = usePeriod();
+  const isEmptyRange = period >= 30;
 
   // ───── Performance snapshot (one line, derived from agents) ─────
   const totalActive = agents.reduce((a, x) => a + x.metrics.activeDeals, 0);
@@ -39,6 +39,40 @@ export default function SalesPage() {
   )} pipeline · ${totalActive} deals · ${winRate.toFixed(
     1
   )}% win rate · ${closedThisMonth} closed this month`;
+
+  // ───── Deals needing action (top 5 priority) ─────
+  const dealsNeedingAction: ActionCardData[] = [
+    {
+      id: "dna-1",
+      tag: "URGENT",
+      amount: "$850K",
+      summary: "Carlos Mendez · No update 5 days · Sarah",
+    },
+    {
+      id: "dna-2",
+      tag: "WARNING",
+      amount: "$4.2M",
+      summary: "Familia Rodríguez · Stalled 12 days · James",
+    },
+    {
+      id: "dna-3",
+      tag: "HOT LEAD",
+      amount: "$1.5M",
+      summary: "Inversor Bolivia · Decision Wed · Priya",
+    },
+    {
+      id: "dna-4",
+      tag: "OPPORTUNITY",
+      amount: "$980K",
+      summary: "Project Brickell · Tour today · Marcus",
+    },
+    {
+      id: "dna-5",
+      tag: "DEADLINE",
+      amount: "$2.1M",
+      summary: "Pareja NY · Contract expires Friday · Sarah",
+    },
+  ];
 
   // ───── Pulsor insights (sales-specific) ─────
   const insights: ActionCardData[] = [
@@ -255,72 +289,87 @@ export default function SalesPage() {
               Your pipeline, prioritized by what matters now.
             </p>
           </div>
-          <PeriodSelector label={period.label} />
+          <PeriodSelector />
         </header>
 
-        {/* ═══ 1 · PERFORMANCE SNAPSHOT (one-line + charts) ═══ */}
+        {/* ═══ 1 · PERFORMANCE SNAPSHOT ═══ */}
         <section aria-label="Performance snapshot" className="space-y-2">
-          <div>
-            <h2 className="text-lg font-medium text-foreground tracking-tight">
-              Performance snapshot
-            </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Where the pipeline stands and where it&apos;s coming from.
-            </p>
-          </div>
+          <SectionTitle
+            title="Performance snapshot"
+            tooltip="Where the pipeline stands today."
+          />
           <div className="rounded-xl border border-border bg-card px-5 py-4">
             <p className="font-mono text-sm tabular-nums text-foreground">
               {snapshotLine}
             </p>
           </div>
+        </section>
 
-          {/* Trend (full width) */}
-          <PipelineTrendChart data={pipelineTrend} />
-
-          {/* Source mix + Stage mix */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-            <LeadsBySourceChart data={leadsBySource} />
-            <PipelineStageChart data={pipelineByStage} />
-          </div>
+        {/* ═══ 1.5 · DEALS NEEDING ACTION ═══ */}
+        <section aria-label="Deals needing action" className="space-y-2">
+          <SectionTitle
+            title="Deals needing action"
+            tooltip="Deals at risk or needing your push today."
+            right={
+              !isEmptyRange && (
+                <span className="font-mono text-xs tabular-nums text-muted-foreground shrink-0">
+                  {dealsNeedingAction.length} pending
+                </span>
+              )
+            }
+          />
+          {isEmptyRange ? (
+            <EmptyState
+              title={`No deals needing action in last ${period} days`}
+              hint="Switch to a shorter range to see urgent items."
+            />
+          ) : (
+            <ul className="rounded-xl border border-border bg-card divide-y divide-border/60 overflow-hidden">
+              {dealsNeedingAction.map((d) => (
+                <ActionCard key={d.id} data={d} />
+              ))}
+            </ul>
+          )}
         </section>
 
         {/* ═══ 2 · PULSOR INSIGHTS (sales-specific) ═══ */}
         <section aria-label="Pulsor insights" className="space-y-2">
-          <div className="flex items-baseline justify-between gap-2">
-            <div>
-              <h2 className="text-lg font-medium text-foreground tracking-tight">
-                Pulsor insights
-              </h2>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                What Pulsor learned about your pipeline this week.
-              </p>
-            </div>
-            <span className="font-mono text-xs tabular-nums text-muted-foreground shrink-0">
-              {insights.length} insights
-            </span>
-          </div>
-          <ul className="rounded-xl border border-border bg-card divide-y divide-border/60 overflow-hidden">
-            {insights.map((i) => (
-              <ActionCard key={i.id} data={i} />
-            ))}
-          </ul>
+          <SectionTitle
+            title="Pulsor insights"
+            tooltip="What Pulsor learned about your pipeline this week."
+            right={
+              !isEmptyRange && (
+                <span className="font-mono text-xs tabular-nums text-muted-foreground shrink-0">
+                  {insights.length} insights
+                </span>
+              )
+            }
+          />
+          {isEmptyRange ? (
+            <EmptyState
+              title={`No insights in last ${period} days`}
+              hint="Pulsor surfaces new patterns weekly."
+            />
+          ) : (
+            <ul className="rounded-xl border border-border bg-card divide-y divide-border/60 overflow-hidden">
+              {insights.map((i) => (
+                <ActionCard key={i.id} data={i} />
+              ))}
+            </ul>
+          )}
         </section>
 
         {/* ═══ 3 · ACTIVE DEALS (the core) ═══ */}
         <section aria-label="Active deals" className="space-y-3">
-          <div className="flex items-baseline justify-between gap-2">
-            <div>
-              <h2 className="text-lg font-medium text-foreground tracking-tight">
-                Active deals
-              </h2>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Your full pipeline, organized by what needs you most.
-              </p>
-            </div>
-            <span className="font-mono text-xs tabular-nums text-muted-foreground shrink-0">
-              {totalActive} deals · {formatCompactCurrency(totalPipeline)}
-            </span>
-          </div>
+          <SectionTitle
+            title="Active deals"
+            tooltip="Your full pipeline, organized by what needs you most."
+            right={
+              <span className="font-mono text-xs tabular-nums text-muted-foreground shrink-0">
+                {totalActive} deals · {formatCompactCurrency(totalPipeline)}
+              </span>
+            }
+          />
 
           {/* Tabs */}
           <div className="flex flex-wrap gap-1.5">
@@ -341,7 +390,7 @@ export default function SalesPage() {
                   {tab.label}
                   <span
                     className={cn(
-                      "font-mono tabular-nums text-[10px]",
+                      "font-mono tabular-nums text-[11px]",
                       active ? "text-background/70" : "text-muted-foreground"
                     )}
                   >

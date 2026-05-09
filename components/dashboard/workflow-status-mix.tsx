@@ -97,7 +97,7 @@ export function WorkflowStatusMix({ workflows }: { workflows: Workflow[] }) {
               <span className="font-mono text-2xl font-bold tabular-nums text-foreground leading-none">
                 {total}
               </span>
-              <span className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1.5">
+              <span className="text-[11px] uppercase tracking-wider text-muted-foreground mt-1.5">
                 Total
               </span>
             </div>

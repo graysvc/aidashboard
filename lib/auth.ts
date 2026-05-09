@@ -1,20 +1,15 @@
-// Client-side mock auth — placeholder until real auth (Clerk / Supabase / NextAuth) is wired in.
-// Stores a flag in localStorage to simulate a logged-in session.
+"use client";
 
-export const AUTH_KEY = "aidashboard:auth";
-export const AUTH_VALUE = "demo";
+import { createClient } from "@/lib/supabase/client";
 
-export function isLoggedIn(): boolean {
-  if (typeof window === "undefined") return false;
-  return localStorage.getItem(AUTH_KEY) === AUTH_VALUE;
-}
-
-export function signIn() {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(AUTH_KEY, AUTH_VALUE);
-}
-
-export function signOut() {
-  if (typeof window === "undefined") return;
-  localStorage.removeItem(AUTH_KEY);
+/**
+ * Client-side sign-out. Clears the Supabase session cookie and redirects
+ * to /login. Middleware will block subsequent protected requests.
+ */
+export async function signOut() {
+  const supabase = createClient();
+  await supabase.auth.signOut();
+  if (typeof window !== "undefined") {
+    window.location.href = "/login";
+  }
 }

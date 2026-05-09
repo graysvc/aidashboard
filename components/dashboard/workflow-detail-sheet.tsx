@@ -106,11 +106,11 @@ export function WorkflowDetailSheet({
         <SheetHeader className="pr-8">
           <div className="flex items-center gap-2">
             <span className={cn("h-2 w-2 rounded-full shrink-0", status.dot)} />
-            <span className={cn("text-[11px] font-semibold", status.text)}>
+            <span className={cn("text-xs font-semibold", status.text)}>
               {status.label}
             </span>
             <span className="text-muted-foreground/40">·</span>
-            <span className="text-[11px] font-medium text-muted-foreground">
+            <span className="text-xs font-medium text-muted-foreground">
               {workflow.category}
             </span>
           </div>
@@ -125,7 +125,7 @@ export function WorkflowDetailSheet({
         <div className="mt-6 space-y-6">
           {/* Tools */}
           <section>
-            <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+            <h3 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
               Tools
             </h3>
             <div className="flex flex-wrap gap-1.5">
@@ -133,7 +133,7 @@ export function WorkflowDetailSheet({
                 <Badge
                   key={tool}
                   variant="outline"
-                  className="bg-muted/50 text-muted-foreground border-border/50 font-medium text-[11px] py-0.5 px-2"
+                  className="bg-muted/50 text-muted-foreground border-border/50 font-medium text-xs py-0.5 px-2"
                 >
                   {tool}
                 </Badge>
@@ -175,7 +175,7 @@ export function WorkflowDetailSheet({
 
           {/* Trend chart */}
           <section>
-            <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+            <h3 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
               12-week trend
             </h3>
             <div className="h-[180px] w-full -ml-2">
@@ -246,7 +246,7 @@ export function WorkflowDetailSheet({
 
           {/* Funnel */}
           <section>
-            <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+            <h3 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-3">
               Conversion funnel
             </h3>
             <ul className="space-y-2.5">
@@ -266,7 +266,7 @@ export function WorkflowDetailSheet({
                       </span>
                       <div className="flex items-center gap-2 font-mono tabular-nums">
                         {dropoff !== null && (
-                          <span className="text-[10px] text-muted-foreground">
+                          <span className="text-[11px] text-muted-foreground">
                             -{dropoff.toFixed(0)}%
                           </span>
                         )}
@@ -328,14 +328,14 @@ function MetricBox({
 }) {
   return (
     <div className="rounded-lg border border-border/70 bg-card p-4">
-      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
         {label}
       </div>
       <div className="font-mono text-xl font-bold tabular-nums text-foreground mt-1">
         {value}
       </div>
       {hint && (
-        <div className="text-[11px] text-muted-foreground mt-1">{hint}</div>
+        <div className="text-xs text-muted-foreground mt-1">{hint}</div>
       )}
     </div>
   );

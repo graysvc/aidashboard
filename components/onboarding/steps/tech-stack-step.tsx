@@ -61,7 +61,7 @@ export function TechStackStep({
       />
 
       <div className="rounded-xl border border-border/70 bg-muted/30 px-4 py-3">
-        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           Selected
         </div>
         <div className="font-mono text-xl font-bold tabular-nums text-foreground mt-0.5">

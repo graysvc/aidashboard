@@ -125,12 +125,12 @@ export function AgentDetailSheet({
                     className={cn("h-1.5 w-1.5 rounded-full", status.dot)}
                   />
                   <span
-                    className={cn("text-[11px] font-semibold", status.text)}
+                    className={cn("text-xs font-semibold", status.text)}
                   >
                     {status.label}
                   </span>
                 </div>
-                <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
                   <Calendar className="h-3 w-3" strokeWidth={1.75} />
                   Joined {tenure}
                 </div>
@@ -148,7 +148,7 @@ export function AgentDetailSheet({
                 strokeWidth={2}
               />
               <div>
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-amber-700">
+                <div className="text-[11px] font-semibold uppercase tracking-wider text-amber-700">
                   Coaching note
                 </div>
                 <p className="text-sm leading-relaxed text-amber-900 mt-1">
@@ -188,7 +188,7 @@ export function AgentDetailSheet({
 
           {/* Trend chart */}
           <section>
-            <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+            <h3 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
               8-week production
             </h3>
             <div className="h-[180px] w-full -ml-2">
@@ -259,7 +259,7 @@ export function AgentDetailSheet({
 
           {/* Pipeline breakdown */}
           <section>
-            <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+            <h3 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-3">
               This month at a glance
             </h3>
             <div className="grid grid-cols-3 gap-3">
@@ -306,14 +306,14 @@ function MetricBox({
 }) {
   return (
     <div className="rounded-lg border border-border/70 bg-card p-4">
-      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
         {label}
       </div>
       <div className="font-mono text-xl font-bold tabular-nums text-foreground mt-1">
         {value}
       </div>
       {hint && (
-        <div className="text-[11px] text-muted-foreground mt-1">{hint}</div>
+        <div className="text-xs text-muted-foreground mt-1">{hint}</div>
       )}
     </div>
   );
@@ -325,7 +325,7 @@ function SnapshotBox({ label, value }: { label: string; value: string }) {
       <div className="font-mono text-lg font-bold tabular-nums text-foreground">
         {value}
       </div>
-      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mt-0.5">
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold mt-0.5">
         {label}
       </div>
     </div>

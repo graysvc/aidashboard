@@ -32,7 +32,7 @@ export function InsightCard({ insight }: { insight: Insight }) {
         <div className="flex-1 min-w-0">
           <div
             className={cn(
-              "text-[10px] font-semibold uppercase tracking-wider mb-1",
+              "text-[11px] font-semibold uppercase tracking-wider mb-1",
               meta.labelClass
             )}
           >
@@ -44,7 +44,7 @@ export function InsightCard({ insight }: { insight: Insight }) {
         </div>
       </div>
 
-      <p className="mt-3 font-mono text-[11px] text-muted-foreground/90 tabular-nums bg-muted/40 px-2.5 py-1.5 rounded-md">
+      <p className="mt-3 font-mono text-xs text-muted-foreground/90 tabular-nums bg-muted/40 px-2.5 py-1.5 rounded-md">
         {insight.impact}
       </p>
 

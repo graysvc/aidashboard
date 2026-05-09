@@ -73,7 +73,7 @@ export function LeadsBySourceChart({ data }: { data: CategoryPoint[] }) {
           <div className="font-mono text-xl font-bold tabular-nums text-foreground leading-none">
             {total}
           </div>
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">
+          <div className="text-[11px] uppercase tracking-wider text-muted-foreground mt-1">
             Total
           </div>
         </div>

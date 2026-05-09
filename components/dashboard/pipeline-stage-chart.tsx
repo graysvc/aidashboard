@@ -36,7 +36,7 @@ function ChartTooltip({ active, payload }: ChartTooltipProps) {
         {item.value} deals
       </div>
       {item.secondary !== undefined && (
-        <div className="font-mono text-[11px] text-muted-foreground tabular-nums">
+        <div className="font-mono text-xs text-muted-foreground tabular-nums">
           {formatCompactCurrency(item.secondary)} value
         </div>
       )}
@@ -87,7 +87,7 @@ export function PipelineStageChart({ data }: { data: CategoryPoint[] }) {
               <span className="font-mono text-2xl font-bold tabular-nums text-foreground leading-none">
                 {totalDeals}
               </span>
-              <span className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1.5">
+              <span className="text-[11px] uppercase tracking-wider text-muted-foreground mt-1.5">
                 Active deals
               </span>
             </div>

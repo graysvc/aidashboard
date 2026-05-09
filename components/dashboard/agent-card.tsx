@@ -75,7 +75,7 @@ export function AgentCard({ agent }: { agent: Agent }) {
             </div>
             <div className="flex items-center gap-1.5 mt-1.5">
               <span className={cn("h-1.5 w-1.5 rounded-full shrink-0", status.dot)} />
-              <span className={cn("text-[11px] font-medium", status.text)}>
+              <span className={cn("text-xs font-medium", status.text)}>
                 {status.label}
               </span>
             </div>
@@ -121,7 +121,7 @@ export function AgentCard({ agent }: { agent: Agent }) {
               className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5"
               strokeWidth={2}
             />
-            <p className="text-[11px] leading-relaxed text-amber-900">
+            <p className="text-xs leading-relaxed text-amber-900">
               {agent.coachingNote}
             </p>
           </div>
@@ -129,7 +129,7 @@ export function AgentCard({ agent }: { agent: Agent }) {
 
         {/* Actions */}
         <div className="flex items-center pt-1 border-t border-border/60 -mx-5 -mb-5 px-5 py-3 mt-auto">
-          <span className="text-[11px] font-mono text-muted-foreground tabular-nums">
+          <span className="text-xs font-mono text-muted-foreground tabular-nums">
             {agent.metrics.activeDeals} active · {agent.metrics.leadsThisMonth} leads
             this mo.
           </span>
@@ -152,7 +152,7 @@ export function AgentCard({ agent }: { agent: Agent }) {
 function Metric({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
         {label}
       </div>
       <div className="font-mono text-sm font-bold tabular-nums text-foreground mt-0.5">

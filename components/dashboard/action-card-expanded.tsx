@@ -39,7 +39,7 @@ export function ActionCardExpanded({ data }: { data: ActionCardExpandedData }) {
       <div className="flex items-start justify-between gap-3">
         <span
           className={cn(
-            "text-[10px] font-semibold uppercase tracking-[0.12em]",
+            "text-[11px] font-semibold uppercase tracking-[0.12em]",
             TAG_COLOR[data.tag]
           )}
         >

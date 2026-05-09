@@ -120,7 +120,7 @@ export function ToolsTable({
           <Home className="h-3.5 w-3.5" strokeWidth={2} />
           Real estate native only
         </button>
-        <span className="text-[11px] text-muted-foreground">
+        <span className="text-xs text-muted-foreground">
           Hides Slack, Canva, Mailchimp, ChatGPT, etc. — only tools built for real estate.
         </span>
       </div>
@@ -144,7 +144,7 @@ export function ToolsTable({
               {cat.title}
               <span
                 className={cn(
-                  "font-mono tabular-nums text-[10px]",
+                  "font-mono tabular-nums text-[11px]",
                   active
                     ? "text-primary-foreground/80"
                     : "text-muted-foreground"
@@ -205,12 +205,12 @@ export function ToolsTable({
                             {tool.name}
                           </span>
                           {tool.reNative ? (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-primary mt-0.5">
+                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary mt-0.5">
                               <Home className="h-2.5 w-2.5" strokeWidth={2.5} />
                               RE-native
                             </span>
                           ) : (
-                            <span className="text-[10px] text-muted-foreground mt-0.5">
+                            <span className="text-[11px] text-muted-foreground mt-0.5">
                               General tool
                             </span>
                           )}
@@ -220,7 +220,7 @@ export function ToolsTable({
                     <TableCell>
                       <Badge
                         variant="outline"
-                        className="bg-muted/50 text-muted-foreground border-border/50 font-medium text-[10px] py-0 px-2 h-5"
+                        className="bg-muted/50 text-muted-foreground border-border/50 font-medium text-[11px] py-0 px-2 h-5"
                       >
                         {tool.categoryTitle}
                       </Badge>
@@ -231,7 +231,7 @@ export function ToolsTable({
                       </p>
                     </TableCell>
                     <TableCell>
-                      <span className="font-mono text-[11px] text-muted-foreground/80 truncate block">
+                      <span className="font-mono text-xs text-muted-foreground/80 truncate block">
                         {tool.website.replace(/^https?:\/\//, "")}
                       </span>
                     </TableCell>

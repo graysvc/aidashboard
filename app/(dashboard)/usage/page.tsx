@@ -58,7 +58,7 @@ export default function UsagePage() {
       <section className="rounded-xl border border-border bg-card p-6">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
-            <div className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
               Tokens available
             </div>
             <div className="mt-1 flex items-baseline gap-2">
@@ -71,7 +71,7 @@ export default function UsagePage() {
             </div>
           </div>
           <div className="text-right">
-            <div className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
               Cycle
             </div>
             <div className="text-sm font-medium text-foreground mt-1">
@@ -79,7 +79,7 @@ export default function UsagePage() {
             </div>
             <div
               className={cn(
-                "inline-flex items-center gap-1.5 mt-2 px-2 py-0.5 rounded-full text-[11px] font-medium",
+                "inline-flex items-center gap-1.5 mt-2 px-2 py-0.5 rounded-full text-xs font-medium",
                 status === "active"
                   ? "bg-success-subtle text-success"
                   : "bg-warning-subtle text-warning"
@@ -98,7 +98,7 @@ export default function UsagePage() {
               style={{ width: `${usedPct}%` }}
             />
           </div>
-          <div className="flex justify-between mt-2 text-[11px] text-muted-foreground font-mono tabular-nums">
+          <div className="flex justify-between mt-2 text-xs text-muted-foreground font-mono tabular-nums">
             <span>{usedTokens.toLocaleString()} used</span>
             <span>{usedPct.toFixed(0)}%</span>
           </div>
@@ -107,7 +107,7 @@ export default function UsagePage() {
 
       {/* ─── 2. VALUE GENERATED ─── */}
       <section>
-        <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground mb-3 flex items-center gap-2">
+        <h2 className="text-xs font-semibold uppercase tracking-[0.12em] text-foreground mb-3 flex items-center gap-2">
           <Sparkles
             className="h-3.5 w-3.5 text-primary"
             strokeWidth={2}
@@ -137,10 +137,10 @@ export default function UsagePage() {
       {/* ─── 3. TOKEN BREAKDOWN ─── */}
       <section className="rounded-xl border border-border bg-card p-6">
         <div className="flex items-baseline justify-between mb-4">
-          <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground">
+          <h2 className="text-xs font-semibold uppercase tracking-[0.12em] text-foreground">
             Token usage · last 7 days
           </h2>
-          <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
+          <span className="font-mono text-xs tabular-nums text-muted-foreground">
             {breakdownTotal.toLocaleString()} total
           </span>
         </div>
@@ -153,7 +153,7 @@ export default function UsagePage() {
                   <span className="text-foreground">{b.label}</span>
                   <span className="font-mono tabular-nums text-foreground">
                     {b.value.toLocaleString()}
-                    <span className="text-muted-foreground ml-2 text-[11px]">
+                    <span className="text-muted-foreground ml-2 text-xs">
                       {pct.toFixed(0)}%
                     </span>
                   </span>
@@ -203,14 +203,14 @@ function AgentUsageSection({
     <section className="rounded-xl border border-border bg-card p-6">
       <div className="flex items-baseline justify-between mb-4 flex-wrap gap-2">
         <div>
-          <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground">
+          <h2 className="text-xs font-semibold uppercase tracking-[0.12em] text-foreground">
             Usage by agent
           </h2>
           <p className="text-xs text-muted-foreground mt-1">
             Tokens consumed and cost per realtor this cycle.
           </p>
         </div>
-        <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
+        <span className="font-mono text-xs tabular-nums text-muted-foreground">
           {agents.length} agents
         </span>
       </div>
@@ -226,7 +226,7 @@ function AgentUsageSection({
                 )}
                 <AvatarFallback
                   className={cn(
-                    "text-white text-[11px] font-semibold",
+                    "text-white text-xs font-semibold",
                     agent.avatarColor
                   )}
                 >
@@ -238,7 +238,7 @@ function AgentUsageSection({
                   <span className="text-sm font-medium text-foreground truncate">
                     {agent.name}
                   </span>
-                  <span className="font-mono text-[11px] tabular-nums text-muted-foreground shrink-0">
+                  <span className="font-mono text-xs tabular-nums text-muted-foreground shrink-0">
                     {tokens.toLocaleString()}{" "}
                     <span className="text-muted-foreground/60">tok</span>
                     <span className="text-foreground ml-2">
@@ -274,7 +274,7 @@ function ValueTile({
     <div className="rounded-xl border border-border bg-card p-5">
       <div className="flex items-center gap-2 text-muted-foreground">
         <Icon className="h-3.5 w-3.5" strokeWidth={2} />
-        <span className="text-[10px] font-semibold uppercase tracking-[0.12em]">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.12em]">
           {label}
         </span>
       </div>

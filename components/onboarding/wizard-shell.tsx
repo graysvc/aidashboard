@@ -51,7 +51,7 @@ export function WizardShell({
                 style={{ width: `${progress}%` }}
               />
             </div>
-            <span className="font-mono text-[11px] tabular-nums text-muted-foreground shrink-0">
+            <span className="font-mono text-xs tabular-nums text-muted-foreground shrink-0">
               {step + 1} / {totalSteps}
             </span>
           </div>
@@ -128,7 +128,7 @@ export function StepHeader({
   return (
     <div className="mb-7">
       {badge && (
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-subtle px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-accent-foreground mb-3">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-subtle px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-accent-foreground mb-3">
           <span className="h-1.5 w-1.5 rounded-full bg-primary" />
           {badge}
         </span>

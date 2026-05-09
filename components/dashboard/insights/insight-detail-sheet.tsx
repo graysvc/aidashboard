@@ -48,14 +48,14 @@ export function InsightDetailSheet({
             <span className={cn("h-1.5 w-1.5 rounded-full", meta.dotClass)} />
             <span
               className={cn(
-                "text-[10px] font-bold uppercase tracking-wider",
+                "text-[11px] font-bold uppercase tracking-wider",
                 meta.labelClass
               )}
             >
               {meta.label}
             </span>
             <span className="text-muted-foreground/40">·</span>
-            <span className="text-[11px] font-medium text-muted-foreground">
+            <span className="text-xs font-medium text-muted-foreground">
               {insight.category}
             </span>
           </div>
@@ -84,7 +84,7 @@ export function InsightDetailSheet({
           {/* Detail */}
           {insight.detail && (
             <section>
-              <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+              <h3 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
                 Why this matters
               </h3>
               <p className="text-sm leading-relaxed text-foreground/85">
@@ -94,7 +94,7 @@ export function InsightDetailSheet({
           )}
 
           {/* Meta */}
-          <div className="flex items-center gap-2 text-[11px] text-muted-foreground font-mono tabular-nums pt-2 border-t border-border/40">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono tabular-nums pt-2 border-t border-border/40">
             <Clock className="h-3 w-3" strokeWidth={2} />
             Created{" "}
             {formatDistanceToNowStrict(new Date(insight.createdAt))} ago

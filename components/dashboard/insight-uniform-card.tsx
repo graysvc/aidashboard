@@ -45,14 +45,14 @@ export function InsightUniformCard({
           <span className={cn("h-1.5 w-1.5 rounded-full shrink-0", type.dotClass)} />
           <span
             className={cn(
-              "text-[10px] font-bold uppercase tracking-wider",
+              "text-[11px] font-bold uppercase tracking-wider",
               type.labelClass
             )}
           >
             {type.label}
           </span>
           <span className="text-muted-foreground/40 shrink-0">·</span>
-          <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground truncate">
+          <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground truncate">
             {cat.label}
           </span>
         </div>

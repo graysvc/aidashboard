@@ -99,7 +99,7 @@ export function TeamScorecardsTable({ agents }: { agents: Agent[] }) {
                         )}
                         <AvatarFallback
                           className={cn(
-                            "text-white text-[11px] font-semibold",
+                            "text-white text-xs font-semibold",
                             agent.avatarColor
                           )}
                         >
@@ -135,7 +135,7 @@ export function TeamScorecardsTable({ agents }: { agents: Agent[] }) {
                   <TableCell>
                     <span
                       className={cn(
-                        "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold",
+                        "inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold",
                         meta.chip,
                         meta.chipText
                       )}

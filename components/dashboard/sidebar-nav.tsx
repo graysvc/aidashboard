@@ -7,7 +7,6 @@ import {
   TrendingUp,
   Megaphone,
   Workflow,
-  Users,
   Sparkles,
   Boxes,
   Gauge,
@@ -33,7 +32,6 @@ const NAV_ADMIN = [
   { href: "/workflows", label: "Workflows", icon: Workflow },
   { href: "/insights", label: "Insights", icon: Sparkles },
   { href: "/tools", label: "Tools", icon: Boxes },
-  { href: "/team", label: "Team", icon: Users },
 ] as const;
 
 const NAV_SECONDARY = [
@@ -82,12 +80,12 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <>
       <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-        <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+        <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
           Workspace
         </p>
         {NAV_WORKSPACE.map(renderItem)}
 
-        <p className="px-3 pt-5 pb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+        <p className="px-3 pt-5 pb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
           Admin
         </p>
         {NAV_ADMIN.map(renderItem)}
@@ -150,7 +148,7 @@ function UserPill({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div className="flex items-center gap-2.5 px-2 py-2 mb-1">
       <Avatar className="h-8 w-8 shrink-0">
-        <AvatarFallback className="bg-foreground text-background text-[11px] font-semibold">
+        <AvatarFallback className="bg-foreground text-background text-xs font-semibold">
           {user.initials}
         </AvatarFallback>
       </Avatar>
@@ -162,7 +160,7 @@ function UserPill({ onNavigate }: { onNavigate?: () => void }) {
         <div className="text-sm font-medium text-foreground truncate">
           {user.name.split(" ")[0]} {user.name.split(" ")[1]?.[0]}.
         </div>
-        <div className="text-[11px] text-muted-foreground truncate">
+        <div className="text-xs text-muted-foreground truncate">
           Account settings
         </div>
       </Link>

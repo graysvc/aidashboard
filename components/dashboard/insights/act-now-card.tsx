@@ -40,7 +40,7 @@ export function ActNowCard({
         <div className="flex-1 min-w-0">
           <div
             className={cn(
-              "text-[10px] font-bold uppercase tracking-wider",
+              "text-[11px] font-bold uppercase tracking-wider",
               meta.labelClass
             )}
           >

@@ -23,6 +23,7 @@ import {
   type ActionCardData,
   type ActionTag,
 } from "@/components/dashboard/action-card";
+import { SectionTitle } from "@/components/dashboard/section-title";
 import { InsightDetailSheet } from "@/components/dashboard/insights/insight-detail-sheet";
 import { SnoozeToast } from "@/components/dashboard/insights/snooze-toast";
 import { CATEGORY_META } from "@/components/dashboard/insights/insight-meta";
@@ -57,7 +58,7 @@ const TYPE_WEIGHT: Record<InsightType, number> = {
 };
 
 export default function InsightsPage() {
-  const { insights, period } = dashboardData;
+  const { insights } = dashboardData;
 
   // ----- State
   const [show, setShow] = useState<ShowFilter>("pending");
@@ -159,7 +160,7 @@ export default function InsightsPage() {
             </p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <PeriodSelector label={period.label} />
+            <PeriodSelector />
             <Select value={show} onValueChange={(v) => setShow(v as ShowFilter)}>
               <SelectTrigger className="h-9 w-[150px] text-xs font-medium gap-1.5">
                 <span className="text-muted-foreground">Show:</span>
@@ -204,7 +205,7 @@ export default function InsightsPage() {
                 {label}
                 <span
                   className={cn(
-                    "font-mono tabular-nums text-[10px]",
+                    "font-mono tabular-nums text-[11px]",
                     active ? "text-background/70" : "text-muted-foreground"
                   )}
                 >
@@ -220,20 +221,20 @@ export default function InsightsPage() {
           <EmptyState filter={show} />
         ) : (
           <section aria-label="Insights" className="space-y-2">
-            <div className="flex items-baseline justify-between gap-2">
-              <div>
-                <h2 className="text-lg font-medium text-foreground tracking-tight">
-                  Pulsor insights
-                </h2>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  What Pulsor learned about your business this week.
-                </p>
-              </div>
-              <span className="font-mono text-xs tabular-nums text-muted-foreground shrink-0">
-                {visible.length}{" "}
-                {show === "pending" ? "pending" : show === "all" ? "total" : show}
-              </span>
-            </div>
+            <SectionTitle
+              title="Pulsor insights"
+              tooltip="What Pulsor learned about your business this week."
+              right={
+                <span className="font-mono text-xs tabular-nums text-muted-foreground shrink-0">
+                  {visible.length}{" "}
+                  {show === "pending"
+                    ? "pending"
+                    : show === "all"
+                      ? "total"
+                      : show}
+                </span>
+              }
+            />
             <ul className="rounded-xl border border-border bg-card divide-y divide-border/60 overflow-hidden">
               {cards.map((c) => (
                 <ActionCard key={c.id} data={c} />

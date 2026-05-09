@@ -26,7 +26,7 @@ export function ToolCard({ tool }: { tool: Tool }) {
         </p>
       </div>
       <div className="mt-auto pt-2 border-t border-border/40">
-        <span className="text-[10px] font-mono text-muted-foreground/70 uppercase tracking-wider truncate block">
+        <span className="text-[11px] font-mono text-muted-foreground/70 uppercase tracking-wider truncate block">
           {tool.website.replace(/^https?:\/\//, "")}
         </span>
       </div>

@@ -36,7 +36,7 @@ const CATEGORY_DESC: Record<WorkflowCategory, string> = {
 };
 
 export default function WorkflowsPage() {
-  const { workflows, period } = dashboardData;
+  const { workflows } = dashboardData;
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>("all");
 
   // Per-category counts (always derived from full set so chips don't disappear)
@@ -78,7 +78,7 @@ export default function WorkflowsPage() {
             ROI and efficiency of every automation across your stack.
           </p>
         </div>
-        <PeriodSelector label={period.label} />
+        <PeriodSelector />
       </header>
 
       {/* Category filter chips */}
@@ -105,7 +105,7 @@ export default function WorkflowsPage() {
               {label}
               <span
                 className={cn(
-                  "font-mono tabular-nums text-[10px]",
+                  "font-mono tabular-nums text-[11px]",
                   active
                     ? "text-primary-foreground/80"
                     : "text-muted-foreground"
@@ -159,7 +159,7 @@ function CategorySection({
             {items.length} {items.length === 1 ? "workflow" : "workflows"}
           </span>
           {broken > 0 && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-semibold text-rose-700">
+            <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2 py-0.5 text-[11px] font-semibold text-rose-700">
               <span className="h-1 w-1 rounded-full bg-rose-500" />
               {broken} broken
             </span>

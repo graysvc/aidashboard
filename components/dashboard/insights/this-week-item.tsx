@@ -30,13 +30,13 @@ export function ThisWeekItem({
             <span className={cn("h-1.5 w-1.5 rounded-full", meta.dotClass)} />
             <span
               className={cn(
-                "text-[10px] font-bold uppercase tracking-wider",
+                "text-[11px] font-bold uppercase tracking-wider",
                 meta.labelClass
               )}
             >
               {meta.label}
             </span>
-            <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+            <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
               · {insight.category}
             </span>
           </div>

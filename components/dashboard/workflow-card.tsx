@@ -68,14 +68,14 @@ export function WorkflowCard({ workflow }: { workflow: Workflow }) {
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2 min-w-0">
             <span className={cn("h-2 w-2 rounded-full shrink-0", status.dot)} />
-            <span className={cn("text-[11px] font-semibold", status.text)}>
+            <span className={cn("text-xs font-semibold", status.text)}>
               {status.label}
             </span>
           </div>
           {workflow.status !== "broken" && workflow.weeklyChange !== 0 && (
             <span
               className={cn(
-                "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full font-mono text-[11px] font-semibold tabular-nums shrink-0",
+                "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full font-mono text-xs font-semibold tabular-nums shrink-0",
                 isUp
                   ? "bg-emerald-50 text-emerald-700"
                   : "bg-rose-50 text-rose-700"
@@ -206,7 +206,7 @@ function HeroMetric({
         <div className="font-mono text-lg font-bold tabular-nums text-foreground leading-none">
           {value}
         </div>
-        <div className="text-[11px] text-muted-foreground mt-1 leading-tight">
+        <div className="text-xs text-muted-foreground mt-1 leading-tight">
           {label}
         </div>
       </div>

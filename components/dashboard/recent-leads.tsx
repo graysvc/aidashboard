@@ -76,19 +76,19 @@ export function RecentLeads({ leads }: { leads: Lead[] }) {
                         status.dot
                       )}
                     />
-                    <span className={cn("text-[11px] font-medium", status.text)}>
+                    <span className={cn("text-xs font-medium", status.text)}>
                       {status.label}
                     </span>
-                    <span className="text-[11px] text-muted-foreground truncate">
+                    <span className="text-xs text-muted-foreground truncate">
                       · {lead.property}
                     </span>
                   </div>
                 </div>
                 <div className="hidden md:flex flex-col items-end shrink-0">
-                  <span className="text-[11px] font-medium text-foreground">
+                  <span className="text-xs font-medium text-foreground">
                     {lead.stage}
                   </span>
-                  <span className="text-[11px] text-muted-foreground font-mono tabular-nums">
+                  <span className="text-xs text-muted-foreground font-mono tabular-nums">
                     {formatDistanceToNowStrict(new Date(lead.lastContactAt))} ago
                   </span>
                 </div>

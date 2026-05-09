@@ -52,7 +52,7 @@ export function KpiChip({ kpi }: { kpi: KPI }) {
         />
       </span>
       <div className="min-w-0 flex-1">
-        <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
           {kpi.label}
         </div>
         <div className="flex items-baseline gap-1.5 mt-0.5">
@@ -62,7 +62,7 @@ export function KpiChip({ kpi }: { kpi: KPI }) {
           {kpi.delta && (
             <span
               className={cn(
-                "inline-flex items-center font-mono text-[10px] font-semibold tabular-nums",
+                "inline-flex items-center font-mono text-[11px] font-semibold tabular-nums",
                 deltaTone === "positive" && "text-emerald-700",
                 deltaTone === "negative" && "text-rose-700",
                 deltaTone === "neutral" && "text-muted-foreground"

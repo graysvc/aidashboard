@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { CheckCircle2, Loader2, Sparkles } from "lucide-react";
 import type { OnboardingData } from "@/lib/onboarding/types";
 import { saveOnboarding } from "@/lib/onboarding/storage";
-import { signIn } from "@/lib/auth";
 
 const TASKS = [
   "Saving your workspace profile",
@@ -42,8 +41,6 @@ export function CompleteStep({ data }: { data: OnboardingData }) {
     };
     // Persist locally
     saveOnboarding(completed);
-    // Sign the user in (mock auth)
-    signIn();
     // Send to server (Resend email) — fire and forget, doesn't block UX
     void submitToServer(completed);
 
@@ -64,7 +61,8 @@ export function CompleteStep({ data }: { data: OnboardingData }) {
 
   useEffect(() => {
     if (!done) return;
-    const t = setTimeout(() => router.push("/overview"), 900);
+    // No auto-login — accounts are admin-provisioned. Send them to /login.
+    const t = setTimeout(() => router.push("/login"), 900);
     return () => clearTimeout(t);
   }, [done, router]);
 

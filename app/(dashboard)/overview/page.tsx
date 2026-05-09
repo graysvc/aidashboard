@@ -9,8 +9,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { PeriodSelector } from "@/components/dashboard/period-selector";
+import { PeriodSelector, usePeriod } from "@/components/dashboard/period-selector";
+import { EmptyState } from "@/components/dashboard/empty-state";
 import { StatusTile } from "@/components/dashboard/status-tile";
+import { SectionTitle } from "@/components/dashboard/section-title";
 import {
   ActionCard,
   type ActionCardData,
@@ -18,8 +20,10 @@ import {
 import { cn } from "@/lib/utils";
 
 export default function HomePage() {
-  const { user, period, agents } = dashboardData;
+  const { user, agents } = dashboardData;
   const firstName = user.name.split(" ")[0];
+  const period = usePeriod();
+  const isEmptyRange = period >= 30; // mocked: only 7/15 days have data
 
   // ───── Section 1 — Team status TODAY (3 numbers) ─────
   const totalPipeline = agents.reduce(
@@ -134,27 +138,6 @@ export default function HomePage() {
       summary: "Pareja NY · First contact · Emma O.",
       sortKey: 650_000,
     },
-    {
-      id: "wg-6",
-      tag: "WARNING",
-      amount: "$560K",
-      summary: "Tech founder · Inspection pending · Aisha P.",
-      sortKey: 560_000,
-    },
-    {
-      id: "wg-7",
-      tag: "HOT LEAD",
-      amount: "$420K",
-      summary: "Garcia family · Offer submitted · Tyler B.",
-      sortKey: 420_000,
-    },
-    {
-      id: "wg-8",
-      tag: "HOT LEAD",
-      amount: "$380K",
-      summary: "Olsen LLC · Closing docs sent · Madison L.",
-      sortKey: 380_000,
-    },
   ];
   weekGoal.sort((a, b) => (b.sortKey ?? 0) - (a.sortKey ?? 0));
 
@@ -186,19 +169,15 @@ export default function HomePage() {
             What needs your attention today.
           </p>
         </div>
-        <PeriodSelector label={period.label} />
+        <PeriodSelector />
       </header>
 
       {/* ═══ 1 · TEAM STATUS — 3 numbers ═══ */}
       <section aria-label="Team status today" className="space-y-2">
-        <div>
-          <h2 className="text-lg font-medium text-foreground tracking-tight">
-            Team status
-          </h2>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            How your business is doing today at a glance.
-          </p>
-        </div>
+        <SectionTitle
+          title="Team status"
+          tooltip="How your business is doing today at a glance."
+        />
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <StatusTile
             label="Active pipeline"
@@ -227,76 +206,84 @@ export default function HomePage() {
 
       {/* ═══ 2 · PULSOR INSIGHTS ═══ */}
       <section aria-label="Pulsor insights" className="space-y-2">
-        <div className="flex items-baseline justify-between gap-2">
-          <div>
-            <h2 className="text-lg font-medium text-foreground tracking-tight">
-              Pulsor insights
-            </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              What Pulsor surfaced for you to act on today.
-            </p>
-          </div>
-          <span className="font-mono text-xs tabular-nums text-muted-foreground shrink-0">
-            {allInsights.length} pending
-          </span>
-        </div>
-        <ul className="rounded-xl border border-border bg-card divide-y divide-border/60 overflow-hidden">
-          {todayActions.map((a) => (
-            <ActionCard key={a.id} data={a} />
-          ))}
-        </ul>
-        {remainingInsights > 0 && (
-          <a
-            href="/insights"
-            className="inline-flex items-center justify-center w-full gap-1.5 rounded-lg border border-border/70 bg-card hover:bg-muted/50 hover:border-foreground/30 px-4 py-2.5 text-xs font-medium text-foreground transition-colors"
-          >
-            +{remainingInsights} more in Insights
-            <ArrowRight className="h-3 w-3" strokeWidth={2} />
-          </a>
+        <SectionTitle
+          title="Pulsor insights"
+          tooltip="What Pulsor surfaced for you to act on today."
+          right={
+            !isEmptyRange && (
+              <span className="font-mono text-xs tabular-nums text-muted-foreground shrink-0">
+                {allInsights.length} pending
+              </span>
+            )
+          }
+        />
+        {isEmptyRange ? (
+          <EmptyState
+            title={`No insights in last ${period} days`}
+            hint="Try a shorter range or wait for new signals."
+          />
+        ) : (
+          <>
+            <ul className="rounded-xl border border-border bg-card divide-y divide-border/60 overflow-hidden">
+              {todayActions.map((a) => (
+                <ActionCard key={a.id} data={a} />
+              ))}
+            </ul>
+            {remainingInsights > 0 && (
+              <a
+                href="/insights"
+                className="inline-flex items-center justify-center w-full gap-1.5 rounded-lg border border-border/70 bg-card hover:bg-muted/50 hover:border-foreground/30 px-4 py-2.5 text-xs font-medium text-foreground transition-colors"
+              >
+                +{remainingInsights} more in Insights
+                <ArrowRight className="h-3 w-3" strokeWidth={2} />
+              </a>
+            )}
+          </>
         )}
       </section>
 
       {/* ═══ 2.5 · THIS WEEK GOAL ═══ */}
       <section aria-label="This week goal" className="space-y-2">
-        <div className="flex items-baseline justify-between gap-2">
-          <div>
-            <h2 className="text-lg font-medium text-foreground tracking-tight">
-              This week goal
-            </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Deals you committed to close this week.
-            </p>
-          </div>
-          <span className="font-mono text-xs tabular-nums text-muted-foreground shrink-0">
-            {weekGoal.length} to close
-          </span>
-        </div>
-        <ul className="rounded-xl border border-border bg-card divide-y divide-border/60 overflow-hidden">
-          {weekGoal.map((a) => (
-            <ActionCard key={a.id} data={a} />
-          ))}
-        </ul>
+        <SectionTitle
+          title="This week goal"
+          tooltip="Deals you committed to close this week."
+          right={
+            !isEmptyRange && (
+              <span className="font-mono text-xs tabular-nums text-muted-foreground shrink-0">
+                {weekGoal.length} to close
+              </span>
+            )
+          }
+        />
+        {isEmptyRange ? (
+          <EmptyState
+            title={`No deals committed in last ${period} days`}
+            hint="Switch to a shorter range to see active commitments."
+          />
+        ) : (
+          <ul className="rounded-xl border border-border bg-card divide-y divide-border/60 overflow-hidden">
+            {weekGoal.map((a) => (
+              <ActionCard key={a.id} data={a} />
+            ))}
+          </ul>
+        )}
       </section>
 
       {/* ═══ 3 · TEAM QUICK VIEW ═══ */}
       <section aria-label="Team this week" className="space-y-2">
-        <div className="flex items-baseline justify-between gap-2">
-          <div>
-            <h2 className="text-lg font-medium text-foreground tracking-tight">
-              My team this week
-            </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Quick agent status — click any name for the full breakdown.
-            </p>
-          </div>
-          <a
-            href="/team"
-            className="text-xs font-medium text-muted-foreground hover:text-foreground inline-flex items-center gap-1 shrink-0"
-          >
-            View full detail
-            <ArrowRight className="h-3 w-3" strokeWidth={2} />
-          </a>
-        </div>
+        <SectionTitle
+          title="My team this week"
+          tooltip="Quick agent status — click any name for the full breakdown."
+          right={
+            <a
+              href="/team"
+              className="text-xs font-medium text-muted-foreground hover:text-foreground inline-flex items-center gap-1 shrink-0"
+            >
+              View full detail
+              <ArrowRight className="h-3 w-3" strokeWidth={2} />
+            </a>
+          }
+        />
         <ul className="rounded-xl border border-border bg-card divide-y divide-border/60 overflow-hidden">
           {teamRows.map((r) => (
             <li key={r.id} className="flex items-center gap-3 px-4 py-2.5">
@@ -304,7 +291,7 @@ export default function HomePage() {
                 {r.avatarUrl && <AvatarImage src={r.avatarUrl} alt={r.name} />}
                 <AvatarFallback
                   className={cn(
-                    "text-white text-[10px] font-semibold",
+                    "text-white text-[11px] font-semibold",
                     r.avatarColor
                   )}
                 >
@@ -314,7 +301,7 @@ export default function HomePage() {
               <span className="text-sm font-medium text-foreground w-32 shrink-0 truncate">
                 {r.name}
               </span>
-              <HealthDots count={r.dots} />
+              <HealthLabel count={r.dots} />
               <span className="font-mono text-xs tabular-nums text-foreground w-24 shrink-0">
                 {formatCompactCurrency(r.pipeline)}
               </span>
@@ -349,28 +336,35 @@ function formatCompactCurrency(n: number) {
   return `$${n}`;
 }
 
-// ────────── Health dots
+// ────────── Health label (text replaces 5-dot indicator)
 
-function HealthDots({ count }: { count: number }) {
+const HEALTH_LABEL: Record<
+  number,
+  { label: string; className: string }
+> = {
+  5: { label: "Top performer", className: "text-success" },
+  4: { label: "Strong", className: "text-foreground" },
+  3: { label: "Steady", className: "text-foreground" },
+  2: { label: "Needs attention", className: "text-warning" },
+  1: { label: "At risk", className: "text-destructive" },
+};
+
+function HealthLabel({ count }: { count: number }) {
+  const meta = HEALTH_LABEL[count] ?? HEALTH_LABEL[3];
   return (
     <Tooltip>
       <TooltipTrigger
-        className="flex items-center gap-0.5 shrink-0 cursor-help"
-        aria-label={`Health ${count} of 5`}
+        className={cn(
+          "text-xs font-medium w-32 shrink-0 cursor-help text-left",
+          meta.className
+        )}
+        aria-label={`Health: ${meta.label}`}
       >
-        {Array.from({ length: 5 }).map((_, i) => (
-          <span
-            key={i}
-            className={cn(
-              "h-1.5 w-1.5 rounded-full",
-              i < count ? "bg-foreground" : "bg-muted"
-            )}
-          />
-        ))}
+        {meta.label}
       </TooltipTrigger>
       <TooltipContent className="max-w-[280px] text-left leading-relaxed">
         Activity & results indicator for this week. Combines: leads contacted,
-        appointments set, deals advanced, and closes. 5 = excellent, 1 = at risk.
+        appointments set, deals advanced, and closes.
       </TooltipContent>
     </Tooltip>
   );

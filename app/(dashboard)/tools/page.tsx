@@ -95,13 +95,13 @@ function StatCard({
           {icon}
         </span>
         <div className="min-w-0">
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             {label}
           </div>
           <div className="font-mono text-2xl font-bold tabular-nums text-foreground mt-0.5 leading-none">
             {value}
           </div>
-          <div className="text-[11px] text-muted-foreground mt-1">{hint}</div>
+          <div className="text-xs text-muted-foreground mt-1">{hint}</div>
         </div>
       </div>
     </div>

@@ -13,7 +13,7 @@ function formatCompactCurrency(n: number) {
 }
 
 export default function TeamPage() {
-  const { agents, period, teamProductionTrend } = dashboardData;
+  const { agents, teamProductionTrend } = dashboardData;
 
   const teamVolume = agents.reduce(
     (acc, a) => acc + a.metrics.volumeClosedYTD,
@@ -91,7 +91,7 @@ export default function TeamPage() {
             Per-agent metrics, coaching opportunities, and pipeline health.
           </p>
         </div>
-        <PeriodSelector label={period.label} />
+        <PeriodSelector />
       </header>
 
       {/* KPI band */}

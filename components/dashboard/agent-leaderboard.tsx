@@ -116,10 +116,10 @@ export function AgentLeaderboard({ agents }: { agents: Agent[] }) {
                         status.dot
                       )}
                     />
-                    <span className={cn("text-[11px] font-medium", status.text)}>
+                    <span className={cn("text-xs font-medium", status.text)}>
                       {status.label}
                     </span>
-                    <span className="text-[11px] text-muted-foreground">
+                    <span className="text-xs text-muted-foreground">
                       · {agent.role}
                     </span>
                   </div>
@@ -129,7 +129,7 @@ export function AgentLeaderboard({ agents }: { agents: Agent[] }) {
                   <div className="font-mono text-sm font-semibold text-foreground tabular-nums">
                     {formatCompactCurrency(agent.metrics.volumeClosedYTD)}
                   </div>
-                  <div className="text-[11px] text-muted-foreground font-mono tabular-nums">
+                  <div className="text-xs text-muted-foreground font-mono tabular-nums">
                     {agent.metrics.dealsClosedYTD} closed
                   </div>
                 </div>

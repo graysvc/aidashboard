@@ -37,7 +37,7 @@ export function StatusTile({
   const inner = (
     <>
       <div className="flex items-center gap-1.5">
-        <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
           {label}
         </span>
         {tooltip && <InfoTooltip text={tooltip} />}
@@ -51,7 +51,7 @@ export function StatusTile({
         {value}
       </div>
       {deltaText && (
-        <div className="text-[11px] text-muted-foreground mt-2">
+        <div className="text-xs text-muted-foreground mt-2">
           {deltaText}
         </div>
       )}

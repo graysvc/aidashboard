@@ -26,7 +26,46 @@ export type ActionCardData = {
   sortKey?: number;
 };
 
-const TAG_COLOR: Record<ActionTag, string> = {
+const TAG_BAR: Record<ActionTag, string> = {
+  URGENT: "bg-destructive",
+  DEADLINE: "bg-destructive",
+  WARNING: "bg-warning",
+  PERFORMANCE: "bg-warning",
+  "HOT LEAD": "bg-warning",
+  OPPORTUNITY: "bg-warning",
+  WIN: "bg-success",
+  INSIGHT: "bg-sky-500",
+  PATTERN: "bg-sky-500",
+  RECOMMENDATION: "bg-muted-foreground/40",
+};
+
+const TAG_LABEL: Record<ActionTag, string> = {
+  URGENT: "Urgent",
+  DEADLINE: "Deadline",
+  WARNING: "Warning",
+  PERFORMANCE: "Performance",
+  "HOT LEAD": "Hot lead",
+  OPPORTUNITY: "Opportunity",
+  WIN: "Win",
+  INSIGHT: "Insight",
+  PATTERN: "Pattern",
+  RECOMMENDATION: "Recommendation",
+};
+
+const TAG_SHORT: Record<ActionTag, string> = {
+  URGENT: "URG",
+  DEADLINE: "DUE",
+  WARNING: "WRN",
+  PERFORMANCE: "PRF",
+  "HOT LEAD": "HOT",
+  OPPORTUNITY: "OPP",
+  WIN: "WIN",
+  INSIGHT: "INS",
+  PATTERN: "PTN",
+  RECOMMENDATION: "REC",
+};
+
+const TAG_TEXT: Record<ActionTag, string> = {
   URGENT: "text-destructive",
   DEADLINE: "text-destructive",
   WARNING: "text-warning",
@@ -48,7 +87,16 @@ export function ActionCard({ data }: { data: ActionCardData }) {
   const [done, setDone] = useState(false);
 
   return (
-    <li>
+    <li className="relative">
+      {/* Left color bar — replaces the uppercase tag column */}
+      <span
+        aria-label={TAG_LABEL[data.tag]}
+        title={TAG_LABEL[data.tag]}
+        className={cn(
+          "absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-r-sm",
+          TAG_BAR[data.tag]
+        )}
+      />
       <a
         href={data.href ?? "#"}
         onClick={
@@ -60,17 +108,18 @@ export function ActionCard({ data }: { data: ActionCardData }) {
             : undefined
         }
         className={cn(
-          "flex items-center gap-4 px-4 py-2.5 hover:bg-muted/40 transition-colors group",
+          "flex items-center gap-3 pl-5 pr-4 py-2.5 hover:bg-muted/40 transition-colors group",
           done && "opacity-55"
         )}
       >
         <span
           className={cn(
-            "text-[10px] font-semibold uppercase tracking-[0.12em] w-28 shrink-0",
-            TAG_COLOR[data.tag]
+            "font-mono text-[11px] font-semibold tabular-nums w-9 shrink-0",
+            TAG_TEXT[data.tag]
           )}
+          title={TAG_LABEL[data.tag]}
         >
-          {data.tag}
+          {TAG_SHORT[data.tag]}
         </span>
         {data.amount && (
           <span className="font-mono text-sm tabular-nums text-foreground w-20 shrink-0">

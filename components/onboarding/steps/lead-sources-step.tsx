@@ -68,7 +68,7 @@ export function LeadSourcesStep({
               Top 3 sources ({leadSources.topSources.length}/3)
             </span>
           </div>
-          <p className="text-[11px] text-amber-800/80 mt-1">
+          <p className="text-xs text-amber-800/80 mt-1">
             Click a source below twice (or use the ★ button) to mark it as a top
             source.
           </p>
@@ -77,7 +77,7 @@ export function LeadSourcesStep({
 
       {LEAD_SOURCE_GROUPS.map((group) => (
         <div key={group.title} className="space-y-2.5">
-          <h3 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             {group.title}
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
