@@ -9,6 +9,9 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect x='14' y='26' width='52' height='28' rx='1.5' stroke='%230F0F10' stroke-width='3' fill='none'/%3E%3Cline x1='20' y1='40' x2='42' y2='40' stroke='%230F0F10' stroke-width='8'/%3E%3Ccircle cx='46' cy='40' r='5' fill='%230F0F10'/%3E%3Cline x1='49' y1='40' x2='60' y2='40' stroke='%230F0F10' stroke-width='8'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://rsms.me/">
 <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #F7F4EE;
@@ -299,6 +302,114 @@
   .logo-item:hover { opacity: 0.85; }
   .logo-item svg { height: 100%; width: auto; max-width: 100%; display: block; }
 
+  /* ───────── EYEBROW (shared with mint dot) ───────── */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'SF Mono', ui-monospace, Menlo, monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--text-faint);
+  }
+  .eyebrow .dot-mint {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0, 217, 163, 0.18);
+    flex-shrink: 0;
+  }
+
+  /* ───────── MISSION ───────── */
+  .mission {
+    padding: 120px 0;
+    border-top: 0.5px solid var(--stone);
+  }
+  .mission-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .mission-eyebrow { margin-bottom: 28px; }
+  .mission-heading {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(40px, 4.4vw, 60px);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1.05;
+    color: var(--text);
+    margin: 0;
+  }
+  .mission-heading .accent {
+    font-style: italic;
+    background: linear-gradient(180deg, var(--accent) 0%, #00B888 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .mission-body {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding-top: 8px;
+  }
+  .mission-body p {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--text-muted);
+    margin: 0;
+    max-width: 520px;
+  }
+  .mission-body p:last-child {
+    color: var(--text);
+  }
+
+  /* ───────── WHAT WE AUTOMATE ───────── */
+  .automate {
+    padding: 96px 0 112px;
+    border-top: 0.5px solid var(--stone);
+  }
+  .automate-eyebrow { margin-bottom: 40px; }
+  .automate-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+  }
+  .automate-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px 22px;
+    background: var(--surface);
+    border: 0.5px solid var(--stone);
+    border-radius: 14px;
+    font-size: 16px;
+    color: var(--text);
+    transition: border-color 200ms ease, transform 200ms ease;
+  }
+  .automate-item:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+  .automate-item .check {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(0, 217, 163, 0.12);
+    color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .automate-item .check svg { width: 12px; height: 12px; }
+
   /* ───────── VALUES (3 columns) ───────── */
   .values {
     padding: 128px 0 112px;
@@ -350,12 +461,16 @@
     width: 56px;
     height: 56px;
     border-radius: 14px;
-    background: var(--bg);
-    border: 0.5px solid var(--stone);
+    background: rgba(0, 217, 163, 0.08);
+    border: 0.5px solid rgba(0, 217, 163, 0.18);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: var(--text);
+    color: #008B6E;
+  }
+  .value:hover .value-icon {
+    background: rgba(0, 217, 163, 0.14);
+    border-color: rgba(0, 217, 163, 0.32);
   }
   .value-icon svg { width: 28px; height: 28px; }
   .value-title {
@@ -406,6 +521,11 @@
 
   /* ───────── RESPONSIVE ───────── */
   @media (max-width: 1024px) {
+    .mission { padding: 88px 0; }
+    .mission-grid { grid-template-columns: 1fr; gap: 32px; }
+    .mission-body p { max-width: none; }
+    .automate { padding: 72px 0 88px; }
+    .automate-list { grid-template-columns: repeat(2, 1fr); }
     .hero { padding: 32px 0 64px; }
     .hero-grid { grid-template-columns: 1fr; gap: 40px; }
     .hero-copy { max-width: 640px; margin: 0 auto; text-align: center; }
@@ -440,6 +560,12 @@
     .system { display: none; }
     .logos { padding: 32px 0 0; }
     .logos-row { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+    .mission { padding: 64px 0 56px; }
+    .mission-heading { font-size: 32px; }
+    .mission-body p { font-size: 16px; }
+    .automate { padding: 56px 0 64px; }
+    .automate-list { grid-template-columns: 1fr; gap: 10px; }
+    .automate-item { padding: 16px 18px; font-size: 15px; }
     .logos-label { margin-bottom: 14px; font-size: 10px; }
     .values { padding: 56px 0 48px; }
     .values-eyebrow { font-size: 10px; margin-bottom: 14px; }
@@ -563,30 +689,120 @@
     </div>
   </section>
 
+  <!-- MISSION — two columns, serif heading -->
+  <section class="mission">
+    <div class="container mission-grid">
+      <div>
+        <div class="eyebrow mission-eyebrow">
+          <span class="dot-mint"></span>OUR MISSION
+        </div>
+        <h2 class="mission-heading">
+          Real estate teams don&apos;t need more tools.
+          <span class="accent">They need operational clarity.</span>
+        </h2>
+      </div>
+      <div class="mission-body">
+        <p>
+          Modern brokerages run on disconnected CRMs, assistants, AI tools,
+          spreadsheets, follow-ups and manual coordination.
+        </p>
+        <p>
+          The result is operational chaos: missed follow-ups, slow closings,
+          duplicated work and low adoption across the team.
+        </p>
+        <p>
+          Pulsor organizes the operational layer behind real estate teams —
+          using AI to coordinate workflows, surface priorities and reduce
+          manual execution across the entire transaction lifecycle.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT WE AUTOMATE -->
+  <section class="automate">
+    <div class="container">
+      <div class="eyebrow automate-eyebrow">
+        <span class="dot-mint"></span>WHAT WE AUTOMATE
+      </div>
+      <ul class="automate-list">
+        <li class="automate-item">
+          <span class="check" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="5 12 10 17 19 7"/>
+            </svg>
+          </span>
+          Daily follow-ups
+        </li>
+        <li class="automate-item">
+          <span class="check" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="5 12 10 17 19 7"/>
+            </svg>
+          </span>
+          Lead prioritization
+        </li>
+        <li class="automate-item">
+          <span class="check" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="5 12 10 17 19 7"/>
+            </svg>
+          </span>
+          Transaction coordination
+        </li>
+        <li class="automate-item">
+          <span class="check" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="5 12 10 17 19 7"/>
+            </svg>
+          </span>
+          Closing workflows
+        </li>
+        <li class="automate-item">
+          <span class="check" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="5 12 10 17 19 7"/>
+            </svg>
+          </span>
+          Team operational visibility
+        </li>
+        <li class="automate-item">
+          <span class="check" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="5 12 10 17 19 7"/>
+            </svg>
+          </span>
+          Administrative execution
+        </li>
+      </ul>
+    </div>
+  </section>
+
   <!-- VALUES — 3 columns + tagline -->
   <section class="values">
     <div class="container">
-      <div class="values-eyebrow">What we do</div>
+      <div class="values-eyebrow">How it works</div>
       <h2 class="values-heading">
-        We build the intelligent layer that runs your operation.
+        We organize the operational chaos behind real estate teams.
       </h2>
       <div class="values-grid">
         <div class="value">
           <span class="value-icon" aria-hidden="true">
-            <!-- See the chaos: radar / magnifier over a network -->
+            <!-- Capture: inbox / grid / unified -->
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="11" cy="11" r="7"/>
-              <path d="M11 8v3l2 1.5"/>
-              <line x1="16.5" y1="16.5" x2="21" y2="21"/>
+              <path d="M3 7h18M3 12h18M3 17h18"/>
+              <circle cx="6" cy="7" r="1.2" fill="currentColor"/>
+              <circle cx="11" cy="12" r="1.2" fill="currentColor"/>
+              <circle cx="16" cy="17" r="1.2" fill="currentColor"/>
             </svg>
           </span>
-          <div class="value-title">See the chaos</div>
-          <p class="value-text">Your operation has hidden leaks. We make them visible.</p>
+          <div class="value-title">Capture everything</div>
+          <p class="value-text">Nothing lost across CRMs, chats and workflows.</p>
         </div>
 
         <div class="value">
           <span class="value-icon" aria-hidden="true">
-            <!-- Replace the manual: AI flow / autonomous handoff -->
+            <!-- Coordinate: AI flow / autonomous handoff -->
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="4" width="8" height="6" rx="1.5"/>
               <rect x="13" y="14" width="8" height="6" rx="1.5"/>
@@ -595,21 +811,21 @@
               <path d="M11 12h2"/>
             </svg>
           </span>
-          <div class="value-title">Replace the manual</div>
-          <p class="value-text">AI takes over the work that drains you.</p>
+          <div class="value-title">Coordinate automatically</div>
+          <p class="value-text">AI handles operational follow-through behind the scenes.</p>
         </div>
 
         <div class="value">
           <span class="value-icon" aria-hidden="true">
-            <!-- Run lighter: feather / lift / lightness -->
+            <!-- Close with less friction: arrow forward / fast track -->
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 5c-3.5 0-7 1.5-10 5l-3 4 4 4 4-3c3.5-3 5-6.5 5-10z"/>
-              <line x1="7" y1="14" x2="3" y2="18"/>
-              <line x1="11" y1="13" x2="16" y2="8"/>
+              <path d="M4 12h14"/>
+              <path d="M14 6l6 6-6 6"/>
+              <path d="M4 7v10"/>
             </svg>
           </span>
-          <div class="value-title">Run lighter</div>
-          <p class="value-text">Same revenue. Half the friction. Built for you.</p>
+          <div class="value-title">Close with less friction</div>
+          <p class="value-text">Faster transactions with less manual work.</p>
         </div>
       </div>
 
