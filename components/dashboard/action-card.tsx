@@ -14,7 +14,17 @@ export type ActionTag =
   | "WIN"
   | "INSIGHT"
   | "PATTERN"
-  | "RECOMMENDATION";
+  | "RECOMMENDATION"
+  // Team Leader operational
+  | "WORKFLOW BREAK"
+  // Agent action verbs
+  | "CALL NOW"
+  | "FOLLOW UP"
+  | "SEND DOCS"
+  | "RE-ENGAGE"
+  | "CHECK-IN"
+  | "PRIORITY"
+  | "REMINDER";
 
 export type ActionCardData = {
   id: string;
@@ -37,6 +47,14 @@ const TAG_BAR: Record<ActionTag, string> = {
   INSIGHT: "bg-sky-500",
   PATTERN: "bg-sky-500",
   RECOMMENDATION: "bg-muted-foreground/40",
+  "WORKFLOW BREAK": "bg-warning",
+  "CALL NOW": "bg-destructive",
+  "FOLLOW UP": "bg-warning",
+  "SEND DOCS": "bg-sky-500",
+  "RE-ENGAGE": "bg-warning",
+  "CHECK-IN": "bg-sky-500",
+  PRIORITY: "bg-destructive",
+  REMINDER: "bg-muted-foreground/40",
 };
 
 const TAG_LABEL: Record<ActionTag, string> = {
@@ -50,6 +68,14 @@ const TAG_LABEL: Record<ActionTag, string> = {
   INSIGHT: "Insight",
   PATTERN: "Pattern",
   RECOMMENDATION: "Recommendation",
+  "WORKFLOW BREAK": "Workflow break",
+  "CALL NOW": "Call now",
+  "FOLLOW UP": "Follow up",
+  "SEND DOCS": "Send docs",
+  "RE-ENGAGE": "Re-engage",
+  "CHECK-IN": "Check-in",
+  PRIORITY: "Priority",
+  REMINDER: "Reminder",
 };
 
 const TAG_SHORT: Record<ActionTag, string> = {
@@ -63,6 +89,14 @@ const TAG_SHORT: Record<ActionTag, string> = {
   INSIGHT: "INS",
   PATTERN: "PTN",
   RECOMMENDATION: "REC",
+  "WORKFLOW BREAK": "BRK",
+  "CALL NOW": "CALL",
+  "FOLLOW UP": "FUP",
+  "SEND DOCS": "DOC",
+  "RE-ENGAGE": "RE",
+  "CHECK-IN": "CHK",
+  PRIORITY: "PRI",
+  REMINDER: "RMD",
 };
 
 const TAG_TEXT: Record<ActionTag, string> = {
@@ -76,6 +110,14 @@ const TAG_TEXT: Record<ActionTag, string> = {
   INSIGHT: "text-sky-600",
   PATTERN: "text-sky-600",
   RECOMMENDATION: "text-muted-foreground",
+  "WORKFLOW BREAK": "text-warning",
+  "CALL NOW": "text-destructive",
+  "FOLLOW UP": "text-warning",
+  "SEND DOCS": "text-sky-600",
+  "RE-ENGAGE": "text-warning",
+  "CHECK-IN": "text-sky-600",
+  PRIORITY: "text-destructive",
+  REMINDER: "text-muted-foreground",
 };
 
 /**

@@ -1,32 +1,36 @@
 "use client";
 
-import { Check, Calendar, MessageCircle } from "lucide-react";
+import { Check, MessageCircle, Sparkles } from "lucide-react";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { SectionTitle } from "@/components/dashboard/section-title";
+import { EmptyState } from "@/components/dashboard/empty-state";
 import { cn } from "@/lib/utils";
 
-type MilestoneState = "done" | "current" | "future";
-
-type Milestone = {
+export type StrategyImprovement = {
   id: string;
   label: string;
-  date: string;
-  state: MilestoneState;
+  before?: string;
+  after?: string;
 };
 
-type Initiative = { id: string; label: string; state: MilestoneState };
+export type StrategyStageState = "done" | "current" | "future";
+
+export type StrategyStage = {
+  id: string;
+  label: string;
+  state: StrategyStageState;
+};
 
 export type StrategyData = {
-  milestones: Milestone[];
-  currentFocusLabel: string;
-  currentFocusDay: number;
-  currentFocusPeriodLength: number;
-  pipelineGoalPct: number;
-  initiatives: Initiative[];
-  actionItems: Initiative[];
-  lastReviewDate: string | null;
-  nextMilestoneLabel: string | null;
-  nextMilestoneDate: string | null;
-  nextMilestoneDaysAway: number;
+  stages: StrategyStage[];
+  currentFocusHeadline: string | null;
+  currentFocusItems: string[];
+  stageLabel: string | null;
+  weekN: number | null;
+  weekOf: number | null;
+  whatImproved: StrategyImprovement[];
+  currentPriorities: string[];
+  recommendedNextStep: string | null;
 };
 
 export function StrategyClient({ data }: { data: StrategyData }) {
@@ -38,55 +42,122 @@ export function StrategyClient({ data }: { data: StrategyData }) {
             Strategy
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Your journey with Pulsor — past, present, and what&apos;s next.
+            What Pulsor is improving in your operation.
           </p>
         </header>
 
-        {/* Journey timeline */}
-        {data.milestones.length > 0 && (
-          <section className="rounded-xl border border-border bg-card p-5 overflow-x-auto">
-            <Timeline milestones={data.milestones} />
+        {/* ═══ 0 · STAGE TIMELINE ═══ */}
+        {data.stages.length > 0 && (
+          <section
+            aria-label="Stage timeline"
+            className="rounded-xl border border-border bg-card px-5 py-6 overflow-x-auto"
+          >
+            <StageTrack stages={data.stages} />
           </section>
         )}
 
-        {/* Current focus */}
-        <section className="rounded-xl border border-border bg-card p-5 space-y-4">
-          <div className="flex items-baseline justify-between gap-2">
-            <h2 className="text-sm font-medium text-foreground">
-              Current focus
-              {data.currentFocusLabel && ` · ${data.currentFocusLabel}`}
-            </h2>
-            <span className="font-mono text-xs tabular-nums text-muted-foreground">
-              Day {data.currentFocusDay} of {data.currentFocusPeriodLength}
-            </span>
-          </div>
-
-          <div>
-            <div className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-              Pipeline goal
+        {/* ═══ 1 · CURRENT FOCUS ═══ */}
+        <section aria-label="Current focus">
+          {data.currentFocusHeadline ? (
+            <div className="rounded-xl border border-border bg-card p-5">
+              <div className="flex items-baseline justify-between gap-3 mb-3">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                  Current focus
+                </span>
+                {(data.stageLabel || (data.weekN && data.weekOf)) && (
+                  <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
+                    {data.stageLabel}
+                    {data.stageLabel && data.weekN && data.weekOf && " · "}
+                    {data.weekN && data.weekOf &&
+                      `Week ${data.weekN} of ${data.weekOf}`}
+                  </span>
+                )}
+              </div>
+              <h2 className="text-base font-medium text-foreground tracking-tight">
+                {data.currentFocusHeadline}
+              </h2>
+              {data.currentFocusItems.length > 0 && (
+                <ul className="mt-3 space-y-1.5">
+                  {data.currentFocusItems.map((it, i) => (
+                    <li
+                      key={i}
+                      className="flex items-start gap-2 text-sm text-muted-foreground"
+                    >
+                      <span className="text-foreground/40 mt-[2px]">•</span>
+                      <span>{it}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
-            <div className="relative h-3 mt-2 w-full rounded-full bg-muted overflow-hidden">
-              <div
-                className="h-full bg-success rounded-full transition-all"
-                style={{ width: `${data.pipelineGoalPct}%` }}
-              />
-            </div>
-          </div>
+          ) : (
+            <EmptyState
+              title="No focus set yet"
+              hint="Your Pulsor advisor will define this week's focus shortly."
+            />
+          )}
+        </section>
 
-          {data.initiatives.length > 0 && (
-            <ul className="space-y-1.5 pt-1">
-              {data.initiatives.map((i) => (
+        {/* ═══ 2 · WHAT IMPROVED ═══ */}
+        <section aria-label="What improved" className="space-y-2">
+          <SectionTitle
+            title="What improved"
+            tooltip="Visible operational progress this period."
+          />
+          {data.whatImproved.length === 0 ? (
+            <EmptyState
+              title="No improvements logged yet"
+              hint="Measurable wins will surface here as the operation evolves."
+            />
+          ) : (
+            <ul className="rounded-xl border border-border bg-card divide-y divide-border/60 overflow-hidden">
+              {data.whatImproved.map((it) => (
                 <li
-                  key={i.id}
-                  className="flex items-center gap-2.5 text-sm text-foreground"
+                  key={it.id}
+                  className="flex items-center gap-3 px-4 py-2.5"
                 >
-                  <StateDot state={i.state} size="sm" />
-                  <span
-                    className={cn(
-                      i.state === "future" && "text-muted-foreground"
-                    )}
-                  >
-                    {i.label}
+                  <span className="h-1.5 w-1.5 rounded-full bg-success shrink-0" />
+                  <span className="text-sm text-foreground flex-1 truncate">
+                    {it.label}
+                  </span>
+                  {(it.before || it.after) && (
+                    <span className="font-mono text-xs tabular-nums text-muted-foreground shrink-0">
+                      {it.before && <span>{it.before}</span>}
+                      {it.before && it.after && (
+                        <span className="mx-1.5 text-foreground/40">→</span>
+                      )}
+                      {it.after && (
+                        <span className="text-success">{it.after}</span>
+                      )}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        {/* ═══ 3 · CURRENT PRIORITIES ═══ */}
+        <section aria-label="Current priorities" className="space-y-2">
+          <SectionTitle
+            title="Current priorities"
+            tooltip="What the operation is working on right now."
+          />
+          {data.currentPriorities.length === 0 ? (
+            <EmptyState
+              title="No priorities set"
+              hint="Priorities will appear here once defined."
+            />
+          ) : (
+            <ul className="rounded-xl border border-border bg-card divide-y divide-border/60 overflow-hidden">
+              {data.currentPriorities.map((p, i) => (
+                <li
+                  key={i}
+                  className="flex items-center gap-3 px-4 py-2.5"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/40 shrink-0" />
+                  <span className="text-sm text-foreground flex-1 truncate">
+                    {p}
                   </span>
                 </li>
               ))}
@@ -94,80 +165,44 @@ export function StrategyClient({ data }: { data: StrategyData }) {
           )}
         </section>
 
-        {/* Action items from last review */}
-        {data.actionItems.length > 0 && (
-          <section className="rounded-xl border border-border bg-card p-5 space-y-3">
-            <div className="flex items-baseline justify-between gap-2">
-              <h2 className="text-sm font-medium text-foreground">
-                Action items from last review
-              </h2>
-              {data.lastReviewDate && (
-                <span className="font-mono text-xs tabular-nums text-muted-foreground">
-                  {data.lastReviewDate}
+        {/* ═══ 4 · RECOMMENDED NEXT STEP ═══ */}
+        {data.recommendedNextStep && (
+          <section aria-label="Recommended next step">
+            <div className="rounded-xl border border-border bg-card p-5">
+              <div className="flex items-center gap-1.5 mb-2">
+                <Sparkles
+                  className="h-3.5 w-3.5 text-foreground"
+                  strokeWidth={2}
+                  fill="currentColor"
+                />
+                <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                  Recommended next step
                 </span>
-              )}
-            </div>
-            <ul className="space-y-1.5">
-              {data.actionItems.map((i) => (
-                <li
-                  key={i.id}
-                  className="flex items-center gap-2.5 text-sm text-foreground"
-                >
-                  <StateDot state={i.state} size="sm" />
-                  <span
-                    className={cn(
-                      i.state === "future" && "text-muted-foreground"
-                    )}
-                  >
-                    {i.label}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {/* Next milestone */}
-        {data.nextMilestoneLabel && (
-          <section className="rounded-xl border border-border bg-card p-5">
-            <div className="flex items-baseline justify-between gap-2">
-              <h2 className="text-sm font-medium text-foreground">
-                Next · {data.nextMilestoneLabel}
-              </h2>
-              <span className="font-mono text-xs tabular-nums text-muted-foreground">
-                {data.nextMilestoneDate}
-                {data.nextMilestoneDaysAway > 0 &&
-                  ` · ${data.nextMilestoneDaysAway}d away`}
-              </span>
-            </div>
-          </section>
-        )}
-
-        {/* Need help */}
-        <section className="rounded-xl border border-border bg-card p-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <h2 className="text-sm font-medium text-foreground">
-                Need help before next session?
-              </h2>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Reach your advisor anytime — don&apos;t wait for the next review.
+              </div>
+              <p className="text-sm text-foreground leading-relaxed">
+                {data.recommendedNextStep}
               </p>
             </div>
-            <div className="flex flex-wrap gap-2 shrink-0">
+          </section>
+        )}
+
+        {/* ═══ 5 · SUPPORT ═══ */}
+        <section aria-label="Support">
+          <div className="rounded-xl border border-border bg-card p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm text-foreground">
+                Need support implementing this workflow?
+              </p>
               <button
                 type="button"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border text-xs font-medium text-foreground hover:bg-muted/60 transition-colors"
-              >
-                <Calendar className="h-3.5 w-3.5" strokeWidth={2} />
-                Schedule emergency session
-              </button>
-              <button
-                type="button"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-foreground text-background text-xs font-medium hover:bg-foreground/90 transition-colors"
+                className={cn(
+                  "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md",
+                  "bg-foreground text-background text-xs font-medium",
+                  "hover:bg-foreground/90 transition-colors"
+                )}
               >
                 <MessageCircle className="h-3.5 w-3.5" strokeWidth={2} />
-                Talk to your advisor
+                Talk to Pulsor
               </button>
             </div>
           </div>
@@ -177,98 +212,70 @@ export function StrategyClient({ data }: { data: StrategyData }) {
   );
 }
 
-function Timeline({ milestones }: { milestones: Milestone[] }) {
+function StageTrack({ stages }: { stages: StrategyStage[] }) {
   return (
-    <ol className="flex items-start gap-0 min-w-[560px]">
-      {milestones.map((m, i) => (
-        <li
-          key={m.id}
-          className="flex-1 flex flex-col items-center text-center relative"
-        >
-          {i > 0 && (
+    <ol className="flex items-start gap-0 min-w-[420px]">
+      {stages.map((s, i) => {
+        const reached = s.state === "done" || s.state === "current";
+        const prevReached =
+          i > 0 && (stages[i - 1].state === "done" || stages[i - 1].state === "current");
+        return (
+          <li
+            key={s.id}
+            className="flex-1 flex flex-col items-center text-center relative"
+          >
+            {i > 0 && (
+              <span
+                aria-hidden
+                className={cn(
+                  "absolute top-3 right-1/2 left-[-50%] h-px",
+                  prevReached && reached ? "bg-success" : "bg-border"
+                )}
+              />
+            )}
+            <StageDot state={s.state} />
             <span
               className={cn(
-                "absolute top-3 right-1/2 left-[-50%] h-px",
-                m.state === "done" || m.state === "current"
-                  ? "bg-success"
-                  : "bg-border"
-              )}
-              aria-hidden
-            />
-          )}
-          <StateDot state={m.state} />
-          <div className="mt-2.5 px-1">
-            <div
-              className={cn(
-                "text-[11px] font-semibold uppercase tracking-[0.12em]",
-                m.state === "done"
-                  ? "text-success"
-                  : m.state === "current"
-                    ? "text-foreground"
-                    : "text-muted-foreground"
+                "mt-2.5 text-[11px] font-semibold uppercase tracking-[0.12em]",
+                s.state === "done" && "text-success",
+                s.state === "current" && "text-foreground",
+                s.state === "future" && "text-muted-foreground"
               )}
             >
-              {m.label}
-            </div>
-            <div className="text-[11px] font-mono tabular-nums text-muted-foreground mt-0.5">
-              {m.date}
-            </div>
-          </div>
-        </li>
-      ))}
+              {s.label}
+            </span>
+          </li>
+        );
+      })}
     </ol>
   );
 }
 
-function StateDot({
-  state,
-  size = "md",
-}: {
-  state: MilestoneState;
-  size?: "sm" | "md";
-}) {
-  const dim = size === "sm" ? "h-3.5 w-3.5" : "h-6 w-6";
+function StageDot({ state }: { state: StrategyStageState }) {
   if (state === "done") {
     return (
       <span
-        className={cn(
-          "rounded-full bg-success text-background inline-flex items-center justify-center shrink-0 z-10",
-          dim
-        )}
         aria-label="Done"
+        className="h-6 w-6 rounded-full bg-success text-background inline-flex items-center justify-center shrink-0 z-10"
       >
-        <Check
-          className={size === "sm" ? "h-2 w-2" : "h-3 w-3"}
-          strokeWidth={3}
-        />
+        <Check className="h-3 w-3" strokeWidth={3} />
       </span>
     );
   }
   if (state === "current") {
     return (
       <span
-        className={cn(
-          "rounded-full bg-foreground inline-flex items-center justify-center shrink-0 z-10 ring-4 ring-foreground/10",
-          dim
-        )}
-        aria-label="In progress"
+        aria-label="Current"
+        className="h-6 w-6 rounded-full bg-foreground inline-flex items-center justify-center shrink-0 z-10 ring-4 ring-foreground/10"
       >
-        <span
-          className={cn(
-            "rounded-full bg-background",
-            size === "sm" ? "h-1 w-1" : "h-1.5 w-1.5"
-          )}
-        />
+        <span className="h-1.5 w-1.5 rounded-full bg-background" />
       </span>
     );
   }
   return (
     <span
-      className={cn(
-        "rounded-full border-2 border-muted-foreground/30 bg-background shrink-0 z-10 inline-block",
-        dim
-      )}
       aria-label="Future"
+      className="h-6 w-6 rounded-full border-2 border-muted-foreground/30 bg-background shrink-0 z-10 inline-block"
     />
   );
 }

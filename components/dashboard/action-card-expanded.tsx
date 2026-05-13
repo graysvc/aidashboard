@@ -14,6 +14,14 @@ const TAG_COLOR: Record<ActionTag, string> = {
   INSIGHT: "text-sky-600",
   PATTERN: "text-sky-600",
   RECOMMENDATION: "text-muted-foreground",
+  "WORKFLOW BREAK": "text-warning",
+  "CALL NOW": "text-destructive",
+  "FOLLOW UP": "text-warning",
+  "SEND DOCS": "text-sky-600",
+  "RE-ENGAGE": "text-warning",
+  "CHECK-IN": "text-sky-600",
+  PRIORITY: "text-destructive",
+  REMINDER: "text-muted-foreground",
 };
 
 export type ActionCardExpandedData = {

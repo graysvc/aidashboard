@@ -1,7 +1,31 @@
-import type { HomeData, HomeTeamMember } from "@/app/(dashboard)/overview/home-client";
-import type { SalesData } from "@/app/(dashboard)/sales/sales-client";
+import type {
+  AgentHomeData,
+  AgentPipelineStage,
+  AgentSignal,
+  HomeData,
+  HomeTeamMember,
+  TeamLeaderHomeData,
+  WorkflowStage,
+} from "@/app/(dashboard)/overview/home-client";
+import type {
+  AgentSalesData,
+  AttentionMetric,
+  MomentumRow,
+  PipelineSummaryRow,
+  SalesData,
+  SalesTeamRow,
+  TeamLeaderSalesData,
+  ThisWeekItem,
+} from "@/app/(dashboard)/sales/sales-client";
+import type {
+  AgentMarketingData,
+  CampaignRow,
+  LeadSourceRow,
+  MarketingData,
+  OpportunityRow,
+  TeamLeaderMarketingData,
+} from "@/app/(dashboard)/marketing/marketing-client";
 import type { ActionCardData } from "@/components/dashboard/action-card";
-import type { ActionCardExpandedData } from "@/components/dashboard/action-card-expanded";
 
 /**
  * Email of the seeded demo account.
@@ -11,67 +35,58 @@ import type { ActionCardExpandedData } from "@/components/dashboard/action-card-
  */
 export const DEMO_EMAIL = "test@test.com";
 
-const demoInsights: ActionCardData[] = [
+const demoLeaks: ActionCardData[] = [
   {
     id: "d-1",
     tag: "URGENT",
-    summary: "$850K lead — no response 3 days · María Fernández",
+    amount: "$850K",
+    summary: "María Fernández — no response in 72h",
   },
   {
     id: "d-2",
-    tag: "PERFORMANCE",
-    summary: "Pedro García — 5 leads, 0 contacted this week",
+    tag: "WORKFLOW BREAK",
+    summary: "3 closings waiting on missing documents",
   },
   {
     id: "d-3",
-    tag: "WIN",
-    summary: "Ana Torres closed a $1.2M deal · Pacific Heights",
+    tag: "OPPORTUNITY",
+    amount: "$4M",
+    summary: "Project sale — buyer active, no agent assigned",
   },
   {
     id: "d-4",
-    tag: "HOT LEAD",
-    summary: "$4M project sale — 3 IDX visits, no agent assigned",
-  },
-  {
-    id: "d-5",
-    tag: "DEADLINE",
-    summary: "Month-end in 4 days — 3/5 closed · $1.8M in escrow",
-  },
-  {
-    id: "d-6",
-    tag: "WARNING",
-    summary: "Inversor Bolivia — no follow-up after showing 6d ago",
-  },
-  {
-    id: "d-7",
-    tag: "INSIGHT",
+    tag: "PATTERN",
     summary: "Bolivia leads close 2.5× faster than average",
   },
   {
-    id: "d-8",
-    tag: "OPPORTUNITY",
-    summary: "Coral Way penthouse — premium buyer profile, 88% close score",
-  },
-  {
-    id: "d-9",
-    tag: "PATTERN",
-    summary: "Win rate drops 40% when 'Showing' exceeds 14 days",
-  },
-  {
-    id: "d-10",
+    id: "d-5",
     tag: "RECOMMENDATION",
     summary: "Reassign 3 stalled deals from Pedro to Sarah",
   },
   {
-    id: "d-11",
-    tag: "WIN",
-    summary: "Carlos identified Bolivia pattern — 3× conversion",
+    id: "d-6",
+    tag: "WARNING",
+    summary: "Pedro — 5 leads, 0 contacted this week",
   },
   {
-    id: "d-12",
-    tag: "WARNING",
-    summary: "Tech founder — inspection findings unanswered 4d",
+    id: "d-7",
+    tag: "WIN",
+    amount: "$1.2M",
+    summary: "Ana closed Pacific Heights in 12 days",
   },
+  {
+    id: "d-8",
+    tag: "DEADLINE",
+    summary: "Month-end in 4 days — 3/5 closed · $1.8M in escrow",
+  },
+];
+
+const demoBottlenecks: WorkflowStage[] = [
+  { id: "wf-1", label: "Lead intake", state: "stable" },
+  { id: "wf-2", label: "Assignment", state: "delayed" },
+  { id: "wf-3", label: "First response", state: "at-risk" },
+  { id: "wf-4", label: "Follow-up", state: "at-risk" },
+  { id: "wf-5", label: "Closing coordination", state: "stable" },
 ];
 
 const demoTeam: HomeTeamMember[] = [
@@ -79,217 +94,480 @@ const demoTeam: HomeTeamMember[] = [
     id: "t-1",
     fullName: "Sarah Mitchell",
     initials: "SM",
-    pipelineLabel: "$3.9M",
-    noteText: "Closing 11 deals",
-    hasData: true,
+    avatarUrl: "https://randomuser.me/api/portraits/women/44.jpg",
+    avatarColor: "bg-emerald-500",
+    primaryLine: "18m avg response",
+    secondaryLine: "0 stalled deals",
+    tone: "success",
   },
   {
     id: "t-2",
     fullName: "James Carter",
     initials: "JC",
-    pipelineLabel: "$2.9M",
-    noteText: "Closing 9 deals",
-    hasData: true,
+    avatarUrl: "https://randomuser.me/api/portraits/men/32.jpg",
+    avatarColor: "bg-amber-500",
+    primaryLine: "9 active deals",
+    secondaryLine: "2 need follow-up",
+    tone: "warning",
   },
   {
     id: "t-3",
     fullName: "Priya Shah",
     initials: "PS",
-    pipelineLabel: "$2.3M",
-    noteText: "Closing 8 deals",
-    hasData: true,
+    avatarUrl: "https://randomuser.me/api/portraits/women/68.jpg",
+    avatarColor: "bg-sky-500",
+    primaryLine: "27m avg response",
+    secondaryLine: "1 stalled in negotiation",
+    tone: "warning",
   },
   {
     id: "t-4",
     fullName: "Marcus Reyes",
     initials: "MR",
-    pipelineLabel: "$2.1M",
-    noteText: "7 deals in progress",
-    hasData: true,
+    avatarUrl: "https://randomuser.me/api/portraits/men/15.jpg",
+    avatarColor: "bg-rose-500",
+    primaryLine: "7 deals in progress",
+    secondaryLine: "Bolivia segment converting 2.1×",
+    tone: "success",
   },
   {
     id: "t-5",
     fullName: "Emma Olsen",
     initials: "EO",
-    pipelineLabel: "$1.8M",
-    noteText: "Underperforming this week",
-    hasData: true,
+    avatarUrl: "https://randomuser.me/api/portraits/women/79.jpg",
+    avatarColor: "bg-teal-500",
+    primaryLine: "4 leads idle >48h",
+    secondaryLine: "Below team SLA",
+    tone: "critical",
   },
   {
     id: "t-6",
     fullName: "Daniel Park",
     initials: "DP",
-    pipelineLabel: "$1.2M",
-    noteText: "5 deals in progress",
-    hasData: true,
+    avatarUrl: "https://randomuser.me/api/portraits/men/22.jpg",
+    avatarColor: "bg-purple-500",
+    primaryLine: "5 deals in progress",
+    secondaryLine: "1 closing delayed",
+    tone: "warning",
   },
+];
+
+const demoAgentActions: ActionCardData[] = [
+  {
+    id: "a-1",
+    tag: "CALL NOW",
+    summary: "John Smith — viewed 3 listings, no response yet",
+  },
+  {
+    id: "a-2",
+    tag: "FOLLOW UP",
+    summary: "Maria Lopez — showing completed, no next step",
+  },
+  {
+    id: "a-3",
+    tag: "SEND DOCS",
+    summary: "Buyer packet missing proof of funds",
+  },
+  {
+    id: "a-4",
+    tag: "RE-ENGAGE",
+    summary: "Brazil investor lead — inactive 6 days",
+  },
+  {
+    id: "a-5",
+    tag: "CHECK-IN",
+    summary: "Inspection findings unanswered 4d",
+  },
+  {
+    id: "a-6",
+    tag: "PRIORITY",
+    amount: "$1.2M",
+    summary: "Buyer active again this morning",
+  },
+  {
+    id: "a-7",
+    tag: "REMINDER",
+    summary: "Closing deadline in 3 days",
+  },
+];
+
+const demoAgentSignals: AgentSignal[] = [
+  { id: "s-1", label: "Avg response time", value: "42m", tone: "warning" },
+  { id: "s-2", label: "Overdue follow-ups", value: "5", tone: "critical" },
+  { id: "s-3", label: "Deals moved forward this week", value: "2", tone: "success" },
+  { id: "s-4", label: "Brazil buyers converting 2.1× better", tone: "success" },
+  { id: "s-5", label: "Leads contacted under 1h perform best", tone: "neutral" },
+];
+
+const demoAgentPipeline: AgentPipelineStage[] = [
+  { id: "p-1", label: "New leads", count: 8 },
+  { id: "p-2", label: "Showing scheduled", count: 4 },
+  { id: "p-3", label: "Negotiation", count: 2 },
+  { id: "p-4", label: "Under contract", count: 1 },
+  { id: "p-5", label: "At risk", count: 2, tone: "critical" },
 ];
 
 // ─── Sales demo ────────────────────────────────────────────────
 
-const demoUrgentDeals: ActionCardData[] = [
+const demoSalesAttention: AttentionMetric[] = [
+  { id: "att-1", label: "Leads need follow-up", value: "7", tone: "warning" },
+  { id: "att-2", label: "Stalled negotiations", value: "3", tone: "warning" },
+  { id: "att-3", label: "Closings at risk", value: "2", tone: "critical" },
+];
+
+const demoSalesDealsNeedingAction: ActionCardData[] = [
   {
-    id: "u-1",
+    id: "sd-1",
     tag: "URGENT",
-    amount: "$850K",
-    summary: "Carlos Mendez · No update 5 days · Sarah",
+    summary: "Carlos Mendez — no activity · 5d",
   },
   {
-    id: "u-2",
+    id: "sd-2",
     tag: "WARNING",
-    amount: "$4.2M",
-    summary: "Familia Rodríguez · Stalled 12 days · James",
+    summary: "Familia Rodríguez — negotiation stalled · 12d",
   },
   {
-    id: "u-3",
+    id: "sd-3",
+    tag: "WORKFLOW BREAK",
+    summary: "Pareja NY — missing documents · closing at risk",
+  },
+  {
+    id: "sd-4",
+    tag: "OPPORTUNITY",
+    summary: "Miami investor — high-value buyer · needs owner",
+  },
+];
+
+const demoSalesTopDeals: ActionCardData[] = [
+  {
+    id: "td-1",
     tag: "URGENT",
-    amount: "$2.1M",
-    summary: "Pareja NY · Contract expires Friday · Priya",
+    summary: "Rodríguez Family — negotiation stalled · 12d",
   },
   {
-    id: "u-4",
-    tag: "WARNING",
-    amount: "$1.5M",
-    summary: "Inversor Bolivia · No follow-up after showing 6d · Marcus",
+    id: "td-2",
+    tag: "WORKFLOW BREAK",
+    summary: "Ana Silva — closing this week · docs pending",
   },
   {
-    id: "u-5",
-    tag: "WARNING",
-    amount: "$680K",
-    summary: "Tech founder · Inspection findings unanswered 4d · Aisha",
+    id: "td-3",
+    tag: "HOT LEAD",
+    summary: "Miami investor — high intent · no follow-up",
   },
 ];
 
-const expanded = (
-  id: string,
-  tag: ActionCardExpandedData["tag"],
-  amount: string,
-  title: string,
-  meta: string
-): ActionCardExpandedData => ({
-  id,
-  tag,
-  amount,
-  title,
-  meta,
-  actions: [
-    { label: "View deal", primary: true },
-    { label: "Reassign" },
-  ],
-});
-
-const atRisk: ActionCardExpandedData[] = [
-  expanded(
-    "ar-1",
-    "URGENT",
-    "$4.2M",
-    "Familia Rodríguez — stalled in Negotiation 12 days",
-    "James Carter · Stage: Negotiation · Typical close: 7 days"
-  ),
-  expanded(
-    "ar-2",
-    "URGENT",
-    "$2.1M",
-    "Pareja NY — contract expires Friday",
-    "Priya Shah · Stage: Under Contract · 3 days remaining"
-  ),
-  expanded(
-    "ar-3",
-    "URGENT",
-    "$850K",
-    "Carlos Mendez — no update from agent 5 days",
-    "Sarah Mitchell · Stage: Negotiation · Last activity: 5d ago"
-  ),
+const demoSalesThisWeek: ThisWeekItem[] = [
+  { id: "tw-1", label: "4 leads aging > 48h", tone: "warning" },
+  { id: "tw-2", label: "2 stalled contracts", tone: "warning" },
+  { id: "tw-3", label: "1 overloaded agent", tone: "critical" },
 ];
 
-const stalled: ActionCardExpandedData[] = [
-  expanded(
-    "st-1",
-    "WARNING",
-    "$1.5M",
-    "Inversor Bolivia — no follow-up after showing",
-    "Marcus Reyes · Stage: Showing · Last activity: 6d ago"
-  ),
-  expanded(
-    "st-2",
-    "WARNING",
-    "$680K",
-    "Tech founder — inspection findings unanswered",
-    "Aisha Patel · Stage: Inspection · Last activity: 4d ago"
-  ),
+const demoSalesTeamOverview: SalesTeamRow[] = [
+  {
+    id: "to-1",
+    fullName: "Sarah Mitchell",
+    initials: "SM",
+    avatarUrl: "https://randomuser.me/api/portraits/women/44.jpg",
+    avatarColor: "bg-emerald-500",
+    primaryLine: "18m avg response",
+    secondaryLine: "0 stalled deals",
+    tone: "success",
+  },
+  {
+    id: "to-2",
+    fullName: "James Carter",
+    initials: "JC",
+    avatarUrl: "https://randomuser.me/api/portraits/men/32.jpg",
+    avatarColor: "bg-amber-500",
+    primaryLine: "9 active deals",
+    secondaryLine: "2 need follow-up",
+    tone: "warning",
+  },
+  {
+    id: "to-3",
+    fullName: "Emma Olsen",
+    initials: "EO",
+    avatarUrl: "https://randomuser.me/api/portraits/women/79.jpg",
+    avatarColor: "bg-teal-500",
+    primaryLine: "4 leads idle > 48h",
+    secondaryLine: "Below team SLA",
+    tone: "critical",
+  },
 ];
 
-const hot: ActionCardExpandedData[] = [
-  expanded(
-    "h-1",
-    "HOT LEAD",
-    "$4.2M",
-    "Carlos Mendez — high engagement, repeat visits",
-    "Sarah Mitchell · Stage: Closing · 92% close score"
-  ),
-  expanded(
-    "h-2",
-    "OPPORTUNITY",
-    "$3.5M",
-    "Coral Way penthouse — premium buyer profile",
-    "James Carter · Stage: Showing · 88% close score"
-  ),
-  expanded(
-    "h-3",
-    "HOT LEAD",
-    "$2.8M",
-    "Familia Rodríguez — strong intent signals",
-    "James Carter · Stage: Negotiation · 84% close score"
-  ),
-  expanded(
-    "h-4",
-    "HOT LEAD",
-    "$1.9M",
-    "Tech founder — pre-approved, motivated",
-    "Aisha Patel · Stage: Inspection · 81% close score"
-  ),
-  expanded(
-    "h-5",
-    "OPPORTUNITY",
-    "$1.5M",
-    "Inversor Bolivia — international cash buyer",
-    "Marcus Reyes · Stage: Showing · 79% close score"
-  ),
+const demoSalesPriorityActions: ActionCardData[] = [
+  {
+    id: "pa-1",
+    tag: "CALL NOW",
+    summary: "John Smith · viewed 3 listings",
+  },
+  {
+    id: "pa-2",
+    tag: "FOLLOW UP",
+    summary: "Maria Lopez · showing completed",
+  },
+  {
+    id: "pa-3",
+    tag: "SEND DOCS",
+    summary: "Buyer packet missing proof of funds",
+  },
+  {
+    id: "pa-4",
+    tag: "RE-ENGAGE",
+    summary: "Brazil investor · inactive 6d",
+  },
+  {
+    id: "pa-5",
+    tag: "CHECK-IN",
+    summary: "Inspection reply overdue",
+  },
+  {
+    id: "pa-6",
+    tag: "PRIORITY",
+    amount: "$1.2M",
+    summary: "Buyer active this morning",
+  },
 ];
+
+const demoSalesMyPipeline: PipelineSummaryRow[] = [
+  { id: "mp-1", label: "Active buyers", count: 12 },
+  { id: "mp-2", label: "Negotiations", count: 3 },
+  { id: "mp-3", label: "Closings this week", count: 2 },
+];
+
+const demoSalesMomentum: MomentumRow[] = [
+  {
+    id: "mo-1",
+    label: "You closed 2 deals faster than your average this month",
+    tone: "success",
+  },
+  {
+    id: "mo-2",
+    label: "Your response time improved 32% this week",
+    tone: "success",
+  },
+];
+
+const demoSalesTeamLeader: TeamLeaderSalesData = {
+  todaysAttention: demoSalesAttention,
+  dealsNeedingAction: demoSalesDealsNeedingAction,
+  pulsorInsight:
+    "Referral deals are closing 2× faster than Zillow leads this month.",
+  topDealsToWatch: demoSalesTopDeals,
+  thisWeek: demoSalesThisWeek,
+  teamOverview: demoSalesTeamOverview,
+  isEmpty: false,
+};
+
+const demoSalesAgent: AgentSalesData = {
+  hotLeadsCount: 3,
+  hotLeadsNote: "Waiting response",
+  followUpsDueCount: 5,
+  followUpsDueNote: "Overdue or high priority",
+  dealsAtRiskCount: 2,
+  dealsAtRiskNote: "Missing next step",
+  priorityActions: demoSalesPriorityActions,
+  pulsorSuggestion:
+    "Leads contacted within 15 minutes are converting 2.4× better this week.",
+  myPipeline: demoSalesMyPipeline,
+  momentum: demoSalesMomentum,
+  isEmpty: false,
+};
 
 /** Full SalesData snapshot for the demo account. */
 export const DEMO_SALES_DATA: SalesData = {
-  snapshotLine:
-    "$67.8M pipeline · 226 deals · 35.2% win rate · $4.2M closed this month",
-  urgentDeals: demoUrgentDeals,
-  weeklyInsight:
-    "Deals from Bolivia close 2.5× faster than average. 3 deals stalled at 'Negotiation' — typical close is 7 days, these are at 12+. Worth pinging the agents this week.",
-  dealsByTab: {
-    "at-risk": atRisk,
-    stalled,
-    hot,
-    "all-active": [...atRisk, ...stalled, ...hot],
-  },
-  totalDeals: 226,
-  totalPipelineLabel: "$67.8M",
-  isEmpty: false,
+  teamLeader: demoSalesTeamLeader,
+  agent: demoSalesAgent,
 };
 
 // ─── Home demo ─────────────────────────────────────────────────
 
-/** Full HomeData snapshot for the demo account. */
-export const DEMO_HOME_DATA: HomeData = {
+const demoTeamLeader: TeamLeaderHomeData = {
   firstName: "Mike",
-  pipelineValue: "$67.8M",
+  pipelineAtRisk: "$18.7M",
+  pipelineAtRiskNote: "No response in 72h",
   leadsAtRiskCount: 7,
-  closesLine: "3 / 5",
-  pulsorInsights: demoInsights,
+  leadsAtRiskNote: "No contact > 48h",
+  teamHealthScore: 82,
+  teamHealthNote: "Healthy · SLA + follow-through",
+  operationalLeaks: demoLeaks,
+  workflowBottlenecks: demoBottlenecks,
+  team: demoTeam,
   weeklyInsight:
     "Bolivia leads close 2.5× faster than your team average. Lean into that segment this month — there are 14 active prospects matching the pattern.",
   thisWeekGoal:
     "Move 5 deals from 'Negotiation' to 'Under Contract' by Friday. Focus on the 3 deals stalled longer than 10 days.",
   lastWeekWins:
     "Ana Torres closed a $1.2M deal in Pacific Heights — 12-day cycle. Carlos surfaced the Bolivia pattern that's now driving 3× conversion.",
-  team: demoTeam,
   isEmpty: false,
+};
+
+const demoAgent: AgentHomeData = {
+  firstName: "Ana",
+  todayPrioritiesCount: 6,
+  hotLeadsCount: 3,
+  dealsAtRiskCount: 2,
+  todaysActions: demoAgentActions,
+  recommendedFocus:
+    "Focus on the 3 leads most likely to convert before starting cold follow-ups.",
+  performanceSignals: demoAgentSignals,
+  pipeline: demoAgentPipeline,
+  isEmpty: false,
+};
+
+/** Full HomeData snapshot for the demo account. */
+export const DEMO_HOME_DATA: HomeData = {
+  teamLeader: demoTeamLeader,
+  agent: demoAgent,
+};
+
+// ─── Marketing demo ────────────────────────────────────────────
+
+const demoMarketingTLSources: LeadSourceRow[] = [
+  {
+    id: "ls-1",
+    name: "Referrals",
+    signal: "Highest close rate",
+    tone: "success",
+  },
+  {
+    id: "ls-2",
+    name: "Meta Ads",
+    signal: "High volume · medium intent",
+    tone: "neutral",
+  },
+  {
+    id: "ls-3",
+    name: "YouTube",
+    signal: "Low volume · premium buyers",
+    tone: "success",
+  },
+  {
+    id: "ls-4",
+    name: "Instagram",
+    signal: "Fast engagement · medium ticket",
+    tone: "neutral",
+  },
+  {
+    id: "ls-5",
+    name: "Google Ads",
+    signal: "High CPL · weak follow-up quality",
+    tone: "critical",
+  },
+];
+
+const demoMarketingTLInsights: ActionCardData[] = [
+  {
+    id: "mi-1",
+    tag: "PATTERN",
+    summary: "Bolivia leads convert 3× better than average",
+  },
+  {
+    id: "mi-2",
+    tag: "OPPORTUNITY",
+    summary: "YouTube leads close at higher ticket sizes",
+  },
+  {
+    id: "mi-3",
+    tag: "INSIGHT",
+    summary: "Meta response time improved this week",
+  },
+];
+
+const demoMarketingAgentSources: LeadSourceRow[] = [
+  {
+    id: "as-1",
+    name: "Referrals",
+    signal: "Highest reply rate this week",
+    tone: "success",
+  },
+  {
+    id: "as-2",
+    name: "Instagram",
+    signal: "Fastest engagement",
+    tone: "success",
+  },
+  {
+    id: "as-3",
+    name: "YouTube",
+    signal: "Premium buyers",
+    tone: "success",
+  },
+  {
+    id: "as-4",
+    name: "Zillow",
+    signal: "Low response quality",
+    tone: "warning",
+  },
+  {
+    id: "as-5",
+    name: "WhatsApp",
+    signal: "Most active conversations",
+    tone: "neutral",
+  },
+];
+
+const demoMarketingOpportunities: OpportunityRow[] = [
+  { id: "op-1", label: "3 LATAM buyers active this week", tone: "success" },
+  { id: "op-2", label: "2 premium buyers reopened conversations", tone: "success" },
+  { id: "op-3", label: "1 stalled buyer re-engaged today", tone: "warning" },
+];
+
+const demoMarketingCampaigns: CampaignRow[] = [
+  {
+    id: "cmp-1",
+    name: "YouTube collaboration",
+    signal: "12 leads · 2 high intent",
+    tone: "success",
+  },
+  {
+    id: "cmp-2",
+    name: "LATAM buyer form",
+    signal: "Strong engagement",
+    tone: "success",
+  },
+  {
+    id: "cmp-3",
+    name: "Google PPC test",
+    signal: "High spend · weak quality",
+    tone: "critical",
+  },
+];
+
+const demoMarketingTeamLeader: TeamLeaderMarketingData = {
+  highIntentCount: 42,
+  highIntentNote: "Likely to convert",
+  highIntentTrend: { direction: "up", label: "Close quality improving" },
+  strongestSourceName: "Referrals",
+  strongestSourceNote: "Highest close quality",
+  strongestSourceTrend: { direction: "up", label: "Faster response this week" },
+  weakestSourceName: "Google Ads",
+  weakestSourceNote: "High cost · low response",
+  weakestSourceTrend: { direction: "down", label: "Worsening CPL" },
+  leadSources: demoMarketingTLSources,
+  activeCampaigns: demoMarketingCampaigns,
+  pulsorInsights: demoMarketingTLInsights,
+  suggestedFocus:
+    "Increase LATAM targeting this week. Current close quality is outperforming paid channels.",
+  isEmpty: false,
+};
+
+const demoMarketingAgent: AgentMarketingData = {
+  bestSourceName: "Referrals",
+  bestSourceNote: "Convert best for you",
+  fastestSourceName: "Instagram",
+  fastestSourceNote: "DMs close faster",
+  buyersWaitingCount: 4,
+  buyersWaitingNote: "High intent, no reply yet",
+  whatsWorking: demoMarketingAgentSources,
+  pulsorSuggestion:
+    "Referral leads are responding 2× faster this week.",
+  followUpPriority: demoMarketingOpportunities,
+  isEmpty: false,
+};
+
+/** Full MarketingData snapshot for the demo account. */
+export const DEMO_MARKETING_DATA: MarketingData = {
+  teamLeader: demoMarketingTeamLeader,
+  agent: demoMarketingAgent,
 };

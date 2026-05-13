@@ -5,98 +5,94 @@ import { DEMO_EMAIL } from "@/lib/data/demo";
 import { StrategyClient, type StrategyData } from "./strategy-client";
 
 const DEMO_STRATEGY: StrategyData = {
-  milestones: [
-    { id: "m-onboarding", label: "Onboarding", date: "Apr 15", state: "done" },
-    { id: "m-audit", label: "Audit", date: "Apr 22", state: "done" },
-    {
-      id: "m-monthly",
-      label: "Optimization",
-      date: "May 1 – 28",
-      state: "current",
-    },
-    { id: "m-mid-q", label: "Mid-quarter", date: "May 28", state: "future" },
-    { id: "m-q2-final", label: "Q2 review", date: "Jun 30", state: "future" },
+  stages: [
+    { id: "s-audit", label: "Audit", state: "done" },
+    { id: "s-optimization", label: "Optimization", state: "current" },
+    { id: "s-review", label: "Review", state: "future" },
+    { id: "s-expansion", label: "Expansion", state: "future" },
   ],
-  currentFocusLabel: "Optimization",
-  currentFocusDay: 12,
-  currentFocusPeriodLength: 28,
-  pipelineGoalPct: 68,
-  initiatives: [
-    { id: "i-1", label: "Bolivia priority workflow", state: "done" },
-    { id: "i-2", label: "Sarah's lead reassignment", state: "current" },
-    { id: "i-3", label: "Q2 international expansion", state: "future" },
+  currentFocusHeadline: "Reducing stalled negotiations",
+  currentFocusItems: [
+    "Lead reassignment active",
+    "Follow-up alerts enabled",
+    "Coordinator workflow updated",
   ],
-  actionItems: [
+  stageLabel: "Optimization",
+  weekN: 2,
+  weekOf: 4,
+  whatImproved: [
     {
-      id: "ai-1",
-      label: "Implement Bolivia priority workflow",
-      state: "done",
+      id: "wi-1",
+      label: "Avg response time",
+      before: "18h",
+      after: "4h",
     },
+    { id: "wi-2", label: "Stalled deals recovered", after: "7" },
     {
-      id: "ai-2",
-      label: "Reassign 3 stalled deals to Sarah",
-      state: "done",
+      id: "wi-3",
+      label: "Referral leads converting",
+      after: "2× higher",
     },
-    {
-      id: "ai-3",
-      label: "Define Q2 reach goals for international market",
-      state: "future",
-    },
-    {
-      id: "ai-4",
-      label: "Test new lead qualification script",
-      state: "future",
-    },
+    { id: "wi-4", label: "Coordinator workload reduced", after: "-35%" },
+    { id: "wi-5", label: "Leads aging > 48h", before: "12", after: "3" },
   ],
-  lastReviewDate: "Apr 28",
-  nextMilestoneLabel: "Mid-quarter review",
-  nextMilestoneDate: "May 28",
-  nextMilestoneDaysAway: 21,
+  currentPriorities: [
+    "Improve LATAM lead handling",
+    "Reduce negotiation delays",
+    "Standardize follow-up ownership",
+  ],
+  recommendedNextStep: "Enable SLA alerts for inbound leads.",
 };
 
 const EMPTY_STRATEGY: StrategyData = {
-  milestones: [],
-  currentFocusLabel: "",
-  currentFocusDay: 1,
-  currentFocusPeriodLength: 28,
-  pipelineGoalPct: 0,
-  initiatives: [],
-  actionItems: [],
-  lastReviewDate: null,
-  nextMilestoneLabel: null,
-  nextMilestoneDate: null,
-  nextMilestoneDaysAway: 0,
+  stages: [],
+  currentFocusHeadline: null,
+  currentFocusItems: [],
+  stageLabel: null,
+  weekN: null,
+  weekOf: null,
+  whatImproved: [],
+  currentPriorities: [],
+  recommendedNextStep: null,
 };
 
 export default async function StrategyPage() {
   const dashboard = await getMyDashboard();
   if (!dashboard) redirect("/login");
 
-  // Demo account — rich hardcoded
   if (dashboard.user.email === DEMO_EMAIL) {
     return <StrategyClient data={DEMO_STRATEGY} />;
   }
 
-  // Real users: load company strategy
   const strategy = dashboard.user.company_id
     ? await getCompanyStrategy(dashboard.user.company_id)
     : null;
 
-  const data: StrategyData = strategy
-    ? {
-        milestones: strategy.milestones,
-        currentFocusLabel: strategy.current_focus_label ?? "",
-        currentFocusDay: strategy.current_focus_day,
-        currentFocusPeriodLength: strategy.current_focus_period_length,
-        pipelineGoalPct: strategy.pipeline_goal_pct,
-        initiatives: strategy.initiatives,
-        actionItems: strategy.action_items,
-        lastReviewDate: strategy.last_review_date,
-        nextMilestoneLabel: strategy.next_milestone_label,
-        nextMilestoneDate: strategy.next_milestone_date,
-        nextMilestoneDaysAway: strategy.next_milestone_days_away,
-      }
-    : EMPTY_STRATEGY;
+  if (!strategy) return <StrategyClient data={EMPTY_STRATEGY} />;
+
+  const data: StrategyData = {
+    stages: strategy.milestones.map((m) => ({
+      id: m.id,
+      label: m.label,
+      state: m.state,
+    })),
+    currentFocusHeadline: strategy.current_focus_label ?? null,
+    currentFocusItems: strategy.initiatives
+      .filter((i) => i.state !== "future")
+      .map((i) => i.label),
+    stageLabel: strategy.current_focus_label ?? null,
+    weekN: strategy.current_focus_day
+      ? Math.max(1, Math.ceil(strategy.current_focus_day / 7))
+      : null,
+    weekOf: strategy.current_focus_period_length
+      ? Math.max(1, Math.ceil(strategy.current_focus_period_length / 7))
+      : null,
+    whatImproved: [],
+    currentPriorities: strategy.action_items
+      .filter((i) => i.state === "future")
+      .map((i) => i.label),
+    recommendedNextStep: null,
+  };
 
   return <StrategyClient data={data} />;
 }

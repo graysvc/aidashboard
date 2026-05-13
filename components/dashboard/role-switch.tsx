@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
-const ROLE_KEY = "pulsor:role";
-type Role = "team-leader" | "realtor";
+export const ROLE_KEY = "pulsor:role";
+export type Role = "team-leader" | "agent";
 const ROLES: { key: Role; label: string }[] = [
   { key: "team-leader", label: "Team Leader" },
-  { key: "realtor", label: "Realtor" },
+  { key: "agent", label: "Agent" },
 ];
 
 /**
@@ -21,7 +21,7 @@ export function RoleSwitch() {
 
   useEffect(() => {
     const stored = localStorage.getItem(ROLE_KEY) as Role | null;
-    if (stored === "team-leader" || stored === "realtor") {
+    if (stored === "team-leader" || stored === "agent") {
       setRole(stored);
     }
   }, []);
