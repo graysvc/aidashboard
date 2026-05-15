@@ -219,3 +219,265 @@ export const RESPONSIBLE_LABEL: Record<Responsible, string> = {
   client: "Client",
   system: "System",
 };
+
+// ─── Operations (Kanban) ───────────────────────────────────────
+
+export type PipelineStage =
+  | "new-leads"
+  | "in-conversation"
+  | "showing"
+  | "in-offer"
+  | "under-contract"
+  | "closing"
+  | "closed";
+
+export type ClientType = "buyer" | "seller" | "investor";
+
+export type ClientTemperature = "hot" | "warm" | "cold";
+
+export type PipelineClient = {
+  id: string;
+  name: string;
+  stage: PipelineStage;
+  daysInStage: number;
+  type: ClientType;
+  temperature: ClientTemperature;
+  lastInteraction: string;
+  budget?: string;
+  area?: string;
+  note?: string;
+};
+
+export const PIPELINE_STAGE_LABEL: Record<PipelineStage, string> = {
+  "new-leads": "New leads",
+  "in-conversation": "In conversation",
+  showing: "Showing",
+  "in-offer": "In offer",
+  "under-contract": "Under contract",
+  closing: "Closing",
+  closed: "Closed",
+};
+
+export const PIPELINE_STAGE_ORDER: PipelineStage[] = [
+  "new-leads",
+  "in-conversation",
+  "showing",
+  "in-offer",
+  "under-contract",
+  "closing",
+  "closed",
+];
+
+export const CLIENT_TYPE_LABEL: Record<ClientType, string> = {
+  buyer: "Buyer",
+  seller: "Seller",
+  investor: "Investor",
+};
+
+export const PIPELINE_CLIENTS: PipelineClient[] = [
+  // New leads (5)
+  {
+    id: "c-1",
+    name: "Tom Harrison",
+    stage: "new-leads",
+    daysInStage: 1,
+    type: "buyer",
+    temperature: "warm",
+    lastInteraction: "1d ago",
+    budget: "$650K",
+    area: "Coral Gables",
+  },
+  {
+    id: "c-2",
+    name: "Priscilla Adams",
+    stage: "new-leads",
+    daysInStage: 2,
+    type: "buyer",
+    temperature: "hot",
+    lastInteraction: "Today",
+    budget: "$1.2M",
+    area: "Brickell",
+  },
+  {
+    id: "c-3",
+    name: "Davis Capital LLC",
+    stage: "new-leads",
+    daysInStage: 3,
+    type: "investor",
+    temperature: "warm",
+    lastInteraction: "2d ago",
+    budget: "$3.5M",
+    area: "Miami Beach",
+  },
+  {
+    id: "c-4",
+    name: "Erika Whittaker",
+    stage: "new-leads",
+    daysInStage: 4,
+    type: "seller",
+    temperature: "cold",
+    lastInteraction: "4d ago",
+    area: "Coconut Grove",
+  },
+  // In conversation (4)
+  {
+    id: "c-5",
+    name: "Mark Donovan",
+    stage: "in-conversation",
+    daysInStage: 3,
+    type: "buyer",
+    temperature: "hot",
+    lastInteraction: "Yesterday",
+    budget: "$850K",
+    area: "Coral Gables",
+  },
+  {
+    id: "c-6",
+    name: "Stephanie Quinn",
+    stage: "in-conversation",
+    daysInStage: 5,
+    type: "buyer",
+    temperature: "warm",
+    lastInteraction: "3d ago",
+    budget: "$520K",
+    area: "Wynwood",
+  },
+  {
+    id: "c-7",
+    name: "The Aldridge Family",
+    stage: "in-conversation",
+    daysInStage: 7,
+    type: "seller",
+    temperature: "warm",
+    lastInteraction: "2d ago",
+    area: "Pinecrest",
+  },
+  // Showing (3)
+  {
+    id: "c-8",
+    name: "Jeremy Wallace",
+    stage: "showing",
+    daysInStage: 6,
+    type: "buyer",
+    temperature: "hot",
+    lastInteraction: "Yesterday",
+    budget: "$1.4M",
+    area: "Brickell",
+    note: "3rd showing scheduled Saturday",
+  },
+  {
+    id: "c-9",
+    name: "Garcia Family",
+    stage: "showing",
+    daysInStage: 9,
+    type: "buyer",
+    temperature: "warm",
+    lastInteraction: "2d ago",
+    budget: "$780K",
+    area: "Coral Gables",
+  },
+  {
+    id: "c-10",
+    name: "Northwood Holdings",
+    stage: "showing",
+    daysInStage: 12,
+    type: "investor",
+    temperature: "cold",
+    lastInteraction: "6d ago",
+    budget: "$5M+",
+    area: "Edgewater",
+  },
+  // In offer (2)
+  {
+    id: "c-11",
+    name: "Lopez Family",
+    stage: "in-offer",
+    daysInStage: 4,
+    type: "buyer",
+    temperature: "hot",
+    lastInteraction: "Today",
+    budget: "$1.1M",
+    area: "Brickell",
+    note: "Counter-offer expected today",
+  },
+  {
+    id: "c-12",
+    name: "Brendan Cole",
+    stage: "in-offer",
+    daysInStage: 8,
+    type: "buyer",
+    temperature: "warm",
+    lastInteraction: "3d ago",
+    budget: "$680K",
+    area: "Wynwood",
+  },
+  // Under contract (3)
+  {
+    id: "c-13",
+    name: "Ramirez",
+    stage: "under-contract",
+    daysInStage: 17,
+    type: "buyer",
+    temperature: "warm",
+    lastInteraction: "Yesterday",
+    budget: "$720K",
+    area: "Coral Way",
+  },
+  {
+    id: "c-14",
+    name: "Castro",
+    stage: "under-contract",
+    daysInStage: 27,
+    type: "buyer",
+    temperature: "hot",
+    lastInteraction: "Today",
+    budget: "$945K",
+    area: "Sunset Dr",
+  },
+  // Closing (2)
+  {
+    id: "c-15",
+    name: "Garcia",
+    stage: "closing",
+    daysInStage: 24,
+    type: "buyer",
+    temperature: "hot",
+    lastInteraction: "Today",
+    budget: "$1.05M",
+    area: "NE 95th St",
+    note: "Final walkthrough next week",
+  },
+  {
+    id: "c-16",
+    name: "Sanchez",
+    stage: "closing",
+    daysInStage: 38,
+    type: "buyer",
+    temperature: "hot",
+    lastInteraction: "Today",
+    budget: "$1.6M",
+    area: "Ocean Blvd",
+  },
+  // Closed (3)
+  {
+    id: "c-17",
+    name: "Mitchell",
+    stage: "closed",
+    daysInStage: 4,
+    type: "buyer",
+    temperature: "warm",
+    lastInteraction: "Last week",
+    budget: "$920K",
+    area: "Coconut Grove",
+  },
+  {
+    id: "c-18",
+    name: "Reyes",
+    stage: "closed",
+    daysInStage: 9,
+    type: "seller",
+    temperature: "warm",
+    lastInteraction: "2 weeks ago",
+    area: "Pinecrest",
+  },
+];
