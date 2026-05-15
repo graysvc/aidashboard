@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -11,27 +12,65 @@ import {
   LifeBuoy,
   LogOut,
   X,
+  CheckSquare,
+  Kanban,
+  FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PulsorLockup } from "@/components/brand/pulsor";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { dashboardData } from "@/lib/mock-data";
 import { signOut } from "@/lib/auth";
+import { ROLE_KEY, isRole, type Role } from "@/components/dashboard/role-switch";
 
-const NAV_WORKSPACE = [
+type NavItem = {
+  href: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+};
+
+const NAV_WORKSPACE_DEFAULT: NavItem[] = [
   { href: "/overview", label: "Home", icon: LayoutDashboard },
   { href: "/sales", label: "Sales", icon: TrendingUp },
   { href: "/marketing", label: "Marketing", icon: Megaphone },
   { href: "/strategy", label: "Strategy", icon: Compass },
-] as const;
+];
+
+const NAV_WORKSPACE_ASSISTANT: NavItem[] = [
+  { href: "/daily-tasks", label: "Daily Tasks", icon: CheckSquare },
+  { href: "/operations", label: "Operations", icon: Kanban },
+  { href: "/transactions", label: "Transactions", icon: FileText },
+];
 
 const NAV_SECONDARY = [
   { href: "/usage", label: "Usage", icon: Gauge, disabled: false },
   { href: "/help", label: "Help", icon: LifeBuoy, disabled: true },
 ] as const;
 
+function useRole(): Role {
+  const [role, setRole] = useState<Role>("team-leader");
+  useEffect(() => {
+    const read = () => {
+      const stored = localStorage.getItem(ROLE_KEY);
+      if (isRole(stored)) setRole(stored);
+    };
+    read();
+    const onChange = () => read();
+    window.addEventListener("pulsor:role-change", onChange);
+    window.addEventListener("storage", onChange);
+    return () => {
+      window.removeEventListener("pulsor:role-change", onChange);
+      window.removeEventListener("storage", onChange);
+    };
+  }, []);
+  return role;
+}
+
 function NavList({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
+  const role = useRole();
+  const workspace =
+    role === "assistant" ? NAV_WORKSPACE_ASSISTANT : NAV_WORKSPACE_DEFAULT;
   const renderItem = ({
     href,
     label,
@@ -74,7 +113,7 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
         <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
           Workspace
         </p>
-        {NAV_WORKSPACE.map(renderItem)}
+        {workspace.map(renderItem)}
       </nav>
       <div className="px-4 pb-6 space-y-1 border-t border-border/60 pt-4">
         <UserPill onNavigate={onNavigate} />

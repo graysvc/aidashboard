@@ -4,11 +4,18 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export const ROLE_KEY = "pulsor:role";
-export type Role = "team-leader" | "agent";
+export type Role = "team-leader" | "agent" | "assistant";
 const ROLES: { key: Role; label: string }[] = [
   { key: "team-leader", label: "Team Leader" },
   { key: "agent", label: "Agent" },
+  { key: "assistant", label: "Assistant" },
 ];
+
+export function isRole(value: unknown): value is Role {
+  return (
+    value === "team-leader" || value === "agent" || value === "assistant"
+  );
+}
 
 /**
  * Design-time toggle that simulates which user role is active.
@@ -20,10 +27,8 @@ export function RoleSwitch() {
   const [role, setRole] = useState<Role>("team-leader");
 
   useEffect(() => {
-    const stored = localStorage.getItem(ROLE_KEY) as Role | null;
-    if (stored === "team-leader" || stored === "agent") {
-      setRole(stored);
-    }
+    const stored = localStorage.getItem(ROLE_KEY);
+    if (isRole(stored)) setRole(stored);
   }, []);
 
   function pick(next: Role) {
