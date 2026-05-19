@@ -6,8 +6,8 @@ const PUBLIC_PATHS = [
   "/login",
   "/setup",
   "/landing",          // static HTML landing — served at "/" via rewrite
-  "/landing-realtors", // realtor-specific landing — served at "/realtors"
-  "/realtors",         // public realtor landing path
+  "/landing-realtors", // realtor-specific landing — served at "/realtor"
+  "/realtor",          // public realtor landing path
   "/closing",          // public closing-progress view shared with clients
   "/icon.svg",
   "/favicon.ico",

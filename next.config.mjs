@@ -7,8 +7,8 @@ const nextConfig = {
       // execute normally (no React conversion).
       { source: "/", destination: "/landing/index.html" },
       // Realtor-specific landing variant.
-      { source: "/realtors", destination: "/landing-realtors/index.html" },
-      { source: "/realtors/", destination: "/landing-realtors/index.html" },
+      { source: "/realtor", destination: "/landing-realtors/index.html" },
+      { source: "/realtor/", destination: "/landing-realtors/index.html" },
     ];
   },
 };
