@@ -454,6 +454,35 @@
     margin: 0;
   }
 
+  /* Realtor variant: "What we're exploring" — quiet list */
+  .exploring-wrap {
+    max-width: 640px;
+  }
+  .exploring-list {
+    list-style: none;
+    margin: 28px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .exploring-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 17px;
+    color: var(--text);
+    letter-spacing: -0.011em;
+  }
+  .exploring-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0, 217, 163, 0.15);
+    flex-shrink: 0;
+  }
+
   /* ───────── VALUES (3 columns) ───────── */
   .values {
     padding: 128px 0 112px;
@@ -668,7 +697,7 @@
         </h1>
 
         <p class="hero-sub">
-          Pulsor helps productive realtors stay on top of follow-ups, closings, client communication and daily priorities — without adding another complicated system to manage.
+          Pulsor is an AI assistant being built with productive realtors to help organize the daily operational chaos around follow-ups, closings and client communication.
         </p>
 
         <form class="access-form" id="access-form" novalidate>
@@ -677,7 +706,8 @@
         </form>
 
         <div class="form-meta">
-          Invite-only · Reviewed manually · Already a customer? <a href="/login" style="color: var(--text); text-decoration: underline; text-decoration-color: var(--stone-2); text-underline-offset: 3px;">Log in</a>
+          Still in private research with a small group of agents across Florida.<br>
+          Already a customer? <a href="/login" style="color: var(--text); text-decoration: underline; text-decoration-color: var(--stone-2); text-underline-offset: 3px;">Log in</a>
         </div>
 
         <div class="form-success" id="form-success" role="status" aria-live="polite">
@@ -699,122 +729,30 @@
       </div>
     </div>
 
-    <!-- LOGOS -->
-    <div class="container logos">
-      <div class="logos-label">Connected with your stack</div>
-      <div class="logos-row">
-        <!-- Follow Up Boss -->
-        <div class="logo-item" title="Follow Up Boss">
-          <svg viewBox="0 0 220 40" xmlns="http://www.w3.org/2000/svg" aria-label="Follow Up Boss">
-            <text x="0" y="29" font-family="Inter, system-ui, sans-serif" font-weight="800" font-size="26" letter-spacing="-0.8" fill="currentColor">Follow Up Boss</text>
-          </svg>
-        </div>
-        <!-- BoldTrail -->
-        <div class="logo-item" title="BoldTrail">
-          <svg viewBox="0 0 160 40" xmlns="http://www.w3.org/2000/svg" aria-label="BoldTrail">
-            <text x="0" y="29" font-family="Inter, system-ui, sans-serif" font-weight="900" font-size="28" letter-spacing="-1.0" fill="currentColor">Bold</text>
-            <text x="73" y="29" font-family="Inter, system-ui, sans-serif" font-weight="300" font-size="28" letter-spacing="-0.5" fill="currentColor">Trail</text>
-          </svg>
-        </div>
-        <!-- HubSpot -->
-        <div class="logo-item" title="HubSpot">
-          <svg viewBox="0 0 150 40" xmlns="http://www.w3.org/2000/svg" aria-label="HubSpot">
-            <g stroke="currentColor" stroke-width="2.4" fill="none">
-              <circle cx="14" cy="20" r="9"/>
-              <line x1="14" y1="11" x2="14" y2="6.5"/>
-              <line x1="14" y1="29" x2="14" y2="33.5"/>
-              <line x1="5" y1="20" x2="0.5" y2="20"/>
-              <line x1="23" y1="20" x2="27.5" y2="20"/>
-            </g>
-            <circle cx="14" cy="20" r="3.4" fill="currentColor"/>
-            <text x="34" y="29" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="24" letter-spacing="-0.4" fill="currentColor">HubSpot</text>
-          </svg>
-        </div>
-        <!-- Zillow -->
-        <div class="logo-item" title="Zillow">
-          <svg viewBox="0 0 130 40" xmlns="http://www.w3.org/2000/svg" aria-label="Zillow">
-            <path d="M4 30 L20 6 L36 30 L36 35 L24 35 L24 22 L16 22 L16 35 L4 35 Z" fill="currentColor"/>
-            <text x="44" y="31" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="26" letter-spacing="-0.7" fill="currentColor">Zillow</text>
-          </svg>
-        </div>
-        <!-- Dotloop -->
-        <div class="logo-item" title="Dotloop">
-          <svg viewBox="0 0 150 40" xmlns="http://www.w3.org/2000/svg" aria-label="dotloop">
-            <circle cx="11" cy="22" r="7.5" fill="currentColor"/>
-            <text x="24" y="30" font-family="Inter, system-ui, sans-serif" font-weight="600" font-size="26" letter-spacing="-0.5" fill="currentColor">dotloop</text>
-          </svg>
-        </div>
-        <!-- Lofty -->
-        <div class="logo-item" title="Lofty">
-          <svg viewBox="0 0 110 40" xmlns="http://www.w3.org/2000/svg" aria-label="Lofty">
-            <text x="0" y="30" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="28" letter-spacing="-0.9" fill="currentColor">Lofty</text>
-            <circle cx="84" cy="11" r="3.2" fill="currentColor"/>
-          </svg>
-        </div>
-      </div>
-    </div>
   </section>
 
-  <!-- MISSION — two columns: heading left, body right -->
-  <section class="mission">
-    <div class="container mission-grid">
-      <div>
-        <div class="eyebrow mission-eyebrow">
-          <span class="dot-mint"></span>THE REAL PROBLEM
-        </div>
-        <h2 class="mission-heading">
-          Most real estate agents already have tools.
-          <span class="accent">The problem is operational, not technical.</span>
-        </h2>
-      </div>
-      <div class="mission-body">
-        <p>
-          The operation still lives between WhatsApp, emails, sticky notes,
-          disconnected apps, and mental reminders.
-        </p>
-        <p>
-          Pulsor creates one operational flow that helps realtors stay
-          organized, reduce mental overload, keep closings moving, and know
-          exactly what needs attention each day.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- CORE FEATURES (4 cards) -->
+  <!-- WHAT WE'RE EXPLORING -->
   <section class="automate">
-    <div class="container">
+    <div class="container exploring-wrap">
       <div class="eyebrow automate-eyebrow">
-        <span class="dot-mint"></span>CORE EXPERIENCE
+        <span class="dot-mint"></span>WHAT WE&apos;RE EXPLORING
       </div>
-      <ul class="features-list">
-        <li class="feature">
-          <div class="feature-title">Daily Operational Clarity</div>
-          <p class="feature-text">
-            See what actually requires attention each day without digging
-            through multiple tools and conversations.
-          </p>
+      <ul class="exploring-list">
+        <li class="exploring-item">
+          <span class="exploring-dot" aria-hidden="true"></span>
+          Daily operational briefs
         </li>
-        <li class="feature">
-          <div class="feature-title">Voice-Based Workflow</div>
-          <p class="feature-text">
-            After a showing or client call, send a quick voice note and keep
-            the operation moving naturally.
-          </p>
+        <li class="exploring-item">
+          <span class="exploring-dot" aria-hidden="true"></span>
+          Voice-based workflows
         </li>
-        <li class="feature">
-          <div class="feature-title">Closing Coordination</div>
-          <p class="feature-text">
-            Track inspections, documents, lender/title communication and
-            transaction progress in one operational flow.
-          </p>
+        <li class="exploring-item">
+          <span class="exploring-dot" aria-hidden="true"></span>
+          Closing coordination
         </li>
-        <li class="feature">
-          <div class="feature-title">Client Communication</div>
-          <p class="feature-text">
-            Keep buyers, sellers and tenants informed throughout the process
-            without constant manual updates.
-          </p>
+        <li class="exploring-item">
+          <span class="exploring-dot" aria-hidden="true"></span>
+          Real-time client updates
         </li>
       </ul>
     </div>
