@@ -2,13 +2,18 @@
 const nextConfig = {
   async rewrites() {
     return [
-      // Serve the public landing page at "/" — the actual file lives at
-      // /public/landing/index.html. Keeping it as a static file means JS/CSS
-      // execute normally (no React conversion).
-      { source: "/", destination: "/landing/index.html" },
-      // Realtor-specific landing variant.
-      { source: "/realtor", destination: "/landing-realtors/index.html" },
-      { source: "/realtor/", destination: "/landing-realtors/index.html" },
+      // Serve the realtor landing as the main public homepage. The file
+      // lives at /public/landing-realtors/index.html. Keeping it as a
+      // static file means JS/CSS execute normally (no React conversion).
+      { source: "/", destination: "/landing-realtors/index.html" },
+    ];
+  },
+  async redirects() {
+    return [
+      // The realtor variant is now the homepage. Permanently redirect
+      // the old /realtor path so anyone who has the link still lands.
+      { source: "/realtor", destination: "/", permanent: true },
+      { source: "/realtor/", destination: "/", permanent: true },
     ];
   },
 };
