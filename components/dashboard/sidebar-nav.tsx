@@ -12,7 +12,6 @@ import {
   LifeBuoy,
   LogOut,
   X,
-  CheckSquare,
   Kanban,
   FileText,
 } from "lucide-react";
