@@ -77,8 +77,12 @@ export function MorningBriefClient({
   const active = useMemo(() => prioritizeAttention(brief.attention), [brief]);
 
   const [doneIds, setDoneIds] = useState<Set<string>>(new Set());
+  const [attentionDoneIds, setAttentionDoneIds] = useState<Set<string>>(
+    new Set()
+  );
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [priorityTab, setPriorityTab] = useState<PriorityTab>("todo");
+  const [attentionTab, setAttentionTab] = useState<PriorityTab>("todo");
   const selectedPriority =
     brief.priorities.find((p) => p.id === selectedId) ?? null;
   const todoPriorities = useMemo(
@@ -91,6 +95,23 @@ export function MorningBriefClient({
   );
   const visiblePriorities =
     priorityTab === "todo" ? todoPriorities : donePriorities;
+  const todoAttention = useMemo(
+    () => active.filter((a) => !attentionDoneIds.has(a.id)),
+    [active, attentionDoneIds]
+  );
+  const doneAttention = useMemo(
+    () => active.filter((a) => attentionDoneIds.has(a.id)),
+    [active, attentionDoneIds]
+  );
+
+  function toggleAttentionDone(id: string) {
+    setAttentionDoneIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
 
   function toggleDone(id: string) {
     setDoneIds((prev) => {
@@ -120,10 +141,13 @@ export function MorningBriefClient({
       </header>
 
       {/* Priority overview — live, sorted by urgency, top items only */}
-      <PriorityOverview active={active} />
-
-      {/* Earlier — collapsed by default */}
-      {brief.earlier.length > 0 && <EarlierBlock items={brief.earlier} />}
+      <PriorityOverview
+        tab={attentionTab}
+        onChange={setAttentionTab}
+        todoItems={todoAttention}
+        doneItems={doneAttention}
+        onToggleDone={toggleAttentionDone}
+      />
 
       {/* Suggested priorities — action + context + optional risk */}
       <section aria-label="Suggested priorities" className="space-y-3">
@@ -240,61 +264,94 @@ function PriorityTabs({
   );
 }
 
-function PriorityOverview({ active }: { active: BriefAttentionItem[] }) {
-  const [expanded, setExpanded] = useState(false);
-  const top = active.slice(0, PRIORITY_OVERVIEW_LIMIT);
-  const rest = active.slice(PRIORITY_OVERVIEW_LIMIT);
-  const visible = expanded ? active : top;
+function PriorityOverview({
+  tab,
+  onChange,
+  todoItems,
+  doneItems,
+  onToggleDone,
+}: {
+  tab: PriorityTab;
+  onChange: (next: PriorityTab) => void;
+  todoItems: BriefAttentionItem[];
+  doneItems: BriefAttentionItem[];
+  onToggleDone: (id: string) => void;
+}) {
+  const visibleTodo = todoItems.slice(0, PRIORITY_OVERVIEW_LIMIT);
+  const visible = tab === "todo" ? visibleTodo : doneItems;
   return (
-    <section aria-label="Priority overview" className="space-y-2.5">
+    <section aria-label="Priority overview" className="space-y-3">
       <SectionTitle
         title="Priority overview"
-        tooltip="What's blocking, at risk, or actionable today — ordered by urgency."
+        tooltip="What's blocking, at risk, or actionable today — ordered by urgency. Click a row to mark it handled."
       />
-      <ul className="rounded-xl border border-border bg-card divide-y divide-border/60 overflow-hidden">
-        {visible.map((item) => (
-          <AttentionRow key={item.id} item={item} />
-        ))}
-      </ul>
-      {rest.length > 0 && (
-        <button
-          type="button"
-          onClick={() => setExpanded((e) => !e)}
-          className="inline-flex items-center gap-1.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
-          aria-expanded={expanded}
-        >
-          <ChevronDown
-            className={cn(
-              "h-3.5 w-3.5 transition-transform",
-              expanded ? "rotate-180" : "rotate-0"
-            )}
-            strokeWidth={2}
-          />
-          <span>
-            {expanded ? "Show top priorities only" : `Show ${rest.length} more`}
-          </span>
-        </button>
+      <PriorityTabs
+        tab={tab}
+        onChange={onChange}
+        todoCount={visibleTodo.length}
+        doneCount={doneItems.length}
+      />
+      {visible.length > 0 ? (
+        <ul className="rounded-xl border border-border bg-card divide-y divide-border/60 overflow-hidden">
+          {visible.map((item) => (
+            <AttentionRow
+              key={item.id}
+              item={item}
+              done={tab === "done"}
+              onToggle={() => onToggleDone(item.id)}
+            />
+          ))}
+        </ul>
+      ) : (
+        <p className="text-sm text-muted-foreground px-1 py-4">
+          {tab === "todo"
+            ? "Nothing pressing right now."
+            : "Nothing marked handled yet."}
+        </p>
       )}
     </section>
   );
 }
 
-function AttentionRow({ item }: { item: BriefAttentionItem }) {
+function AttentionRow({
+  item,
+  done,
+  onToggle,
+}: {
+  item: BriefAttentionItem;
+  done: boolean;
+  onToggle: () => void;
+}) {
   return (
-    <li className="flex items-center gap-3.5 px-4 py-4 sm:px-5">
-      <span
-        aria-hidden
+    <li>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-label={done ? "Mark as pending" : "Mark as handled"}
         className={cn(
-          "h-2.5 w-2.5 rounded-full shrink-0",
-          TONE_DOT[item.tone]
+          "w-full flex items-center gap-3.5 px-4 py-4 sm:px-5 text-left hover:bg-muted/30 transition-colors",
+          done && "opacity-60"
         )}
-      />
-      <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground/85 shrink-0 w-[96px]">
-        {ATTENTION_CATEGORY_LABEL[item.category]}
-      </span>
-      <p className="text-[15px] leading-snug text-foreground flex-1 min-w-0 truncate">
-        {item.headline}
-      </p>
+      >
+        <span
+          aria-hidden
+          className={cn(
+            "h-2.5 w-2.5 rounded-full shrink-0",
+            TONE_DOT[item.tone]
+          )}
+        />
+        <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground/85 shrink-0 w-[96px]">
+          {ATTENTION_CATEGORY_LABEL[item.category]}
+        </span>
+        <p
+          className={cn(
+            "text-[15px] leading-snug text-foreground flex-1 min-w-0 truncate",
+            done && "line-through decoration-muted-foreground/40"
+          )}
+        >
+          {item.headline}
+        </p>
+      </button>
     </li>
   );
 }
@@ -456,56 +513,6 @@ function DetailField({
       </div>
       {children}
     </div>
-  );
-}
-
-function EarlierBlock({ items }: { items: BriefAttentionItem[] }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <section aria-label="Earlier this week">
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        className="group flex w-full items-center gap-2 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
-        aria-expanded={open}
-      >
-        <ChevronDown
-          className={cn(
-            "h-3.5 w-3.5 transition-transform",
-            open ? "rotate-0" : "-rotate-90"
-          )}
-          strokeWidth={2}
-        />
-        <span>Earlier this week</span>
-        <span className="font-mono tabular-nums text-muted-foreground/60">
-          ({items.length})
-        </span>
-      </button>
-      {open && (
-        <ul className="mt-2 rounded-xl border border-border/70 bg-card/60 divide-y divide-border/50 overflow-hidden">
-          {items.map((item) => (
-            <li
-              key={item.id}
-              className="flex items-center gap-3 px-4 py-2.5 text-muted-foreground"
-            >
-              <span
-                aria-hidden
-                className={cn(
-                  "h-1.5 w-1.5 rounded-full shrink-0 opacity-60",
-                  TONE_DOT[item.tone]
-                )}
-              />
-              <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground/60 shrink-0 w-[88px]">
-                {ATTENTION_CATEGORY_LABEL[item.category]}
-              </span>
-              <p className="text-xs flex-1 min-w-0 truncate">
-                {item.headline}
-              </p>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
   );
 }
 
