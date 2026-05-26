@@ -14,7 +14,8 @@ import {
   Banknote,
   ClipboardCheck,
   Handshake,
-  Sparkles,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SectionTitle } from "@/components/dashboard/section-title";
@@ -26,12 +27,11 @@ import { useIsBackOffice } from "@/components/dashboard/use-role";
 import { useRemoveWithReason } from "@/components/dashboard/use-remove-with-reason";
 import { useSnoozeWithReason } from "@/components/dashboard/use-snooze-with-reason";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   GREETING_LABEL,
   buildBriefSubtitle,
@@ -170,6 +170,19 @@ export function MorningBriefClient({
   );
   const visiblePriorities =
     priorityTab === "todo" ? todoPriorities : donePriorities;
+
+  // Navigation through todo priorities inside the detail dialog
+  const priorityIdx = selectedId
+    ? todoPriorities.findIndex((p) => p.id === selectedId)
+    : -1;
+  const canGoPrev = priorityIdx > 0;
+  const canGoNext = priorityIdx < todoPriorities.length - 1;
+  function goToPrev() {
+    if (canGoPrev) setSelectedId(todoPriorities[priorityIdx - 1].id);
+  }
+  function goToNext() {
+    if (canGoNext) setSelectedId(todoPriorities[priorityIdx + 1].id);
+  }
   const liveAttention = useMemo(
     () => active.filter((a) => !attentionRemoval.isRemoved(a.id)),
     [active, attentionRemoval]
@@ -302,11 +315,11 @@ export function MorningBriefClient({
         )}
       </section>
 
-      <Sheet
+      <Dialog
         open={!!selectedId}
         onOpenChange={(open) => !open && setSelectedId(null)}
       >
-        <SheetContent className="w-full sm:max-w-md p-0 gap-0">
+        <DialogContent className="sm:max-w-lg p-0 gap-0 max-h-[88dvh] flex flex-col overflow-hidden">
           {selectedPriority && (
             <PriorityDetail
               key={selectedPriority.id}
@@ -315,10 +328,16 @@ export function MorningBriefClient({
               onToggle={() => toggleDone(selectedPriority.id)}
               onSnooze={() => prioritySnoozeReason.request(selectedPriority)}
               onClose={() => setSelectedId(null)}
+              canGoPrev={canGoPrev}
+              canGoNext={canGoNext}
+              onPrev={goToPrev}
+              onNext={goToNext}
+              current={priorityIdx + 1}
+              total={todoPriorities.length}
             />
           )}
-        </SheetContent>
-      </Sheet>
+        </DialogContent>
+      </Dialog>
 
       {priorityRemoval.dialog}
       {attentionRemoval.dialog}
@@ -500,10 +519,10 @@ function AttentionRow({
           type="button"
           onClick={onToggle}
           className={cn(
-            "group/done inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors",
+            "group/done inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium transition-colors",
             done
               ? "text-success hover:bg-success-subtle/70"
-              : "text-foreground/80 hover:text-foreground hover:bg-muted/80"
+              : "text-foreground/80 hover:text-foreground hover:bg-muted/70"
           )}
         >
           <Check
@@ -521,7 +540,7 @@ function AttentionRow({
           <button
             type="button"
             onClick={onSnooze}
-            className="inline-flex items-center px-2.5 py-1.5 rounded-md text-xs font-medium text-muted-foreground/65 hover:text-foreground/80 hover:bg-muted/50 transition-colors"
+            className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             Not now
           </button>
@@ -587,25 +606,33 @@ function PriorityRow({
           </span>
         )}
       </button>
-      <div className="flex items-center gap-0.5 shrink-0 opacity-70 group-hover:opacity-100 transition-opacity">
+      <div className="flex items-center gap-1 shrink-0">
         <button
           type="button"
           onClick={onToggle}
           className={cn(
-            "inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-colors",
+            "group/done inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium transition-colors",
             done
-              ? "text-success hover:bg-success-subtle/60"
-              : "text-muted-foreground/85 hover:text-foreground hover:bg-muted/50"
+              ? "text-success hover:bg-success-subtle/70"
+              : "text-foreground/80 hover:text-foreground hover:bg-muted/70"
           )}
         >
-          {done && <Check className="h-3 w-3" strokeWidth={2.5} />}
-          {done ? "Done" : "Done"}
+          <Check
+            className={cn(
+              "h-3 w-3 transition-opacity",
+              done
+                ? "opacity-100"
+                : "opacity-0 -ml-3.5 group-hover/done:opacity-100 group-hover/done:ml-0"
+            )}
+            strokeWidth={2.5}
+          />
+          Done
         </button>
         {!done && (
           <button
             type="button"
             onClick={onSnooze}
-            className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium text-muted-foreground/70 hover:text-foreground hover:bg-muted/50 transition-colors"
+            className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             Not now
           </button>
@@ -628,150 +655,146 @@ function PriorityDetail({
   onToggle,
   onSnooze,
   onClose,
+  canGoPrev,
+  canGoNext,
+  onPrev,
+  onNext,
+  current,
+  total,
 }: {
   priority: BriefPriority;
   done: boolean;
   onToggle: () => void;
   onSnooze: () => void;
   onClose: () => void;
+  canGoPrev: boolean;
+  canGoNext: boolean;
+  onPrev: () => void;
+  onNext: () => void;
+  current: number;
+  total: number;
 }) {
   const ActionIcon = ACTION_ICON[priority.action.kind];
-  const isCritical = priority.riskLevel === "critical";
 
   function handleDone() {
     onToggle();
     onClose();
   }
 
+  const suggestions = (priority.pulsorSuggestions ?? []).slice(0, 2);
+
   return (
     <>
-      <SheetHeader className="text-left px-5 pt-5 sm:px-6 sm:pt-6 gap-2">
-        <div className="flex items-center gap-1.5">
+      {/* Accessible title/description (sr-only, Dialog needs them) */}
+      <DialogTitle className="sr-only">{priority.headline}</DialogTitle>
+      <DialogDescription className="sr-only">Priority detail</DialogDescription>
+
+      {/* Nav strip — text buttons, readable for non-tech users */}
+      <div className="flex items-center justify-between gap-2 px-4 sm:px-5 pt-3 pb-1 pr-12 shrink-0">
+        <button
+          type="button"
+          onClick={onPrev}
+          disabled={!canGoPrev}
+          className="inline-flex items-center gap-1 px-2.5 py-1.5 -ml-1 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+        >
+          <ChevronLeft className="h-4 w-4" strokeWidth={2} />
+          Previous
+        </button>
+        <span className="text-sm text-muted-foreground/80 tabular-nums select-none">
+          {current} of {total}
+        </span>
+        <button
+          type="button"
+          onClick={onNext}
+          disabled={!canGoNext}
+          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+        >
+          Next
+          <ChevronRight className="h-4 w-4" strokeWidth={2} />
+        </button>
+      </div>
+
+      {/* Scrollable body — header lives inside for unified breathing */}
+      <div className="flex-1 overflow-y-auto px-7 sm:px-9 pt-6 pb-10 min-h-0">
+        {/* Header — icon + title only */}
+        <div className="flex items-start gap-3.5">
           <ActionIcon
-            className="h-3.5 w-3.5 text-muted-foreground/85 shrink-0"
-            strokeWidth={2}
+            aria-hidden
+            className="h-5 w-5 mt-1 shrink-0 text-foreground/55"
+            strokeWidth={1.75}
           />
-          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground/85">
-            {priority.action.label}
-          </span>
-          {isCritical && (
-            <>
-              <span aria-hidden className="text-muted-foreground/30">
-                ·
-              </span>
-              <span className="inline-flex items-center gap-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-destructive">
-                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-destructive" />
-                At risk
-              </span>
-            </>
-          )}
+          <h2 className="text-[20px] leading-snug font-medium text-foreground">
+            {priority.headline}
+          </h2>
         </div>
-        <SheetTitle className="text-[19px] leading-snug font-medium text-foreground">
-          {priority.headline}
-        </SheetTitle>
-        <SheetDescription className="sr-only">
-          Priority detail
-        </SheetDescription>
-      </SheetHeader>
 
-      <div className="flex-1 overflow-y-auto px-5 sm:px-6 pb-6 space-y-6">
+        {/* Short context — no label, aligned with title */}
         {priority.context && (
-          <DetailField label="Why this matters">
-            <p className="text-sm text-foreground/85 leading-relaxed">
-              {priority.context}
-            </p>
-          </DetailField>
+          <p className="mt-7 pl-[34px] text-[15px] leading-relaxed text-foreground/70">
+            {priority.context}
+          </p>
         )}
 
-        {priority.risk && (
-          <DetailField label="Risk if untouched today">
-            <p
-              className={cn(
-                "text-sm leading-relaxed",
-                isCritical ? "text-destructive" : "text-foreground/70"
-              )}
-            >
-              {priority.risk}
+        {/* Suggested by Pulsor — max 2 bullets, calm */}
+        {suggestions.length > 0 && (
+          <div className="mt-9 pl-[34px]">
+            <p className="text-[13px] font-medium text-foreground/65 mb-3">
+              Suggested by Pulsor
             </p>
-          </DetailField>
-        )}
-
-        {priority.pulsorSuggestions && priority.pulsorSuggestions.length > 0 && (
-          <DetailField label="Pulsor suggestions">
-            <ul className="space-y-2">
-              {priority.pulsorSuggestions.map((s, i) => (
+            <ul className="space-y-2.5">
+              {suggestions.map((s, i) => (
                 <li
                   key={i}
-                  className="flex items-start gap-2.5 text-sm text-foreground/85 leading-snug"
+                  className="flex items-start gap-3 text-[15px] text-foreground/85 leading-snug"
                 >
-                  <Sparkles
+                  <span
                     aria-hidden
-                    className="h-3.5 w-3.5 mt-0.5 shrink-0 text-success"
-                    strokeWidth={2}
-                    fill="currentColor"
+                    className="mt-[9px] h-1 w-1 rounded-full bg-foreground/35 shrink-0"
                   />
                   <span>{s}</span>
                 </li>
               ))}
             </ul>
-          </DetailField>
-        )}
-
-        {priority.snapshot && priority.snapshot.length > 0 && (
-          <DetailField label="Context snapshot">
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2.5 rounded-lg border border-border/70 bg-muted/20 px-3.5 py-3">
-              {priority.snapshot.map((s) => (
-                <li key={s.label} className="min-w-0">
-                  <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground/70">
-                    {s.label}
-                  </div>
-                  <div className="text-sm text-foreground truncate">
-                    {s.value}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </DetailField>
+          </div>
         )}
       </div>
 
-      <div className="border-t border-border bg-muted/20 px-5 py-3 sm:px-6">
-        <div className="flex items-center justify-end gap-1.5">
-          <button
-            type="button"
-            onClick={onSnooze}
-            className="inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium text-muted-foreground/80 hover:text-foreground hover:bg-muted/60 transition-colors"
-          >
-            Not now
-          </button>
+      {/* Action footer — Done as ghost with hover-pill effect */}
+      <div className="border-t border-border/40 px-6 py-3.5 sm:px-7 shrink-0">
+        <div className="flex items-center justify-end gap-2">
           <button
             type="button"
             onClick={handleDone}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium text-foreground hover:bg-muted/70 transition-colors"
+            className={cn(
+              "group/done inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors",
+              done
+                ? "text-success hover:bg-success-subtle/70"
+                : "text-foreground/80 hover:text-foreground hover:bg-muted/70"
+            )}
           >
-            <Check className="h-3.5 w-3.5" strokeWidth={2.25} />
+            <Check
+              className={cn(
+                "h-3.5 w-3.5 transition-opacity",
+                done
+                  ? "opacity-100"
+                  : "opacity-0 -ml-4 group-hover/done:opacity-100 group-hover/done:ml-0"
+              )}
+              strokeWidth={2.5}
+            />
             {done ? "Mark as pending" : "Done"}
           </button>
+          {!done && (
+            <button
+              type="button"
+              onClick={onSnooze}
+              className="inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Not now
+            </button>
+          )}
         </div>
       </div>
     </>
-  );
-}
-
-function DetailField({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div>
-      <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground/75 mb-1.5">
-        {label}
-      </div>
-      {children}
-    </div>
   );
 }
 

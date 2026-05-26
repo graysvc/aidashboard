@@ -19,7 +19,7 @@ export default function LoginPage() {
 
 function LoginInner() {
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") || "/overview";
+  const next = searchParams.get("next") || "/home";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
