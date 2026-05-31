@@ -162,25 +162,25 @@
   .hero {
     display: flex;
     flex-direction: column;
-    padding: 56px 0 80px;
+    padding: 80px 0 120px;
   }
 
   .hero-grid {
     display: grid;
-    grid-template-columns: 0.9fr 1.4fr;
-    gap: 48px;
+    grid-template-columns: 0.82fr 1.5fr;
+    gap: 56px;
     align-items: center;
     width: 100%;
     flex: 1;
   }
 
   h1.hero-title {
-    font-size: clamp(40px, 4.6vw, 60px);
+    font-size: clamp(40px, 4.8vw, 58px);
     font-weight: 500;
     letter-spacing: -0.038em;
     line-height: 1.05;
-    margin-bottom: 28px;
-    max-width: 13ch;
+    margin-bottom: 36px;
+    max-width: 16ch;
   }
   .hero-title .grad {
     background: linear-gradient(180deg, var(--text) 0%, var(--text) 55%, #4A4844 100%);
@@ -199,7 +199,7 @@
     color: var(--text-muted);
     line-height: 1.5;
     max-width: 540px;
-    margin-bottom: 36px;
+    margin-bottom: 48px;
     letter-spacing: -0.014em;
   }
 
@@ -241,7 +241,7 @@
   }
 
   .form-meta {
-    margin-top: 14px;
+    margin-top: 20px;
     font-size: 13px;
     color: var(--text-faint);
     letter-spacing: -0.005em;
@@ -1107,12 +1107,12 @@
     border-radius: 50%;
   }
   .feature-detail-heading {
-    font-size: 40px;
+    font-size: 32px;
     font-weight: 500;
-    letter-spacing: -0.035em;
-    line-height: 1.08;
-    margin-bottom: 22px;
-    max-width: 460px;
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+    margin-bottom: 20px;
+    max-width: 440px;
   }
   .feature-detail-body {
     font-size: 17px;
@@ -1286,80 +1286,31 @@
     text-align: center;
   }
   .works-with-header {
-    max-width: 640px;
-    margin: 0 auto 64px;
+    max-width: 660px;
+    margin: 0 auto;
   }
   .works-with-heading {
-    font-size: 44px;
+    font-size: 36px;
     font-weight: 500;
-    letter-spacing: -0.035em;
-    line-height: 1.08;
-    margin-bottom: 18px;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 20px;
   }
   .works-with-sub {
     font-size: 18px;
     font-weight: 500;
     color: var(--text);
     letter-spacing: -0.01em;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
   .works-with-body {
     font-size: 18px;
     color: var(--text-muted);
   }
-  .works-with-visual {
-    max-width: 520px;
-    margin: 0 auto;
-  }
-  .ww-sources {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .ww-source {
-    background: var(--surface);
-    border: 0.5px solid var(--stone);
-    border-radius: 999px;
-    padding: 10px 20px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text);
-    letter-spacing: -0.01em;
-  }
-  .ww-lines {
-    width: 100%;
-    height: 56px;
-    display: block;
-  }
-  .ww-lines path {
-    fill: none;
-    stroke: var(--stone-2);
-    stroke-width: 1;
-  }
-  .ww-target {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--text);
-    color: var(--bg);
-    border-radius: 999px;
-    padding: 12px 26px;
-    font-size: 17px;
-    font-weight: 500;
-    letter-spacing: -0.025em;
-  }
-  .works-with-note {
-    font-size: 17px;
-    color: var(--text-muted);
-    max-width: 580px;
-    margin: 64px auto 0;
-    line-height: 1.6;
-  }
 
   /* ───────── PRICING (Section 9) ───────── */
   .pricing {
-    padding: 120px 0;
+    padding: 160px 0 128px;
     border-top: 0;
     background: var(--gray-bg);
   }
@@ -1506,27 +1457,41 @@
     line-height: 1.55;
   }
 
-  /* ───────── PROBLEM EMPHASIS (mic-drop — typography only, no frame) ───────── */
-  .problem-emphasis {
-    margin: 128px 0 40px;
-    text-align: left;
+  /* ───────── THE REAL PROBLEM (single-column centered statement) ───────── */
+  .problem {
+    padding: 104px 0;
+    border-top: 0.5px solid var(--stone);
+    text-align: center;
   }
-  .problem-emphasis-text {
-    font-size: 56px;
+  .problem-inner {
+    max-width: 840px;
+    margin: 0 auto;
+  }
+  .problem-eyebrow {
+    margin-bottom: 36px;
+  }
+  .problem-headline,
+  .problem-headline-2,
+  .problem-headline-3 {
+    font-size: 44px;
     font-weight: 500;
     letter-spacing: -0.035em;
-    line-height: 1.06;
-    color: var(--text);
-    max-width: 900px;
+    line-height: 1.08;
     margin: 0;
   }
-  .problem-emphasis-accent {
-    color: var(--text-muted);
+  .problem-headline { color: var(--text); }
+  .problem-headline-2 { color: var(--text-muted); }
+  .problem-headline-3 {
+    color: var(--text);
+    margin-top: 28px;
+    max-width: 18ch;
+    margin-left: auto;
+    margin-right: auto;
   }
 
-  /* ───────── FOCUS ON PEOPLE (human moment before pricing) ───────── */
+  /* ───────── FOCUS ON PEOPLE (emotional finale — 2nd strongest after hero) ───────── */
   .people {
-    padding: 136px 0;
+    padding: 152px 0;
     border-top: 0.5px solid var(--stone);
   }
   .people-grid {
@@ -1536,11 +1501,16 @@
     align-items: center;
   }
   .people-heading {
-    font-size: 44px;
+    font-size: 52px;
     font-weight: 500;
-    letter-spacing: -0.035em;
-    line-height: 1.05;
-    margin-bottom: 14px;
+    letter-spacing: -0.038em;
+    line-height: 1.03;
+    margin-bottom: 16px;
+  }
+  .people-cta {
+    margin-top: 30px;
+    padding: 14px 26px;
+    font-size: 16px;
   }
   .people-sub {
     font-size: 19px;
@@ -1636,30 +1606,30 @@
     .feature-detail-grid { grid-template-columns: 1fr; gap: 40px; }
     .feature-detail.reverse .feature-detail-content { order: 1; }
     .feature-detail.reverse .feature-detail-visual { order: 2; }
-    .feature-detail-heading { font-size: 30px; }
+    .feature-detail-heading { font-size: 26px; }
     .works-with { padding: 80px 0; }
-    .works-with-heading { font-size: 30px; }
-    .works-with-note { margin-top: 48px; }
+    .works-with-heading { font-size: 27px; }
     .pricing { padding: 88px 0; }
     .pricing-heading { font-size: 30px; }
     .pricing-grid { grid-template-columns: 1fr; }
     .final-cta { padding: 96px 0 80px; }
-    .final-cta-heading { font-size: 36px; }
-    .problem-emphasis { margin: 72px 0 24px; }
-    .problem-emphasis-text { font-size: 30px; }
-    .people { padding: 80px 0; }
+    .final-cta-heading { font-size: 38px; }
+    .problem { padding: 80px 0; }
+    .problem-headline, .problem-headline-2, .problem-headline-3 { font-size: 28px; }
+    .problem-headline-3 { margin-top: 20px; }
+    .people { padding: 96px 0; }
     .people-grid { grid-template-columns: 1fr; gap: 48px; }
-    .people-heading { font-size: 30px; }
+    .people-heading { font-size: 38px; }
     .people-scene { max-width: 380px; margin: 0 auto; }
   }
   @media (max-width: 540px) {
-    .feature-detail-heading { font-size: 26px; }
-    .works-with-heading { font-size: 26px; }
+    .feature-detail-heading { font-size: 22px; }
+    .works-with-heading { font-size: 23px; }
     .pricing-heading { font-size: 28px; }
-    .final-cta-heading { font-size: 30px; }
+    .final-cta-heading { font-size: 32px; }
     .price-card { padding: 28px 22px; }
-    .problem-emphasis-text { font-size: 26px; }
-    .people-heading { font-size: 26px; }
+    .problem-headline, .problem-headline-2, .problem-headline-3 { font-size: 24px; }
+    .people-heading { font-size: 31px; }
     .pcard { font-size: 11px; padding: 7px 10px; }
   }
 
@@ -1697,7 +1667,7 @@
 
   /* ---- Your Day card (anim 02 — hero) ---- */
   .hero-anim{display:flex;align-items:center;justify-content:center;width:100%;}
-  .yd-scene{width:430px;max-width:100%;}
+  .yd-scene{width:500px;max-width:100%;}
   .yd-chips{display:flex;justify-content:center;gap:14px;margin-bottom:18px;}
   .yd-chip{width:52px;height:52px;border-radius:14px;background:var(--surface);box-shadow:0 6px 18px rgba(15,15,16,.07);display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(-10px);}
   .yd-chip svg{width:27px;height:27px;}
@@ -1806,11 +1776,11 @@
     <div class="container hero-grid">
       <div class="hero-copy">
         <h1 class="hero-title">
-          <span class="grad">The relationship is the job.<br><span class="accent-word">Everything else is work.</span></span>
+          <span class="grad">Missed follow-ups become<br><span class="accent-word">missed opportunities.</span></span>
         </h1>
 
         <p class="hero-sub">
-          Pulsor helps real estate agents stay on top of conversations, follow-ups and daily priorities without relying on memory.
+          Pulsor helps real estate agents stay on top of conversations, follow-ups and priorities before things fall through the cracks.
         </p>
 
         <form class="access-form" id="access-form" novalidate>
@@ -1846,42 +1816,16 @@
 
   </section>
 
-  <!-- SECTION 2 — THE REAL PROBLEM -->
-  <section class="mission" id="how-it-works">
+  <!-- SECTION 2 — THE REAL PROBLEM (single-column statement) -->
+  <section class="problem" id="how-it-works">
     <div class="container">
-      <div class="mission-grid">
-        <div>
-          <div class="eyebrow mission-eyebrow">
-            <span class="dot-mint"></span>THE REAL PROBLEM
-          </div>
-          <h2 class="mission-heading">
-            Most agents don&apos;t need another tool.
-            <span class="accent">They need a better way to stay on top of everything.</span>
-          </h2>
+      <div class="problem-inner">
+        <div class="eyebrow problem-eyebrow">
+          <span class="dot-mint"></span>THE REAL PROBLEM
         </div>
-        <div class="mission-body">
-          <p>
-            Most agents already have email, a CRM, a calendar, text messages and transaction software.
-          </p>
-          <p>
-            The problem is that work is scattered across all of them.
-          </p>
-          <ul class="mission-list">
-            <li>Client conversations.</li>
-            <li>Follow-ups.</li>
-            <li>Deadlines.</li>
-            <li>Documents.</li>
-            <li>Lender updates.</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- MIC-DROP MOMENT — statement carries the section, no illustration -->
-      <div class="problem-emphasis">
-        <p class="problem-emphasis-text">
-          Everything lives in different places.<br>
-          <span class="problem-emphasis-accent">And much of it still lives in your head.</span>
-        </p>
+        <h2 class="problem-headline">Everything lives in different places.</h2>
+        <p class="problem-headline-2">Much of it still lives in your head.</p>
+        <p class="problem-headline-3">That&apos;s where things start falling through the cracks.</p>
       </div>
     </div>
   </section>
@@ -1958,7 +1902,7 @@
     </div>
   </section>
 
-  <!-- SECTION 7 — WORKS WITH (compatibility / reassurance) -->
+  <!-- SECTION 7 — WORKS WITH (compatibility reassurance — typography only) -->
   <section class="works-with">
     <div class="container">
       <div class="works-with-header">
@@ -1966,100 +1910,10 @@
         <p class="works-with-sub">Email. Calendar. CRM. Messages.</p>
         <p class="works-with-body">Pulsor helps organize what matters across all of them.</p>
       </div>
-
-      <!-- Visual: many systems → one operational view -->
-      <div class="works-with-visual" aria-hidden="true">
-        <div class="ww-sources">
-          <span class="ww-source">Email</span>
-          <span class="ww-source">Calendar</span>
-          <span class="ww-source">CRM</span>
-          <span class="ww-source">Messages</span>
-        </div>
-        <svg class="ww-lines" viewBox="0 0 400 56" preserveAspectRatio="none">
-          <path d="M 50 0 C 50 30, 200 26, 200 56"/>
-          <path d="M 150 0 C 150 30, 200 26, 200 56"/>
-          <path d="M 250 0 C 250 30, 200 26, 200 56"/>
-          <path d="M 350 0 C 350 30, 200 26, 200 56"/>
-        </svg>
-        <div class="ww-target">
-          <svg width="20" height="20" viewBox="0 0 80 80" fill="none">
-            <defs>
-              <linearGradient id="wwG" gradientUnits="userSpaceOnUse" x1="15" y1="15" x2="65" y2="65">
-                <stop offset="0%" stop-color="#2EF0C4"/>
-                <stop offset="50%" stop-color="#00C79A"/>
-                <stop offset="100%" stop-color="#0E8FA0"/>
-              </linearGradient>
-            </defs>
-            <path d="M42 15.08 A25 25 0 0 0 42 64.92 Z" fill="url(#wwG)"/>
-            <line x1="48" y1="17.31" x2="48" y2="62.69" stroke="url(#wwG)" stroke-width="5.2" stroke-linecap="round"/>
-            <line x1="55" y1="21" x2="55" y2="59" stroke="url(#wwG)" stroke-width="5.2" stroke-linecap="round"/>
-            <line x1="62" y1="28.94" x2="62" y2="51.06" stroke="url(#wwG)" stroke-width="5.2" stroke-linecap="round"/>
-          </svg>
-          pulsor
-        </div>
-      </div>
-
-      <p class="works-with-note">
-        Your business doesn&apos;t live in one app. Pulsor brings conversations, follow-ups and priorities together so you always know what needs attention next.
-      </p>
     </div>
   </section>
 
-  <!-- SECTION — FOCUS ON PEOPLE (human moment before pricing) -->
-  <section class="people">
-    <div class="container people-grid">
-      <div class="people-copy">
-        <h2 class="people-heading">Focus on people.</h2>
-        <p class="people-sub">Let Pulsor help organize the rest.</p>
-        <p class="people-body">
-          The best agents win through relationships. Not by spending their day
-          chasing updates, searching emails or trying to remember what needs
-          attention next.
-        </p>
-      </div>
-      <div class="people-visual" aria-hidden="true">
-        <div class="people-scene">
-          <div class="people-panel">
-            <svg class="people-figures" viewBox="0 0 380 300" fill="none">
-              <!-- conversation cue -->
-              <g>
-                <rect x="156" y="44" width="68" height="36" rx="15" fill="#EAF7F1"/>
-                <path d="M178 79 l8 10 6 -10 Z" fill="#EAF7F1"/>
-                <circle cx="176" cy="62" r="3.2" fill="#00C79A"/>
-                <circle cx="190" cy="62" r="3.2" fill="#00C79A"/>
-                <circle cx="204" cy="62" r="3.2" fill="#00C79A"/>
-              </g>
-              <!-- figure A (left) -->
-              <path d="M78 272 Q78 184 128 184 Q178 184 178 272 Z" fill="#D6F0E6"/>
-              <circle cx="128" cy="146" r="34" fill="#B7E6D5"/>
-              <!-- figure B (right) -->
-              <path d="M202 272 Q202 184 252 184 Q302 184 302 272 Z" fill="#F0E7D6"/>
-              <circle cx="252" cy="146" r="34" fill="#E7D6BD"/>
-            </svg>
-          </div>
-
-          <div class="pcard pcard-1">
-            <span class="pcard-ico ok">
-              <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2.5 6.2 5 8.5 9.5 3.5"/></svg>
-            </span>
-            <span>Follow up — Reyes family</span>
-          </div>
-          <div class="pcard pcard-2">
-            <span class="pcard-ico clock">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
-            </span>
-            <span>Call lender · 2 PM</span>
-          </div>
-          <div class="pcard pcard-3">
-            <span class="pcard-lines"><span></span><span></span><span></span></span>
-            <span class="pcard-cap">Conversation summary</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 9 — PRICING -->
+  <!-- SECTION 8 — PRICING -->
   <section class="pricing" id="pricing">
     <div class="container">
       <div class="pricing-grid">
@@ -2095,21 +1949,61 @@
     </div>
   </section>
 
-  <!-- SECTION 10 — FINAL CTA -->
-  <section class="final-cta">
-    <div class="container">
-      <h2 class="final-cta-heading">
-        Stop relying on memory.<br>
-        <span class="final-cta-accent">Start operating with clarity.</span>
-      </h2>
-      <a href="#access" class="btn btn-primary">Get Early Access <span class="btn-arrow">→</span></a>
+  <!-- SECTION 9 — FOCUS ON PEOPLE (emotional finale + CTA) -->
+  <section class="people people-finale">
+    <div class="container people-grid">
+      <div class="people-copy">
+        <h2 class="people-heading">Focus on people.</h2>
+        <p class="people-sub">Let Pulsor help organize the rest.</p>
+        <p class="people-body">
+          The best agents win through relationships. Not by spending their day
+          chasing updates, searching emails or trying to remember what needs
+          attention next.
+        </p>
+        <a href="#access" class="btn btn-primary people-cta">Get Early Access <span class="btn-arrow">→</span></a>
+      </div>
+      <div class="people-visual" aria-hidden="true">
+        <div class="people-scene">
+          <div class="people-panel">
+            <svg class="people-figures" viewBox="0 0 380 300" fill="none">
+              <g>
+                <rect x="156" y="44" width="68" height="36" rx="15" fill="#EAF7F1"/>
+                <path d="M178 79 l8 10 6 -10 Z" fill="#EAF7F1"/>
+                <circle cx="176" cy="62" r="3.2" fill="#00C79A"/>
+                <circle cx="190" cy="62" r="3.2" fill="#00C79A"/>
+                <circle cx="204" cy="62" r="3.2" fill="#00C79A"/>
+              </g>
+              <path d="M78 272 Q78 184 128 184 Q178 184 178 272 Z" fill="#D6F0E6"/>
+              <circle cx="128" cy="146" r="34" fill="#B7E6D5"/>
+              <path d="M202 272 Q202 184 252 184 Q302 184 302 272 Z" fill="#F0E7D6"/>
+              <circle cx="252" cy="146" r="34" fill="#E7D6BD"/>
+            </svg>
+          </div>
+          <div class="pcard pcard-1">
+            <span class="pcard-ico ok">
+              <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2.5 6.2 5 8.5 9.5 3.5"/></svg>
+            </span>
+            <span>Follow up — Reyes family</span>
+          </div>
+          <div class="pcard pcard-2">
+            <span class="pcard-ico clock">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+            </span>
+            <span>Call lender · 2 PM</span>
+          </div>
+          <div class="pcard pcard-3">
+            <span class="pcard-lines"><span></span><span></span><span></span></span>
+            <span class="pcard-cap">Conversation summary</span>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
     <div class="container foot">
-      <div>© 2026 Pulsor Systems, Inc.</div>
+      <div>© 2026 Pulsor</div>
     </div>
   </footer>
 
