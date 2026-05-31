@@ -30,6 +30,12 @@
     --accent: #00D9A3;
     --success: #2E7D5B;
     --error: #C44536;
+    --g1: #2EF0C4;
+    --g2: #00C79A;
+    --g3: #0E8FA0;
+    --amber: #E0A52E;
+    --rose: #D98A7E;
+    --gray-bg: #F7F8FA;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -41,7 +47,7 @@
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: var(--bg);
+    background: #FFFFFF;
     color: var(--text);
     font-size: 17px;
     line-height: 1.6;
@@ -70,7 +76,7 @@
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgba(247, 244, 238, 0.78);
+    background: rgba(255, 255, 255, 0.8);
     backdrop-filter: saturate(180%) blur(16px);
     -webkit-backdrop-filter: saturate(180%) blur(16px);
     border-bottom: 0.5px solid transparent;
@@ -78,7 +84,7 @@
   }
   .nav.scrolled {
     border-bottom-color: var(--stone);
-    background: rgba(247, 244, 238, 0.94);
+    background: rgba(255, 255, 255, 0.94);
   }
 
   .nav-inner {
@@ -1072,7 +1078,7 @@
 
   /* ───────── FEATURE DETAIL (Sections 4-7 — one row per feature) ───────── */
   .feature-detail {
-    padding: 112px 0;
+    padding: 128px 0;
     border-top: 0.5px solid var(--stone);
   }
   .feature-detail-grid {
@@ -1354,8 +1360,8 @@
   /* ───────── PRICING (Section 9) ───────── */
   .pricing {
     padding: 120px 0;
-    border-top: 0.5px solid var(--stone);
-    background: var(--surface);
+    border-top: 0;
+    background: var(--gray-bg);
   }
   .pricing-header {
     text-align: center;
@@ -1382,13 +1388,14 @@
     align-items: stretch;
   }
   .price-card {
-    background: var(--bg);
+    background: #FFFFFF;
     border: 0.5px solid var(--stone);
     border-radius: 16px;
     padding: 36px 30px;
     display: flex;
     flex-direction: column;
     position: relative;
+    box-shadow: 0 1px 3px rgba(15,15,16,.04);
   }
   .price-card.highlight {
     background: var(--text);
@@ -1499,12 +1506,9 @@
     line-height: 1.55;
   }
 
-  /* ───────── PROBLEM EMPHASIS (mic-drop moment) ───────── */
+  /* ───────── PROBLEM EMPHASIS (mic-drop — typography only, no frame) ───────── */
   .problem-emphasis {
-    margin-top: 112px;
-    padding: 120px 0;
-    border-top: 0.5px solid var(--stone);
-    border-bottom: 0.5px solid var(--stone);
+    margin: 128px 0 40px;
     text-align: left;
   }
   .problem-emphasis-text {
@@ -1520,77 +1524,85 @@
     color: var(--text-muted);
   }
 
-  /* ───────── MENTAL LOAD (scattered chips around the agent) ───────── */
-  .mental-load {
-    margin-top: 24px;
-    padding: 56px 0 24px;
-    display: flex;
-    justify-content: center;
+  /* ───────── FOCUS ON PEOPLE (human moment before pricing) ───────── */
+  .people {
+    padding: 136px 0;
+    border-top: 0.5px solid var(--stone);
   }
-  .mental-load-canvas {
+  .people-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: 72px;
+    align-items: center;
+  }
+  .people-heading {
+    font-size: 44px;
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+    margin-bottom: 14px;
+  }
+  .people-sub {
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    margin-bottom: 18px;
+  }
+  .people-body {
+    font-size: 18px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 440px;
+  }
+  .people-visual { display: flex; justify-content: center; }
+  .people-scene { position: relative; width: 100%; max-width: 440px; }
+  .people-panel {
     position: relative;
-    width: 100%;
-    max-width: 780px;
-    aspect-ratio: 16 / 9;
-    margin: 0 auto;
-  }
-  .ml-center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 96px;
-    height: 96px;
-    background: var(--surface);
+    aspect-ratio: 4 / 3;
+    background: var(--gray-bg);
     border: 0.5px solid var(--stone);
-    border-radius: 50%;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .people-figures { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .pcard {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    background: #FFFFFF;
+    border: 0.5px solid var(--stone);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(15, 15, 16, 0.09);
+    padding: 9px 13px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+  .pcard-ico {
+    width: 19px;
+    height: 19px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--text-muted);
-    box-shadow: 0 2px 8px rgba(15, 15, 16, 0.04);
+    flex-shrink: 0;
+    background: var(--accent);
+    color: #0F0F10;
   }
-  .ml-chip {
-    position: absolute;
-    background: var(--surface);
-    border: 0.5px solid var(--stone);
-    border-radius: 999px;
-    padding: 9px 16px;
-    font-size: 14px;
-    color: var(--text);
-    font-weight: 500;
-    white-space: nowrap;
-    letter-spacing: -0.01em;
-    box-shadow: 0 1px 3px rgba(15, 15, 16, 0.04);
-  }
-
-  /* ───────── PRICING INTRO (transition to pricing) ───────── */
-  .pricing-intro {
-    padding: 144px 0 64px;
-    text-align: center;
-    border-top: 0.5px solid var(--stone);
-    background: var(--bg);
-  }
-  .pricing-intro-text {
-    font-size: 40px;
-    font-weight: 500;
-    letter-spacing: -0.03em;
-    line-height: 1.12;
-    max-width: 720px;
-    margin: 0 auto 14px;
-    color: var(--text);
-  }
-  .pricing-intro-sub {
-    font-size: 22px;
-    letter-spacing: -0.02em;
-    line-height: 1.3;
-    color: var(--text-muted);
-    max-width: 640px;
-    margin: 0 auto;
-  }
-
-  /* Pricing now has the transition flush against it — remove its top border */
-  .pricing { border-top: 0; padding-top: 24px; }
+  .pcard-ico.clock { background: #EAF7F1; color: var(--g3); }
+  .pcard-1 { top: 9%; left: -6%; }
+  .pcard-2 { top: 44%; right: -8%; }
+  .pcard-3 { bottom: 8%; left: 4%; }
+  .pcard-lines { display: inline-flex; flex-direction: column; gap: 3px; }
+  .pcard-lines span { display: block; height: 3px; border-radius: 2px; background: var(--stone-2); }
+  .pcard-lines span:nth-child(1) { width: 34px; }
+  .pcard-lines span:nth-child(2) { width: 22px; }
+  .pcard-lines span:nth-child(3) { width: 28px; }
+  .pcard-cap { color: var(--text-muted); font-weight: 500; }
 
   /* ───────── FINAL CTA (Section 10) ───────── */
   .final-cta {
@@ -1633,29 +1645,131 @@
     .pricing-grid { grid-template-columns: 1fr; }
     .final-cta { padding: 96px 0 80px; }
     .final-cta-heading { font-size: 36px; }
-    .roles { padding: 80px 0; }
-    .roles-heading { font-size: 30px; }
-    .roles-wheel { margin: 36px auto; }
-    .problem-emphasis { padding: 72px 0; margin-top: 64px; }
+    .problem-emphasis { margin: 72px 0 24px; }
     .problem-emphasis-text { font-size: 30px; }
-    .mental-load { padding: 40px 0 16px; }
-    .mental-load-canvas { aspect-ratio: 4 / 5; max-width: 480px; }
-    .ml-chip { font-size: 12.5px; padding: 7px 12px; }
-    .ml-center { width: 72px; height: 72px; }
-    .pricing-intro { padding: 88px 0 40px; }
-    .pricing-intro-text { font-size: 28px; }
-    .pricing-intro-sub { font-size: 18px; }
+    .people { padding: 80px 0; }
+    .people-grid { grid-template-columns: 1fr; gap: 48px; }
+    .people-heading { font-size: 30px; }
+    .people-scene { max-width: 380px; margin: 0 auto; }
   }
   @media (max-width: 540px) {
     .feature-detail-heading { font-size: 26px; }
     .works-with-heading { font-size: 26px; }
     .pricing-heading { font-size: 28px; }
     .final-cta-heading { font-size: 30px; }
-    .roles-heading { font-size: 26px; }
     .price-card { padding: 28px 22px; }
     .problem-emphasis-text { font-size: 26px; }
-    .pricing-intro-text { font-size: 26px; }
-    .pricing-intro-sub { font-size: 17px; }
+    .people-heading { font-size: 26px; }
+    .pcard { font-size: 11px; padding: 7px 10px; }
+  }
+
+  /* ═══════════ MOTION LIBRARY (ported animations) ═══════════ */
+
+  /* Feature visual becomes a calm "stage" so animated cards pop */
+  .feature-detail-visual {
+    background: var(--bg);
+    border: 0.5px solid var(--stone);
+    border-radius: 16px;
+    aspect-ratio: auto;
+    min-height: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ---- Daily Brief card (anim 01) ---- */
+  .db-card{background:var(--surface);border-radius:20px;box-shadow:0 18px 50px rgba(15,15,16,.08);padding:24px;width:100%;max-width:420px;opacity:0;transform:translateY(16px) scale(.98);}
+  .db-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .db-brand{display:flex;align-items:center;gap:9px;}
+  .db-t{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);}
+  .db-led{width:8px;height:8px;border-radius:50%;background:var(--accent);}
+  .db-row{display:flex;align-items:flex-start;gap:13px;background:var(--bg);border-radius:12px;padding:13px 15px;margin-bottom:9px;opacity:0;transform:translateX(10px);}
+  .db-row:last-child{margin-bottom:0;}
+  .db-icon{width:19px;height:19px;flex-shrink:0;color:var(--text-muted);margin-top:1px;}
+  .db-icon svg{width:19px;height:19px;display:block;}
+  .db-main{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .db-task{font-size:14.5px;font-weight:500;letter-spacing:-0.02em;color:var(--text);line-height:1.35;}
+  .db-note{font-size:12.5px;color:var(--error);margin-top:3px;}
+  .db-meta{font-family:'SF Mono',ui-monospace,monospace;font-size:12px;color:var(--text-muted);flex-shrink:0;margin-top:1px;}
+
+  /* ---- Your Day card (anim 02 — hero) ---- */
+  .hero-anim{display:flex;align-items:center;justify-content:center;width:100%;}
+  .yd-scene{width:430px;max-width:100%;}
+  .yd-chips{display:flex;justify-content:center;gap:14px;margin-bottom:18px;}
+  .yd-chip{width:52px;height:52px;border-radius:14px;background:var(--surface);box-shadow:0 6px 18px rgba(15,15,16,.07);display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(-10px);}
+  .yd-chip svg{width:27px;height:27px;}
+  .yd-card{background:var(--surface);border-radius:22px;box-shadow:0 18px 50px rgba(15,15,16,.09);padding:26px;opacity:0;transform:translateY(16px) scale(.98);}
+  .yd-head{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+  .yd-title{font-size:20px;font-weight:500;letter-spacing:-0.03em;}
+  .yd-label{font-size:11px;font-weight:600;letter-spacing:0.14em;color:var(--text-muted);text-transform:uppercase;margin:4px 0 2px;opacity:0;}
+  .yd-row{display:flex;align-items:center;gap:13px;padding:11px 0;border-bottom:0.5px solid var(--stone);opacity:0;transform:translateX(-8px);}
+  .yd-row:last-of-type{border-bottom:none;}
+  .yd-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .yd-time{font-size:14px;color:var(--text-muted);width:72px;flex-shrink:0;font-variant-numeric:tabular-nums;}
+  .yd-task{font-size:15px;font-weight:500;letter-spacing:-0.02em;}
+  .yd-voice{margin-top:15px;background:linear-gradient(100deg,rgba(46,240,196,.13),rgba(14,143,160,.10));border:0.5px solid rgba(0,199,154,.25);border-radius:13px;padding:12px 14px;display:flex;align-items:center;gap:12px;opacity:0;transform:translateY(8px);}
+  .yd-wave{display:flex;align-items:center;gap:2.5px;height:20px;}
+  .yd-wave span{width:2.5px;border-radius:2px;background:linear-gradient(180deg,var(--g1),var(--g3));height:5px;}
+  .yd-vtext{font-size:12.5px;color:var(--g3);font-weight:500;}
+
+  /* ---- Voice flow (anim 05) — single row, shrinks to fit, never wraps ---- */
+  .vf-flow{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;}
+  .vf-step{position:relative;flex:1 1 0;min-width:0;max-width:108px;aspect-ratio:0.9;border-radius:15px;background:#F2EEE4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;opacity:0;transform:translateY(14px) scale(.96);transition:background .4s ease,box-shadow .4s ease;}
+  .vf-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:var(--text);transition:color .4s ease,transform .4s ease;}
+  .vf-icon svg{width:23px;height:23px;}
+  .vf-label{font-family:'SF Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);text-align:center;line-height:1.45;transition:color .4s ease;}
+  .vf-wave{display:flex;align-items:center;gap:2.5px;height:26px;}
+  .vf-wave span{width:3px;border-radius:3px;background:linear-gradient(180deg,var(--g1),var(--g3));height:6px;}
+  .vf-arrow{flex:0 0 auto;width:18px;height:22px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);opacity:0;}
+  .vf-arrow svg{width:16px;height:16px;}
+  .vf-dash{stroke-dasharray:30;stroke-dashoffset:30;transition:stroke-dashoffset .5s ease;}
+  .vf-step.on{background:#fff;box-shadow:0 0 0 1.5px var(--accent),0 10px 26px rgba(0,199,154,.14);}
+  .vf-step.on .vf-icon{color:var(--g2);transform:scale(1.08);}
+  .vf-step.on .vf-label{color:var(--text);}
+  .vf-arrow.on{opacity:1;}
+  .vf-arrow.on .vf-dash{stroke-dashoffset:0;}
+
+  /* ---- Hub / One Operational View (anim 06) ---- */
+  .hub{position:relative;width:400px;height:400px;max-width:100%;}
+  .hub-lines{position:absolute;inset:0;width:100%;height:100%;z-index:0;}
+  .hub-lines line{stroke:var(--stone);stroke-width:1.5;stroke-dasharray:200;stroke-dashoffset:200;transition:stroke-dashoffset .6s ease;}
+  .hub-lines line.on{stroke-dashoffset:0;stroke:rgba(0,199,154,.55);}
+  .hub-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);z-index:2;width:120px;height:120px;border-radius:50%;background:#fff;box-shadow:0 10px 30px rgba(15,15,16,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;opacity:0;transition:opacity .5s ease, transform .5s cubic-bezier(0.34,1.2,0.64,1);}
+  .hub-center.on{opacity:1;transform:translate(-50%,-50%) scale(1);}
+  .hub-center.pulse{animation:hubpulse 1.6s ease-in-out infinite;}
+  @keyframes hubpulse{0%,100%{box-shadow:0 10px 30px rgba(15,15,16,.12),0 0 0 0 rgba(0,199,154,.0);}50%{box-shadow:0 10px 30px rgba(15,15,16,.12),0 0 0 14px rgba(0,199,154,.10);}}
+  .hub-name{font-size:14px;font-weight:500;letter-spacing:-0.03em;color:var(--text);}
+  .hub-node{position:absolute;z-index:1;background:#fff;border:0.5px solid var(--stone);border-radius:12px;padding:10px 14px;font-size:13px;font-weight:500;letter-spacing:-0.02em;color:var(--text);display:flex;align-items:center;gap:8px;box-shadow:0 4px 14px rgba(15,15,16,.05);white-space:nowrap;opacity:0;transform:scale(.9);transition:opacity .45s ease, transform .5s cubic-bezier(0.34,1.15,0.64,1);}
+  .hub-node.on{opacity:1;transform:scale(1);}
+  .hub-dot{width:7px;height:7px;border-radius:50%;background:var(--text-muted);flex-shrink:0;}
+  #hn0{top:6%;left:50%;transform:translate(-50%,0) scale(.9);}
+  #hn0.on{transform:translate(-50%,0) scale(1);}
+  #hn1{top:25%;right:2%;}
+  #hn2{bottom:25%;right:2%;}
+  #hn3{bottom:6%;left:50%;transform:translate(-50%,0) scale(.9);}
+  #hn3.on{transform:translate(-50%,0) scale(1);}
+  #hn4{bottom:25%;left:2%;}
+  #hn5{top:25%;left:2%;}
+
+  /* ---- Conversation management (anim 07 — vertical flow) ---- */
+  .cv-flow{display:flex;flex-direction:column;align-items:center;gap:0;width:290px;max-width:100%;}
+  .cv-step{width:100%;background:#F2EEE4;border-radius:14px;padding:15px 20px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:15.5px;font-weight:500;letter-spacing:-0.02em;color:var(--text);opacity:0;transform:translateY(-10px);transition:opacity .5s ease,transform .5s cubic-bezier(0.34,1.1,0.64,1),background .4s ease,box-shadow .4s ease;}
+  .cv-icon{width:18px;height:18px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:color .4s ease;}
+  .cv-icon svg{width:18px;height:18px;}
+  .cv-arrow{height:28px;color:var(--text-muted);opacity:0;transition:opacity .4s ease;display:flex;align-items:center;}
+  .cv-arrow svg{width:20px;height:26px;}
+  .cv-dash{stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .45s ease;}
+  .cv-step.on{opacity:1;transform:translateY(0);}
+  .cv-step.lit{background:#fff;box-shadow:0 0 0 1.5px var(--accent),0 8px 22px rgba(0,199,154,.13);}
+  .cv-step.lit .cv-icon{color:var(--g2);}
+  .cv-arrow.on{opacity:1;}
+  .cv-arrow.on .cv-dash{stroke-dashoffset:0;}
+
+  @media (max-width: 860px) {
+    .feature-detail-visual { min-height: 320px; padding: 24px; }
   }
 </style>
 </head>
@@ -1714,146 +1828,20 @@
         </div>
       </div>
 
-      <!-- HERO ANIMATION: Your Day, Organized -->
-      <section class="day-organized" aria-label="Your day, organized">
-        <!-- Connection curves -->
-        <svg class="connections fade-in d1" viewBox="0 0 1600 900" preserveAspectRatio="none">
-          <path d="M 476 200 C 510 230, 525 320, 540 430"/>
-          <path d="M 410 440 C 470 442, 510 446, 540 450"/>
-          <path d="M 476 700 C 510 660, 525 580, 540 470"/>
-          <path d="M 1124 200 C 1090 230, 1075 320, 1060 430"/>
-          <path d="M 1190 440 C 1130 442, 1090 446, 1060 450"/>
-          <path d="M 1124 700 C 1090 660, 1075 580, 1060 470"/>
-        </svg>
-
-        <!-- Mobile-only top row -->
-        <div class="tools-mobile-row tools-mobile-top fade-in d2">
-          <div class="tool-tile"><svg viewBox="0 0 32 32"><path fill="#25D366" d="M16 3C8.8 3 3 8.8 3 16c0 2.3.6 4.5 1.7 6.4L3 29l6.8-1.7A13 13 0 1 0 16 3Z"/><path fill="#fff" d="M22.6 19.3c-.3-.2-1.9-1-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.6.1-.4-.2-1.4-.5-2.7-1.7-1-.9-1.7-2-1.9-2.4-.2-.3 0-.5.1-.7l.5-.6.3-.4c.1-.2 0-.4 0-.5l-1-2.3c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.2 3.4 5.4 4.7 3.2 1.3 3.2.9 3.8.8.6-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5 0-.1-.2-.2-.5-.3Z"/></svg></div>
-          <div class="tool-tile"><svg viewBox="0 0 32 32"><defs><linearGradient id="mailGradM" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7BC8FF"/><stop offset="1" stop-color="#1E8BFF"/></linearGradient></defs><rect x="3" y="7" width="26" height="18" rx="3.5" fill="url(#mailGradM)"/><path d="M5 9.5 16 17.5 27 9.5" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <div class="tool-tile"><svg viewBox="0 0 32 32"><rect x="3.5" y="5.5" width="25" height="21" rx="3.5" fill="#fff" stroke="#E5E0D6" stroke-width="1"/><circle cx="11" cy="13" r="3" fill="#FF7A59"/><rect x="16" y="11" width="9" height="1.8" rx="0.9" fill="#0F0F10" opacity="0.8"/><rect x="16" y="14" width="6" height="1.6" rx="0.8" fill="#6B6862"/><rect x="7" y="19" width="18" height="1.6" rx="0.8" fill="#E5E0D6"/><rect x="7" y="22" width="12" height="1.6" rx="0.8" fill="#E5E0D6"/></svg></div>
-        </div>
-
-        <!-- Desktop tools -->
-        <div class="tools-desktop">
-          <div class="tool t-whatsapp fade-in d2">
-            <div class="tool-tile">
-              <svg viewBox="0 0 32 32">
-                <path fill="#25D366" d="M16 3C8.8 3 3 8.8 3 16c0 2.3.6 4.5 1.7 6.4L3 29l6.8-1.7A13 13 0 1 0 16 3Z"/>
-                <path fill="#FFFFFF" d="M22.6 19.3c-.3-.2-1.9-1-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.6.1-.4-.2-1.4-.5-2.7-1.7-1-.9-1.7-2-1.9-2.4-.2-.3 0-.5.1-.7l.5-.6.3-.4c.1-.2 0-.4 0-.5l-1-2.3c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.2 3.4 5.4 4.7 3.2 1.3 3.2.9 3.8.8.6-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5 0-.1-.2-.2-.5-.3Z"/>
-              </svg>
-            </div>
-            <span class="tool-label">WhatsApp</span>
-          </div>
-
-          <div class="tool t-mail fade-in d2">
-            <div class="tool-tile">
-              <svg viewBox="0 0 32 32">
-                <defs><linearGradient id="mailGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7BC8FF"/><stop offset="1" stop-color="#1E8BFF"/></linearGradient></defs>
-                <rect x="3" y="7" width="26" height="18" rx="3.5" fill="url(#mailGrad)"/>
-                <path d="M5 9.5 16 17.5 27 9.5" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <span class="tool-label">Mail</span>
-          </div>
-
-          <div class="tool t-crm fade-in d2">
-            <div class="tool-tile">
-              <svg viewBox="0 0 32 32">
-                <rect x="3.5" y="5.5" width="25" height="21" rx="3.5" fill="#FFFFFF" stroke="#E5E0D6" stroke-width="1"/>
-                <circle cx="11" cy="13" r="3" fill="#FF7A59"/>
-                <rect x="16" y="11" width="9" height="1.8" rx="0.9" fill="#0F0F10" opacity="0.8"/>
-                <rect x="16" y="14" width="6" height="1.6" rx="0.8" fill="#6B6862"/>
-                <rect x="7" y="19" width="18" height="1.6" rx="0.8" fill="#E5E0D6"/>
-                <rect x="7" y="22" width="12" height="1.6" rx="0.8" fill="#E5E0D6"/>
-              </svg>
-            </div>
-            <span class="tool-label">CRM</span>
-          </div>
-
-          <div class="tool t-calendar fade-in d2">
-            <div class="tool-tile">
-              <svg viewBox="0 0 32 32">
-                <rect x="4" y="4" width="24" height="24" rx="3" fill="#FFFFFF" stroke="#E5E0D6" stroke-width="1"/>
-                <path d="M4 4h24v6H4z" fill="#4285F4"/>
-                <rect x="8" y="2" width="2" height="6" rx="1" fill="#4285F4"/>
-                <rect x="22" y="2" width="2" height="6" rx="1" fill="#34A853"/>
-                <text x="16" y="22" text-anchor="middle" font-family="Inter, sans-serif" font-size="9" font-weight="600" fill="#4285F4">31</text>
-              </svg>
-            </div>
-            <span class="tool-label">Calendar</span>
-          </div>
-
-          <div class="tool t-zillow fade-in d2">
-            <div class="tool-tile">
-              <svg viewBox="0 0 32 32">
-                <path fill="#006AFF" d="M16 4 5 13.2v2.4l4-1.4v10.3h4.6v-7.2l4.8-3 .4.5L23 17v7.5h4.6V14.2l4-1.4v-2.4L16 4Zm0 3 7.4 6.2-1.6 1.9-5.8-1.9V7Z"/>
-              </svg>
-            </div>
-            <span class="tool-label">Zillow</span>
-          </div>
-
-          <div class="tool t-gmail fade-in d2">
-            <div class="tool-tile">
-              <svg viewBox="0 0 32 32">
-                <path fill="#4285F4" d="M4 11v13a2 2 0 0 0 2 2h3V14.7L4 11Z"/>
-                <path fill="#34A853" d="M23 26h3a2 2 0 0 0 2-2V11l-5 3.7V26Z"/>
-                <path fill="#FBBC04" d="M9 26V14.7L16 20l7-5.3V26h-3.5l-3.5-2.6L12.5 26H9Z"/>
-                <path fill="#EA4335" d="M9 14.7 16 20l7-5.3-3-2.2L16 15.6l-4-3.1L9 14.7Z"/>
-                <path fill="#C5221F" d="M4 11v.3l5 3.4v-2.2L7 11a2 2 0 0 0-3 0Z"/>
-                <path fill="#C5221F" d="M28 11v.3l-5 3.4v-2.2l2-1.5a2 2 0 0 1 3 0Z"/>
-              </svg>
-            </div>
-            <span class="tool-label">Gmail</span>
+      <!-- HERO ANIMATION: Your Day, Organized (motion library) -->
+      <div class="hero-anim" aria-label="Your day, organized">
+        <div class="yd-scene">
+          <div class="yd-chips" id="yd-chips"></div>
+          <div class="yd-card" id="yd-card">
+            <div class="yd-head"><span id="yd-iso"></span><span class="yd-title">Your day, organized</span></div>
+            <div class="yd-label" id="yd-l1">Today</div>
+            <div id="yd-today"></div>
+            <div class="yd-label" id="yd-l2">Tomorrow</div>
+            <div id="yd-tom"></div>
+            <div class="yd-voice" id="yd-voice"><div class="yd-wave" id="yd-wave"></div><span class="yd-vtext">Updated from your voice notes</span></div>
           </div>
         </div>
-
-        <!-- Card -->
-        <div class="card-wrap fade-in d3">
-          <div class="card-stack-2"></div>
-          <div class="card-stack-1"></div>
-
-          <div class="card">
-            <div class="card-head">
-              <h3 class="card-title">Your Day, Organized</h3>
-            </div>
-
-            <div class="day-label" style="animation-delay:0.1s">TODAY</div>
-            <ul class="agenda today">
-              <li style="animation-delay:0.4s"><span class="dot" style="animation-delay:0.4s"></span><span class="t-time">09:00 AM</span><span class="t-task">Follow up with John</span></li>
-              <li style="animation-delay:0.95s"><span class="dot" style="animation-delay:0.95s"></span><span class="t-time">11:00 AM</span><span class="t-task">Showing with Sarah</span></li>
-              <li style="animation-delay:1.5s"><span class="dot warn" style="animation-delay:1.5s"></span><span class="t-time">01:30 PM</span><span class="t-task">Send docs to title</span></li>
-              <li style="animation-delay:2.05s"><span class="dot" style="animation-delay:2.05s"></span><span class="t-time">03:00 PM</span><span class="t-task">Client update</span></li>
-            </ul>
-
-            <div class="day-label" style="animation-delay:2.55s">TOMORROW</div>
-            <ul class="agenda tomorrow">
-              <li style="animation-delay:2.9s"><span class="dot" style="animation-delay:2.9s"></span><span class="t-time">10:00 AM</span><span class="t-task">Inspection</span></li>
-              <li style="animation-delay:3.45s"><span class="dot danger" style="animation-delay:3.45s"></span><span class="t-time">02:00 PM</span><span class="t-task">Closing</span></li>
-            </ul>
-
-            <div class="voice">
-              <div class="wave" aria-hidden="true">
-                <span></span><span></span><span></span><span></span><span></span>
-                <span></span><span></span><span></span><span></span><span></span>
-                <span></span><span></span><span></span><span></span><span></span>
-              </div>
-              <div class="voice-text">Updated from your voice notes</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Mobile-only bottom row -->
-        <div class="tools-mobile-row tools-mobile-bottom fade-in d2">
-          <div class="tool-tile"><svg viewBox="0 0 32 32"><rect x="4" y="4" width="24" height="24" rx="3" fill="#fff" stroke="#E5E0D6" stroke-width="1"/><path d="M4 4h24v6H4z" fill="#4285F4"/><rect x="8" y="2" width="2" height="6" rx="1" fill="#4285F4"/><rect x="22" y="2" width="2" height="6" rx="1" fill="#34A853"/><text x="16" y="22" text-anchor="middle" font-family="Inter, sans-serif" font-size="9" font-weight="600" fill="#4285F4">31</text></svg></div>
-          <div class="tool-tile"><svg viewBox="0 0 32 32"><path fill="#006AFF" d="M16 4 5 13.2v2.4l4-1.4v10.3h4.6v-7.2l4.8-3 .4.5L23 17v7.5h4.6V14.2l4-1.4v-2.4L16 4Zm0 3 7.4 6.2-1.6 1.9-5.8-1.9V7Z"/></svg></div>
-          <div class="tool-tile"><svg viewBox="0 0 32 32"><path fill="#4285F4" d="M4 11v13a2 2 0 0 0 2 2h3V14.7L4 11Z"/><path fill="#34A853" d="M23 26h3a2 2 0 0 0 2-2V11l-5 3.7V26Z"/><path fill="#FBBC04" d="M9 26V14.7L16 20l7-5.3V26h-3.5l-3.5-2.6L12.5 26H9Z"/><path fill="#EA4335" d="M9 14.7 16 20l7-5.3-3-2.2L16 15.6l-4-3.1L9 14.7Z"/><path fill="#C5221F" d="M4 11v.3l5 3.4v-2.2L7 11a2 2 0 0 0-3 0Z"/><path fill="#C5221F" d="M28 11v.3l-5 3.4v-2.2l2-1.5a2 2 0 0 1 3 0Z"/></svg></div>
-        </div>
-
-        <!-- Sparkle -->
-        <svg class="sparkle fade-in d3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M12 2c.3 3.6 1.4 6.5 3.4 8.6C17.5 12.6 20.4 13.7 24 14c-3.6.3-6.5 1.4-8.6 3.4C13.4 19.5 12.3 22.4 12 26c-.3-3.6-1.4-6.5-3.4-8.6C6.5 15.4 3.6 14.3 0 14c3.6-.3 6.5-1.4 8.6-3.4C10.6 8.5 11.7 5.6 12 2Z"/>
-        </svg>
-      </section>
+      </div>
     </div>
 
   </section>
@@ -1888,59 +1876,21 @@
         </div>
       </div>
 
-      <!-- MIC-DROP MOMENT -->
+      <!-- MIC-DROP MOMENT — statement carries the section, no illustration -->
       <div class="problem-emphasis">
         <p class="problem-emphasis-text">
           Everything lives in different places.<br>
           <span class="problem-emphasis-accent">And much of it still lives in your head.</span>
         </p>
       </div>
-
-      <!-- MENTAL LOAD ILLUSTRATION — disconnected information around the agent -->
-      <div class="mental-load" aria-hidden="true">
-        <div class="mental-load-canvas">
-          <span class="ml-chip" style="top: 6%; left: 8%; transform: rotate(-2deg);">email</span>
-          <span class="ml-chip" style="top: 18%; left: 62%; transform: rotate(1.5deg);">messages</span>
-          <span class="ml-chip" style="top: 4%; left: 78%; transform: rotate(-1deg);">calendar</span>
-          <div class="ml-center">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-          </div>
-          <span class="ml-chip" style="top: 76%; left: 4%; transform: rotate(2deg);">documents</span>
-          <span class="ml-chip" style="top: 84%; left: 42%; transform: rotate(-1.5deg);">follow-ups</span>
-          <span class="ml-chip" style="top: 72%; left: 76%; transform: rotate(1deg);">lender</span>
-        </div>
-      </div>
     </div>
   </section>
 
-  <!-- SECTION 3 — YOU'RE ALREADY DOING ENOUGH -->
-  <section class="roles">
-    <div class="container">
-      <div class="roles-inner">
-        <h2 class="roles-heading">You&apos;re already doing enough.</h2>
-        <div class="roles-wheel" aria-label="Roles an agent plays every day">
-          <span class="role-pill center">Realtor</span>
-          <span class="role-pill">Negotiator</span>
-          <span class="role-pill">Marketer</span>
-          <span class="role-pill">Coordinator</span>
-          <span class="role-pill">Project Manager</span>
-        </div>
-        <p class="roles-body">
-          The best agents spend their time building relationships — not chasing updates, searching emails or trying to keep everything in their head.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 4 — FEATURE #1: Daily Brief -->
+  <!-- SECTION 3 — FEATURE #1: Daily Brief -->
   <section class="feature-detail">
     <div class="container">
       <div class="feature-detail-grid">
         <div class="feature-detail-content">
-          <div class="feature-detail-eyebrow">01 · Daily Brief</div>
           <h2 class="feature-detail-heading">Start every day knowing what matters.</h2>
           <div class="feature-detail-body">
             <p>See what needs your attention, what&apos;s waiting on others and what may be falling behind before your day even begins.</p>
@@ -1948,13 +1898,9 @@
           </div>
         </div>
         <div class="feature-detail-visual" aria-hidden="true">
-          <div class="fv-brief">
-            <div class="fv-list">
-              <div class="fv-row"><span class="dot red"></span>Call Sanchez lender — contingency Fri<span class="meta">9:00</span></div>
-              <div class="fv-row"><span class="dot amber"></span>Send disclosures to Adams<span class="meta">11:30</span></div>
-              <div class="fv-row"><span class="dot amber"></span>Confirm Wallace showing — Tue 6 PM<span class="meta">2:00</span></div>
-              <div class="fv-row"><span class="dot green"></span>Inspection report received · 14 Palm<span class="meta">Done</span></div>
-            </div>
+          <div class="db-card" id="db-card">
+            <div class="db-head"><div class="db-brand"><span id="db-iso"></span><span class="db-t">Daily Brief</span></div><span class="db-led"></span></div>
+            <div id="db-rows"></div>
           </div>
         </div>
       </div>
@@ -1966,7 +1912,6 @@
     <div class="container">
       <div class="feature-detail-grid">
         <div class="feature-detail-content">
-          <div class="feature-detail-eyebrow">02 · Voice-based capture</div>
           <h2 class="feature-detail-heading">Talk. Pulsor organizes the rest.</h2>
           <div class="feature-detail-body">
             <p>Leaving a showing? Finishing a client call? Send a voice note.</p>
@@ -1974,36 +1919,14 @@
           </div>
         </div>
         <div class="feature-detail-visual" aria-hidden="true">
-          <div class="fv-voice">
-            <div class="fv-voice-chain">
-              <div class="fv-voice-step">
-                <div class="icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
-                </div>
-                <div class="label">Voice note</div>
-              </div>
-              <span class="fv-voice-arrow">→</span>
-              <div class="fv-voice-step">
-                <div class="icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                </div>
-                <div class="label">Tasks</div>
-              </div>
-              <span class="fv-voice-arrow">→</span>
-              <div class="fv-voice-step">
-                <div class="icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                </div>
-                <div class="label">Reminders</div>
-              </div>
-              <span class="fv-voice-arrow">→</span>
-              <div class="fv-voice-step">
-                <div class="icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                </div>
-                <div class="label">Actions</div>
-              </div>
-            </div>
+          <div class="vf-flow" id="vf-flow">
+            <div class="vf-step" id="vf-s0"><div class="vf-icon" id="vf-s0-icon"></div><div class="vf-label">Voice<br>note</div></div>
+            <div class="vf-arrow" id="vf-a0"><svg viewBox="0 0 30 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path class="vf-dash" d="M2 12h22"/><path d="M19 7l6 5-6 5"/></svg></div>
+            <div class="vf-step" id="vf-s1"><div class="vf-icon" id="vf-s1-icon"></div><div class="vf-label">Tasks</div></div>
+            <div class="vf-arrow" id="vf-a1"><svg viewBox="0 0 30 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path class="vf-dash" d="M2 12h22"/><path d="M19 7l6 5-6 5"/></svg></div>
+            <div class="vf-step" id="vf-s2"><div class="vf-icon" id="vf-s2-icon"></div><div class="vf-label">Reminders</div></div>
+            <div class="vf-arrow" id="vf-a2"><svg viewBox="0 0 30 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path class="vf-dash" d="M2 12h22"/><path d="M19 7l6 5-6 5"/></svg></div>
+            <div class="vf-step" id="vf-s3"><div class="vf-icon" id="vf-s3-icon"></div><div class="vf-label">Actions</div></div>
           </div>
         </div>
       </div>
@@ -2015,66 +1938,27 @@
     <div class="container">
       <div class="feature-detail-grid">
         <div class="feature-detail-content">
-          <div class="feature-detail-eyebrow">03 · Conversation management</div>
           <h2 class="feature-detail-heading">Stay on top of every conversation.</h2>
           <div class="feature-detail-body">
             <p>Never lose track of a follow-up, client request or important detail.</p>
-            <p>Conversations move fast.</p>
-            <ul class="feature-list">
-              <li>Client questions.</li>
-              <li>Showing feedback.</li>
-              <li>Next steps.</li>
-              <li>Follow-ups.</li>
-            </ul>
-            <p>Pulsor helps keep important details visible so you always know what needs attention next.</p>
           </div>
         </div>
         <div class="feature-detail-visual" aria-hidden="true">
-          <div class="fv-conv">
-            <div class="fv-conv-step">Message</div>
-            <span class="fv-conv-arrow">↓</span>
-            <div class="fv-conv-step">Follow-up</div>
-            <span class="fv-conv-arrow">↓</span>
-            <div class="fv-conv-step">Reminder</div>
-            <span class="fv-conv-arrow">↓</span>
-            <div class="fv-conv-step">Action</div>
+          <div class="cv-flow" id="cv-flow">
+            <div class="cv-step" id="cv0"><span class="cv-icon" id="cv0-i"></span><span>Message</span></div>
+            <div class="cv-arrow" id="cv-a0"><svg viewBox="0 0 24 30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path class="cv-dash" d="M12 2v22"/><path d="M7 19l5 5 5-5"/></svg></div>
+            <div class="cv-step" id="cv1"><span class="cv-icon" id="cv1-i"></span><span>Follow-up</span></div>
+            <div class="cv-arrow" id="cv-a1"><svg viewBox="0 0 24 30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path class="cv-dash" d="M12 2v22"/><path d="M7 19l5 5 5-5"/></svg></div>
+            <div class="cv-step" id="cv2"><span class="cv-icon" id="cv2-i"></span><span>Reminder</span></div>
+            <div class="cv-arrow" id="cv-a2"><svg viewBox="0 0 24 30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path class="cv-dash" d="M12 2v22"/><path d="M7 19l5 5 5-5"/></svg></div>
+            <div class="cv-step" id="cv3"><span class="cv-icon" id="cv3-i"></span><span>Action</span></div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SECTION 7 — FEATURE #4: Everything in one place -->
-  <section class="feature-detail reverse">
-    <div class="container">
-      <div class="feature-detail-grid">
-        <div class="feature-detail-content">
-          <div class="feature-detail-eyebrow">04 · One operational view</div>
-          <h2 class="feature-detail-heading">Everything in one place.</h2>
-          <div class="feature-detail-body">
-            <p>Stop jumping between apps trying to remember what happened.</p>
-            <p>Pulsor gives you one operational view of your business.</p>
-          </div>
-        </div>
-        <div class="feature-detail-visual" aria-hidden="true">
-          <div class="fv-stack">
-            <div class="fv-stack-grid">
-              <div class="fv-stack-cell">Email</div>
-              <div class="fv-stack-cell">Calendar</div>
-              <div class="fv-stack-cell">CRM</div>
-              <div class="fv-stack-cell">Messages</div>
-              <div class="fv-stack-cell">Notes</div>
-              <div class="fv-stack-cell">Docs</div>
-              <div class="fv-stack-arrow-down">↓</div>
-              <div class="fv-stack-target">Pulsor</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 8 — WORKS WITH (compatibility / reassurance) -->
+  <!-- SECTION 7 — WORKS WITH (compatibility / reassurance) -->
   <section class="works-with">
     <div class="container">
       <div class="works-with-header">
@@ -2121,15 +2005,57 @@
     </div>
   </section>
 
-  <!-- TRANSITION — sets up pricing -->
-  <section class="pricing-intro">
-    <div class="container">
-      <p class="pricing-intro-text">
-        Real estate shouldn&apos;t run from memory.
-      </p>
-      <p class="pricing-intro-sub">
-        The best agents don&apos;t need more tools. They need more clarity.
-      </p>
+  <!-- SECTION — FOCUS ON PEOPLE (human moment before pricing) -->
+  <section class="people">
+    <div class="container people-grid">
+      <div class="people-copy">
+        <h2 class="people-heading">Focus on people.</h2>
+        <p class="people-sub">Let Pulsor help organize the rest.</p>
+        <p class="people-body">
+          The best agents win through relationships. Not by spending their day
+          chasing updates, searching emails or trying to remember what needs
+          attention next.
+        </p>
+      </div>
+      <div class="people-visual" aria-hidden="true">
+        <div class="people-scene">
+          <div class="people-panel">
+            <svg class="people-figures" viewBox="0 0 380 300" fill="none">
+              <!-- conversation cue -->
+              <g>
+                <rect x="156" y="44" width="68" height="36" rx="15" fill="#EAF7F1"/>
+                <path d="M178 79 l8 10 6 -10 Z" fill="#EAF7F1"/>
+                <circle cx="176" cy="62" r="3.2" fill="#00C79A"/>
+                <circle cx="190" cy="62" r="3.2" fill="#00C79A"/>
+                <circle cx="204" cy="62" r="3.2" fill="#00C79A"/>
+              </g>
+              <!-- figure A (left) -->
+              <path d="M78 272 Q78 184 128 184 Q178 184 178 272 Z" fill="#D6F0E6"/>
+              <circle cx="128" cy="146" r="34" fill="#B7E6D5"/>
+              <!-- figure B (right) -->
+              <path d="M202 272 Q202 184 252 184 Q302 184 302 272 Z" fill="#F0E7D6"/>
+              <circle cx="252" cy="146" r="34" fill="#E7D6BD"/>
+            </svg>
+          </div>
+
+          <div class="pcard pcard-1">
+            <span class="pcard-ico ok">
+              <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2.5 6.2 5 8.5 9.5 3.5"/></svg>
+            </span>
+            <span>Follow up — Reyes family</span>
+          </div>
+          <div class="pcard pcard-2">
+            <span class="pcard-ico clock">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+            </span>
+            <span>Call lender · 2 PM</span>
+          </div>
+          <div class="pcard pcard-3">
+            <span class="pcard-lines"><span></span><span></span><span></span></span>
+            <span class="pcard-cap">Conversation summary</span>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -2173,13 +2099,9 @@
   <section class="final-cta">
     <div class="container">
       <h2 class="final-cta-heading">
-        Focus on people.<br>
-        <span class="final-cta-accent">Let Pulsor help organize the rest.</span>
-      </h2>
-      <p class="final-cta-sub">
         Stop relying on memory.<br>
-        Start operating with clarity.
-      </p>
+        <span class="final-cta-accent">Start operating with clarity.</span>
+      </h2>
       <a href="#access" class="btn btn-primary">Get Early Access <span class="btn-arrow">→</span></a>
     </div>
   </section>
@@ -2863,6 +2785,225 @@
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
+})();
+</script>
+
+<!-- ═══════════ MOTION LIBRARY (product + hero animations) ═══════════ -->
+<script>
+(function(){
+  const REDUCE = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const E='cubic-bezier(0.4,0,0.2,1)';
+  const G=['#2EF0C4','#00C79A','#0E8FA0'];
+  const R=25,CX=40,CY=40,SOLID='M42 15.08 A25 25 0 0 0 42 64.92 Z';
+  const BARS=[{x:48,h:22.69},{x:55,h:19.0},{x:62,h:11.06}];
+  let GID=0;
+  function isoGrad(size){
+    GID++;const gid='mg'+GID;
+    const defs=`<defs><linearGradient id="${gid}" gradientUnits="userSpaceOnUse" x1="15" y1="15" x2="65" y2="65"><stop offset="0%" stop-color="${G[0]}"/><stop offset="50%" stop-color="${G[1]}"/><stop offset="100%" stop-color="${G[2]}"/></linearGradient></defs>`;
+    const bars=BARS.map(b=>`<line x1="${b.x}" y1="${(CY-b.h).toFixed(2)}" x2="${b.x}" y2="${(CY+b.h).toFixed(2)}" stroke="url(#${gid})" stroke-width="5.2" stroke-linecap="round"/>`).join('');
+    return `<svg width="${size}" height="${size}" viewBox="0 0 80 80" fill="none" style="vertical-align:middle">${defs}<path d="${SOLID}" fill="url(#${gid})"/>${bars}</svg>`;
+  }
+  const ICONS={
+    wa:`<svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="#25D366"/><path d="M16 8a8 8 0 0 0-6.9 12l-1 3.6 3.7-1A8 8 0 1 0 16 8Z" fill="#fff"/><path d="M12.5 12c.2-.4.4-.4.6-.4h.5c.2 0 .4 0 .6.5l.7 1.6c.1.2 0 .4-.1.5l-.4.5c-.1.1-.2.3 0 .5a6 6 0 0 0 2.4 2c.2.1.4.1.5 0l.6-.6c.2-.2.4-.2.5-.1l1.4.7c.2.1.3.2.3.3 0 .5-.3 1.2-.7 1.4-.5.3-1.5.5-3.3-.5a8 8 0 0 1-3.3-3.6c-.3-.7-.4-1.7-.1-2.2Z" fill="#25D366"/></svg>`,
+    mail:`<svg viewBox="0 0 32 32"><rect x="4" y="7" width="24" height="18" rx="3" fill="#4A8CF7"/><path d="M5 9l11 8 11-8" stroke="#fff" stroke-width="2" fill="none"/></svg>`,
+    crm:`<svg viewBox="0 0 32 32"><rect x="4" y="6" width="24" height="20" rx="3" fill="#fff" stroke="#E5E0D6"/><circle cx="11" cy="13" r="3" fill="#D98A7E"/><rect x="16" y="11" width="9" height="2" rx="1" fill="#C9C4BA"/><rect x="16" y="15" width="6" height="2" rx="1" fill="#E5E0D6"/><rect x="7" y="20" width="18" height="2" rx="1" fill="#E5E0D6"/></svg>`,
+  };
+  const ACTION={
+    send:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 11 13"/><path d="M21 3 14.5 21 11 13 3 9.5 21 3Z"/></svg>`,
+    call:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3a2 2 0 0 0-2 2c0 8.3 6.7 15 15 15a2 2 0 0 0 2-2v-2.5a1 1 0 0 0-.8-1l-3-.6a1 1 0 0 0-1 .4l-1 1.3a12 12 0 0 1-5.5-5.5l1.3-1a1 1 0 0 0 .4-1l-.6-3a1 1 0 0 0-1-.8H5Z"/></svg>`,
+    message:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.3 7.3L4 21l1.7-5.7A8 8 0 1 1 21 12Z"/></svg>`,
+    calendar:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg>`,
+    check:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg>`,
+  };
+  const $=id=>document.getElementById(id);
+
+  // ---- populate Daily Brief ----
+  if($('db-iso')) $('db-iso').innerHTML=isoGrad(22);
+  const brief=[
+    {icon:'call',task:'Call title office — Harper payoff',note:'Closing slips if not received Wed',meta:'9:00'},
+    {icon:'send',task:'Send counter to Bennett agent',note:'',meta:'11:30'},
+    {icon:'message',task:'Confirm appraisal with Carter',note:'',meta:'2:00'},
+    {icon:'calendar',task:'Schedule Oakwood showing',note:'',meta:'4:00'},
+    {icon:'check',task:'Inspection received · 14 Maple',note:'',meta:'Done'},
+  ];
+  if($('db-rows')) $('db-rows').innerHTML=brief.map(r=>
+    `<div class="db-row"><span class="db-icon">${ACTION[r.icon]}</span><span class="db-main"><span class="db-task">${r.task}</span>${r.note?`<span class="db-note">${r.note}</span>`:''}</span><span class="db-meta">${r.meta}</span></div>`
+  ).join('');
+
+  // ---- populate Your Day (hero) ----
+  if($('yd-chips')) $('yd-chips').innerHTML=['wa','mail','crm'].map(k=>`<div class="yd-chip">${ICONS[k]}</div>`).join('');
+  if($('yd-iso')) $('yd-iso').innerHTML=isoGrad(26);
+  const ydToday=[
+    {t:'09:00 AM',task:'Follow up with John',c:'var(--accent)'},
+    {t:'11:00 AM',task:'Showing with Sarah',c:'var(--accent)'},
+    {t:'01:30 PM',task:'Send docs to title',c:'var(--amber)'},
+    {t:'03:00 PM',task:'Client update',c:'var(--accent)'},
+  ];
+  const ydTom=[
+    {t:'10:00 AM',task:'Inspection',c:'rgba(0,199,154,.5)'},
+    {t:'02:00 PM',task:'Closing',c:'var(--rose)'},
+  ];
+  const ydRows=arr=>arr.map(r=>`<div class="yd-row"><span class="yd-dot" style="background:${r.c}"></span><span class="yd-time">${r.t}</span><span class="yd-task">${r.task}</span></div>`).join('');
+  if($('yd-today')) $('yd-today').innerHTML=ydRows(ydToday);
+  if($('yd-tom')) $('yd-tom').innerHTML=ydRows(ydTom);
+  if($('yd-wave')) $('yd-wave').innerHTML=Array.from({length:18}).map(()=>`<span></span>`).join('');
+
+  // ---- populate Voice flow icons ----
+  const VF_ICON={
+    mic:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg>`,
+    tasks:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 12l2.5 2.5L16 9"/></svg>`,
+    clock:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>`,
+    send:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 11 13"/><path d="M21 3 14.5 21 11 13 3 9.5 21 3Z"/></svg>`,
+  };
+  if($('vf-s0-icon')) $('vf-s0-icon').innerHTML=VF_ICON.mic;
+  if($('vf-s1-icon')) $('vf-s1-icon').innerHTML=VF_ICON.tasks;
+  if($('vf-s2-icon')) $('vf-s2-icon').innerHTML=VF_ICON.clock;
+  if($('vf-s3-icon')) $('vf-s3-icon').innerHTML=VF_ICON.send;
+  const VF_WAVE=`<div class="vf-wave">${Array.from({length:9}).map(()=>'<span></span>').join('')}</div>`;
+
+  // ---- populate Hub ----
+  if($('hub-iso')) $('hub-iso').innerHTML=isoGrad(38);
+  const HUB_NODES=[{x:220,y:50},{x:392,y:122},{x:392,y:318},{x:220,y:390},{x:48,y:318},{x:48,y:122}];
+  const hubLines=$('hub-lines');
+  if(hubLines) hubLines.innerHTML=HUB_NODES.map((n,i)=>`<line id="hl${i}" x1="${n.x}" y1="${n.y}" x2="220" y2="220"/>`).join('');
+
+  // ---- populate Conversation icons ----
+  const CV_ICON={
+    message:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.3 7.3L4 21l1.7-5.7A8 8 0 1 1 21 12Z"/></svg>`,
+    followup:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>`,
+    reminder:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>`,
+    action:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 11 13"/><path d="M21 3 14.5 21 11 13 3 9.5 21 3Z"/></svg>`,
+  };
+  if($('cv0-i')) $('cv0-i').innerHTML=CV_ICON.message;
+  if($('cv1-i')) $('cv1-i').innerHTML=CV_ICON.followup;
+  if($('cv2-i')) $('cv2-i').innerHTML=CV_ICON.reminder;
+  if($('cv3-i')) $('cv3-i').innerHTML=CV_ICON.action;
+
+  // =========== ENGINES ===========
+  let ydWaveTimer=null, vfWaveTimer=null;
+
+  function animDailyBrief(){
+    const card=$('db-card'); if(!card) return;
+    const rows=document.querySelectorAll('.db-row');
+    if(REDUCE){card.style.opacity='1';card.style.transform='none';rows.forEach(r=>{r.style.opacity='1';r.style.transform='none';});return;}
+    [card,...rows].forEach(el=>el.style.transition='none');
+    card.style.opacity='0';card.style.transform='translateY(16px) scale(.98)';
+    rows.forEach(r=>{r.style.opacity='0';r.style.transform='translateX(10px)';});
+    void document.body.offsetHeight;
+    setTimeout(()=>{card.style.transition=`opacity 700ms ${E},transform 800ms cubic-bezier(0.34,1.05,0.64,1)`;card.style.opacity='1';card.style.transform='translateY(0) scale(1)';},120);
+    rows.forEach((r,i)=>setTimeout(()=>{r.style.transition=`opacity 600ms ${E},transform 640ms ${E}`;r.style.opacity='1';r.style.transform='translateX(0)';},700+i*300));
+  }
+
+  function animYourDay(){
+    const card=$('yd-card'); if(!card) return;
+    const chips=document.querySelectorAll('.yd-chip');
+    const l1=$('yd-l1'),l2=$('yd-l2');
+    const rows=document.querySelectorAll('.yd-row');
+    const voice=$('yd-voice');
+    const wave=document.querySelectorAll('#yd-wave span');
+    if(REDUCE){
+      [card,...chips,...rows,l1,l2,voice].forEach(el=>{el.style.opacity='1';el.style.transform='none';});
+      return;
+    }
+    [card,...chips,...rows,l1,l2,voice].forEach(el=>el.style.transition='none');
+    chips.forEach(c=>{c.style.opacity='0';c.style.transform='translateY(-10px)';});
+    card.style.opacity='0';card.style.transform='translateY(16px) scale(.98)';
+    rows.forEach(r=>{r.style.opacity='0';r.style.transform='translateX(-8px)';});
+    l1.style.opacity='0';l2.style.opacity='0';voice.style.opacity='0';voice.style.transform='translateY(8px)';
+    if(ydWaveTimer)clearInterval(ydWaveTimer);
+    void document.body.offsetHeight;
+    chips.forEach((c,i)=>setTimeout(()=>{c.style.transition=`opacity 360ms ${E},transform 460ms ${E}`;c.style.opacity='1';c.style.transform='translateY(0)';},80+i*90));
+    setTimeout(()=>{card.style.transition=`opacity 480ms ${E},transform 560ms cubic-bezier(0.34,1.1,0.64,1)`;card.style.opacity='1';card.style.transform='translateY(0) scale(1)';},360);
+    setTimeout(()=>{l1.style.transition=`opacity 300ms ${E}`;l1.style.opacity='1';},700);
+    const tc=ydToday.length;
+    rows.forEach((r,i)=>{const tom=i>=tc;const base=tom?1440:800;const idx=tom?i-tc:i;setTimeout(()=>{r.style.transition=`opacity 380ms ${E},transform 420ms ${E}`;r.style.opacity='1';r.style.transform='translateX(0)';},base+idx*120);});
+    setTimeout(()=>{l2.style.transition=`opacity 300ms ${E}`;l2.style.opacity='1';},1360);
+    setTimeout(()=>{voice.style.transition=`opacity 420ms ${E},transform 480ms ${E}`;voice.style.opacity='1';voice.style.transform='translateY(0)';ydWaveTimer=setInterval(()=>{wave.forEach((b,i)=>{const h=4+Math.abs(Math.sin(Date.now()/220+i*0.6))*15;b.style.height=h.toFixed(0)+'px';});},60);},1820);
+  }
+
+  function animVoiceFlow(){
+    const steps=['vf-s0','vf-s1','vf-s2','vf-s3'].map($); if(!steps[0]) return;
+    const arrows=['vf-a0','vf-a1','vf-a2'].map($);
+    const s0icon=$('vf-s0-icon');
+    if(vfWaveTimer)clearInterval(vfWaveTimer);
+    if(REDUCE){steps.forEach(s=>{s.style.opacity='1';s.style.transform='none';s.classList.add('on');});arrows.forEach(a=>a.classList.add('on'));return;}
+    steps.forEach(s=>{s.style.transition='none';s.style.opacity='0';s.style.transform='translateY(14px) scale(.96)';s.classList.remove('on');});
+    arrows.forEach(a=>a.classList.remove('on'));
+    s0icon.innerHTML=VF_ICON.mic;
+    void document.body.offsetHeight;
+    steps.forEach((s,i)=>setTimeout(()=>{s.style.transition=`opacity 600ms ${E},transform 700ms cubic-bezier(0.34,1.05,0.64,1)`;s.style.opacity='1';s.style.transform='translateY(0) scale(1)';},150+i*180));
+    const start=1300,gap=850;
+    setTimeout(()=>{steps[0].classList.add('on');s0icon.innerHTML=VF_WAVE;const bars=s0icon.querySelectorAll('.vf-wave span');vfWaveTimer=setInterval(()=>{bars.forEach((b,i)=>{b.style.height=(6+Math.abs(Math.sin(Date.now()/200+i*0.7))*20).toFixed(0)+'px';});},55);},start);
+    setTimeout(()=>arrows[0].classList.add('on'),start+gap*0.6);
+    setTimeout(()=>steps[1].classList.add('on'),start+gap);
+    setTimeout(()=>arrows[1].classList.add('on'),start+gap*1.6);
+    setTimeout(()=>steps[2].classList.add('on'),start+gap*2);
+    setTimeout(()=>arrows[2].classList.add('on'),start+gap*2.6);
+    setTimeout(()=>steps[3].classList.add('on'),start+gap*3);
+  }
+
+  function animHub(){
+    const center=$('hub-center'); if(!center) return;
+    const nodes=[0,1,2,3,4,5].map(i=>$('hn'+i));
+    const lines=[0,1,2,3,4,5].map(i=>$('hl'+i));
+    if(REDUCE){nodes.forEach(n=>n.classList.add('on'));lines.forEach(l=>l.classList.add('on'));center.classList.add('on');return;}
+    center.classList.remove('on','pulse');
+    nodes.forEach(n=>n.classList.remove('on'));
+    lines.forEach(l=>l.classList.remove('on'));
+    void document.body.offsetHeight;
+    nodes.forEach((n,i)=>setTimeout(()=>n.classList.add('on'),200+i*140));
+    lines.forEach((l,i)=>setTimeout(()=>l.classList.add('on'),1100+i*120));
+    setTimeout(()=>center.classList.add('on'),1100);
+    setTimeout(()=>center.classList.add('pulse'),2100);
+  }
+
+  function animConvo(){
+    const steps=[0,1,2,3].map(i=>$('cv'+i)); if(!steps[0]) return;
+    const arrows=[0,1,2].map(i=>$('cv-a'+i));
+    if(REDUCE){steps.forEach(s=>{s.classList.add('on','lit');});arrows.forEach(a=>a.classList.add('on'));return;}
+    steps.forEach(s=>{s.style.transition='none';s.classList.remove('on','lit');s.style.opacity='';s.style.transform='';});
+    arrows.forEach(a=>a.classList.remove('on'));
+    void document.body.offsetHeight;
+    steps.forEach(s=>{s.style.transition='';});
+    const base=200,gap=600;
+    steps.forEach((s,i)=>{
+      setTimeout(()=>{s.classList.add('on','lit');},base+i*gap);
+      if(i>0)setTimeout(()=>arrows[i-1].classList.add('on'),base+i*gap-gap*0.5);
+    });
+  }
+
+  // ---- triggers ----
+  // Hero plays on load
+  if(document.readyState==='complete') animYourDay();
+  else window.addEventListener('load',animYourDay);
+
+  // Features play once when scrolled into view. A scroll-handler (rather than
+  // IntersectionObserver) is used so it fires reliably across environments;
+  // for 4 elements the cost is negligible.
+  const FEATURES=[
+    {sel:'#db-card',fn:animDailyBrief},
+    {sel:'#vf-flow',fn:animVoiceFlow},
+    {sel:'#cv-flow',fn:animConvo},
+  ].map(({sel,fn})=>({el:document.querySelector(sel),fn,done:false})).filter(x=>x.el);
+
+  if(REDUCE){
+    FEATURES.forEach(p=>p.fn());
+  } else {
+    const inView=el=>{const r=el.getBoundingClientRect();return r.top < window.innerHeight*0.78 && r.bottom > 40;};
+    let ticking=false;
+    function check(){
+      ticking=false;
+      FEATURES.forEach(p=>{if(!p.done && inView(p.el)){p.done=true;p.fn();}});
+    }
+    function onScroll(){if(!ticking){ticking=true;setTimeout(check,90);}}
+    window.addEventListener('scroll',onScroll,{passive:true});
+    window.addEventListener('resize',onScroll,{passive:true});
+    // Initial + a few delayed checks (covers features in view before first scroll,
+    // and guards against layout not being settled on the very first frame).
+    check();
+    setTimeout(check,300);
+    setTimeout(check,900);
+  }
 })();
 </script>
 </body>
