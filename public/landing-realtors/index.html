@@ -1742,6 +1742,145 @@
   @media (max-width: 860px) {
     .feature-detail-visual { min-height: 320px; padding: 24px; }
   }
+
+  /* ═══════════ BETA ACCESS MODAL ═══════════ */
+  .access-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .access-modal.open { display: flex; }
+  .access-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 15, 16, 0.42);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+  }
+  .access-modal-card {
+    position: relative;
+    z-index: 1;
+    background: #FFFFFF;
+    border: 0.5px solid var(--stone);
+    border-radius: 22px;
+    width: 100%;
+    max-width: 460px;
+    max-height: 92dvh;
+    overflow-y: auto;
+    padding: 32px 32px 28px;
+    box-shadow: 0 24px 70px rgba(15, 15, 16, 0.22);
+    animation: amIn 240ms cubic-bezier(0.34, 1.1, 0.64, 1);
+  }
+  @keyframes amIn { from { opacity: 0; transform: translateY(12px) scale(0.98); } to { opacity: 1; transform: none; } }
+  .access-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    font-size: 22px;
+    line-height: 1;
+    color: var(--text-faint);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 150ms, color 150ms;
+  }
+  .access-modal-close:hover { background: var(--bg); color: var(--text); }
+  .am-title {
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin: 0 0 8px;
+  }
+  .am-subtitle {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin: 0 0 24px;
+  }
+  .am-field { margin-bottom: 18px; }
+  .am-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 9px;
+    letter-spacing: -0.01em;
+  }
+  .am-optional { color: var(--text-faint); font-weight: 400; }
+  .am-input {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    font-family: inherit;
+    font-size: 15px;
+    border: 0.5px solid var(--stone);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text);
+    outline: none;
+    transition: border-color 150ms, box-shadow 150ms;
+  }
+  .am-input:focus { border-color: var(--text); box-shadow: 0 0 0 3px rgba(15, 15, 16, 0.05); }
+  .am-input::placeholder { color: var(--text-faint); }
+  .am-input.am-error { border-color: var(--error); }
+  .am-radios { display: flex; gap: 8px; flex-wrap: wrap; }
+  .am-radios-col { flex-direction: column; }
+  .am-radio {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 14px;
+    border: 0.5px solid var(--stone);
+    border-radius: 10px;
+    font-size: 14px;
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color 150ms, background 150ms;
+    flex: 1 1 0;
+    min-width: 0;
+    justify-content: center;
+    white-space: nowrap;
+  }
+  .am-radios-col .am-radio { flex: none; justify-content: flex-start; }
+  .am-radio input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .am-radio-box {
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--stone-2);
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+    transition: border-color 150ms;
+  }
+  .am-radio:hover { border-color: var(--text-faint); }
+  .am-radio:has(input:checked) { border-color: var(--accent); background: rgba(0, 217, 163, 0.07); }
+  .am-radio:has(input:checked) .am-radio-box { border-color: var(--accent); }
+  .am-radio:has(input:checked) .am-radio-box::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .am-submit { width: 100%; height: 46px; justify-content: center; margin-top: 6px; }
+  .am-success { text-align: center; padding: 24px 8px 16px; }
+  .am-success .am-title { font-size: 26px; margin-bottom: 12px; }
+  .am-success .am-subtitle { font-size: 15px; max-width: 360px; margin: 0 auto; }
+
+  @media (max-width: 480px) {
+    .access-modal-card { padding: 26px 22px 22px; border-radius: 18px; }
+    .am-radios { flex-wrap: wrap; }
+    .am-radio { flex: 1 1 calc(50% - 4px); }
+    .am-radios-col .am-radio { flex: none; }
+  }
 </style>
 </head>
 <body>
@@ -1957,6 +2096,64 @@
     </div>
   </footer>
 
+<!-- ═══════════ BETA ACCESS MODAL ═══════════ -->
+<div class="access-modal" id="access-modal" aria-hidden="true">
+  <div class="access-modal-overlay" data-close></div>
+  <div class="access-modal-card" role="dialog" aria-modal="true" aria-labelledby="am-title">
+    <button class="access-modal-close" type="button" aria-label="Close" data-close>&times;</button>
+
+    <div id="am-form-wrap">
+      <h2 class="am-title" id="am-title">Join Pulsor Beta</h2>
+      <p class="am-subtitle">We&apos;re inviting a small group of real estate agents to get early access.</p>
+
+      <form id="am-form" novalidate>
+        <div class="am-field">
+          <label class="am-label" for="am-firstname">First name</label>
+          <input class="am-input" type="text" id="am-firstname" name="firstName" placeholder="Sarah" autocomplete="given-name" required>
+        </div>
+
+        <div class="am-field">
+          <label class="am-label" for="am-email">Email</label>
+          <input class="am-input" type="email" id="am-email" name="email" placeholder="sarah@email.com" autocomplete="email" required>
+        </div>
+
+        <div class="am-field">
+          <span class="am-label">How many transactions do you close per year?</span>
+          <div class="am-radios">
+            <label class="am-radio"><input type="radio" name="transactions" value="0–5"><span class="am-radio-box"></span>0–5</label>
+            <label class="am-radio"><input type="radio" name="transactions" value="6–15"><span class="am-radio-box"></span>6–15</label>
+            <label class="am-radio"><input type="radio" name="transactions" value="16–30"><span class="am-radio-box"></span>16–30</label>
+            <label class="am-radio"><input type="radio" name="transactions" value="30+"><span class="am-radio-box"></span>30+</label>
+          </div>
+        </div>
+
+        <div class="am-field">
+          <span class="am-label">CRM you use <span class="am-optional">(optional)</span></span>
+          <div class="am-radios am-radios-col">
+            <label class="am-radio"><input type="radio" name="crm" value="Follow Up Boss"><span class="am-radio-box"></span>Follow Up Boss</label>
+            <label class="am-radio"><input type="radio" name="crm" value="kvCORE"><span class="am-radio-box"></span>kvCORE</label>
+            <label class="am-radio"><input type="radio" name="crm" value="Lofty"><span class="am-radio-box"></span>Lofty</label>
+            <label class="am-radio"><input type="radio" name="crm" value="Other"><span class="am-radio-box"></span>Other</label>
+            <label class="am-radio"><input type="radio" name="crm" value="I don't use a CRM"><span class="am-radio-box"></span>I don&apos;t use a CRM</label>
+          </div>
+          <div class="am-field am-other" id="am-other" hidden style="margin-top:12px;margin-bottom:0;">
+            <label class="am-label" for="am-other-input">Which CRM do you use?</label>
+            <input class="am-input" type="text" id="am-other-input" placeholder="Real Geeks, Sierra, HubSpot, Chime...">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary am-submit">Request Access <span class="btn-arrow">→</span></button>
+      </form>
+    </div>
+
+    <div class="am-success" id="am-success" hidden>
+      <h2 class="am-title">You&apos;re on the list 👋</h2>
+      <p class="am-subtitle">Thanks for joining Pulsor Beta. We&apos;re onboarding a small group of agents and will reach out soon with next steps.</p>
+    </div>
+  </div>
+</div>
+
+
 <script>
 (function() {
   // Sticky nav
@@ -1972,58 +2169,114 @@
      Vercel. localStorage backup keeps copies of every submission.
   ───────────────────────────────────────────────────────────── */
 
-  const form = document.getElementById('access-form');
-  const success = document.getElementById('form-success');
-  if (form) {
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const submitLabel = submitBtn ? submitBtn.innerHTML : '';
+  /* ─── Beta access modal ───────────────────────────────────────── */
+  const modal = document.getElementById('access-modal');
+  const amForm = document.getElementById('am-form');
+  const amWrap = document.getElementById('am-form-wrap');
+  const amSuccess = document.getElementById('am-success');
+  const amFirst = document.getElementById('am-firstname');
+  const amEmail = document.getElementById('am-email');
+  const amOther = document.getElementById('am-other');
+  const amOtherInput = document.getElementById('am-other-input');
+  let lastFocus = null;
 
-    form.addEventListener('submit', async (e) => {
+  function openAccessModal(prefillEmail) {
+    if (!modal) return;
+    // Reset to form state each open
+    amWrap.hidden = false;
+    amSuccess.hidden = true;
+    if (prefillEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(prefillEmail)) {
+      amEmail.value = prefillEmail;
+    }
+    lastFocus = document.activeElement;
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => (amEmail.value ? amFirst : amFirst).focus(), 60);
+  }
+  function closeAccessModal() {
+    if (!modal) return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  if (modal) {
+    modal.querySelectorAll('[data-close]').forEach((el) =>
+      el.addEventListener('click', closeAccessModal)
+    );
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('open')) closeAccessModal();
+    });
+
+    // CRM "Other" reveals a free-text input
+    amForm.querySelectorAll('input[name="crm"]').forEach((r) => {
+      r.addEventListener('change', () => {
+        amOther.hidden = !(r.value === 'Other' && r.checked);
+        if (!amOther.hidden) setTimeout(() => amOtherInput.focus(), 30);
+      });
+    });
+
+    // Submit → POST → success
+    amForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const input = form.querySelector('input[type="email"]');
-      const v = (input.value || '').trim();
-      if (!v || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) {
-        input.focus();
-        form.style.borderColor = '#C44536';
-        setTimeout(() => form.style.borderColor = '', 1600);
+      const firstName = amFirst.value.trim();
+      const email = amEmail.value.trim();
+      const transactions =
+        amForm.querySelector('input[name="transactions"]:checked')?.value || '';
+      let crm = amForm.querySelector('input[name="crm"]:checked')?.value || '';
+      if (crm === 'Other') {
+        const other = amOtherInput.value.trim();
+        crm = other ? `Other: ${other}` : 'Other';
+      }
+
+      let bad = false;
+      if (!firstName) { amFirst.classList.add('am-error'); bad = true; }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { amEmail.classList.add('am-error'); bad = true; }
+      if (bad) {
+        (firstName ? amEmail : amFirst).focus();
+        setTimeout(() => { amFirst.classList.remove('am-error'); amEmail.classList.remove('am-error'); }, 1600);
         return;
       }
 
-      // Always keep a local backup in case the network fails
+      // Local backup in case the network fails
       try {
         const stored = JSON.parse(localStorage.getItem('pulsor_access') || '[]');
-        stored.push({ email: v, at: new Date().toISOString() });
+        stored.push({ firstName, email, transactions, crm, at: new Date().toISOString() });
         localStorage.setItem('pulsor_access', JSON.stringify(stored));
       } catch (_) {}
 
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.style.opacity = '0.7';
-        submitBtn.innerHTML = 'Sending…';
-      }
+      const btn = amForm.querySelector('button[type="submit"]');
+      const label = btn ? btn.innerHTML : '';
+      if (btn) { btn.disabled = true; btn.style.opacity = '0.7'; btn.innerHTML = 'Sending…'; }
 
-      // Forward to our own /api/access-request endpoint (Resend on the server).
-      let sent = false;
       try {
-        const res = await fetch('/api/access-request', {
+        await fetch('/api/access-request', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: v }),
+          body: JSON.stringify({ firstName, email, transactions, crm }),
         });
-        sent = res.ok;
-      } catch (_) { sent = false; }
+      } catch (_) {}
 
-      // Show success regardless — the localStorage backup catches anything
-      // the network missed, and a failed network call shouldn't reveal that
-      // to the user (looks unprofessional).
-      form.style.display = 'none';
-      success.classList.add('show');
+      // Show success regardless — backup catches network misses
+      amWrap.hidden = true;
+      amSuccess.hidden = false;
+      if (btn) { btn.disabled = false; btn.style.opacity = ''; btn.innerHTML = label; }
+    });
+  }
 
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.style.opacity = '';
-        submitBtn.innerHTML = submitLabel;
-      }
+  // Every "Get Early Access" entry point opens the modal.
+  document.querySelectorAll('a[href="#access"]').forEach((a) => {
+    a.addEventListener('click', (e) => { e.preventDefault(); openAccessModal(); });
+  });
+  // The hero email field carries its value into the modal.
+  const heroForm = document.getElementById('access-form');
+  if (heroForm) {
+    heroForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const v = (heroForm.querySelector('input[type="email"]')?.value || '').trim();
+      openAccessModal(v);
     });
   }
 
@@ -2850,5 +3103,6 @@
   }
 })();
 </script>
+
 </body>
 </html>

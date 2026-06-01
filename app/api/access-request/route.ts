@@ -11,9 +11,15 @@ export const runtime = "nodejs";
  * prospect requests access. Forwards to Guido via Resend.
  */
 export async function POST(req: Request) {
-  let body: { email?: string; note?: string };
+  let body: {
+    email?: string;
+    note?: string;
+    firstName?: string;
+    transactions?: string;
+    crm?: string;
+  };
   try {
-    body = (await req.json()) as { email?: string; note?: string };
+    body = (await req.json()) as typeof body;
   } catch {
     return NextResponse.json(
       { ok: false, error: "Invalid JSON body" },
@@ -22,6 +28,9 @@ export async function POST(req: Request) {
   }
 
   const email = (body.email ?? "").trim();
+  const firstName = (body.firstName ?? "").trim();
+  const transactions = (body.transactions ?? "").trim();
+  const crm = (body.crm ?? "").trim();
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return NextResponse.json(
       { ok: false, error: "Invalid email" },
@@ -38,29 +47,38 @@ export async function POST(req: Request) {
   }
 
   const resend = new Resend(apiKey);
-  const subject = `New access request — ${email}`;
+  const subject = `New Pulsor Beta request — ${firstName ? firstName + " · " : ""}${email}`;
   const referer =
     req.headers.get("referer") || req.headers.get("origin") || "—";
   const userAgent = req.headers.get("user-agent") || "—";
   const submittedAt = new Date().toISOString();
 
   const text =
-    `New access request received on the Pulsor landing page.\n\n` +
+    `New Pulsor Beta access request from the landing page.\n\n` +
+    (firstName ? `First name: ${firstName}\n` : "") +
     `Email: ${email}\n` +
+    (transactions ? `Transactions/year: ${transactions}\n` : "") +
+    (crm ? `CRM: ${crm}\n` : "") +
     (body.note ? `Note: ${body.note}\n` : "") +
     `Referrer: ${referer}\n` +
     `Submitted: ${submittedAt}\n` +
     `User agent: ${userAgent}\n`;
 
+  const row = (label: string, value: string) =>
+    `<tr><td style="padding: 4px 12px 4px 0; color: #8e8a82;">${label}</td><td>${value}</td></tr>`;
+
   const html = `
     <div style="font-family: -apple-system, system-ui, sans-serif; line-height: 1.55; color: #0f0f10;">
-      <h2 style="margin: 0 0 8px; font-weight: 500; letter-spacing: -0.02em;">New access request</h2>
+      <h2 style="margin: 0 0 8px; font-weight: 500; letter-spacing: -0.02em;">New Pulsor Beta request</h2>
       <p style="margin: 0 0 16px; color: #5c5953;">From the Pulsor landing page.</p>
       <table style="border-collapse: collapse; font-size: 14px;">
-        <tr><td style="padding: 4px 12px 4px 0; color: #8e8a82;">Email</td><td><strong>${escapeHtml(email)}</strong></td></tr>
-        ${body.note ? `<tr><td style="padding: 4px 12px 4px 0; color: #8e8a82;">Note</td><td>${escapeHtml(body.note)}</td></tr>` : ""}
-        <tr><td style="padding: 4px 12px 4px 0; color: #8e8a82;">Referrer</td><td>${escapeHtml(referer)}</td></tr>
-        <tr><td style="padding: 4px 12px 4px 0; color: #8e8a82;">Submitted</td><td>${submittedAt}</td></tr>
+        ${firstName ? row("First name", `<strong>${escapeHtml(firstName)}</strong>`) : ""}
+        ${row("Email", `<strong>${escapeHtml(email)}</strong>`)}
+        ${transactions ? row("Transactions/yr", escapeHtml(transactions)) : ""}
+        ${crm ? row("CRM", escapeHtml(crm)) : ""}
+        ${body.note ? row("Note", escapeHtml(body.note)) : ""}
+        ${row("Referrer", escapeHtml(referer))}
+        ${row("Submitted", submittedAt)}
       </table>
     </div>
   `.trim();
